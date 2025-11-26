@@ -1,0 +1,319 @@
+@import "tailwindcss";
+@import "@c.olander/proto-ui/theme.css";
+
+@source "../src";
+@source "../node_modules/@c.olander/proto-ui/dist";
+@source "../.yalc/@c.olander/proto-ui/dist";
+
+/* TipTap Editor Styles */
+.tiptap {
+  outline: none;
+  min-height: 400px;
+  padding: 1rem;
+}
+
+.tiptap > * + * {
+  margin-top: 0.75em;
+}
+
+.tiptap ul,
+.tiptap ol {
+  padding-left: 1.5rem;
+}
+
+.tiptap h1 {
+  font-size: 1.875rem;
+  font-weight: bold;
+  line-height: 2.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.tiptap h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 2rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.tiptap p {
+  margin-bottom: 0.5rem;
+  color: hsl(var(--foreground));
+  line-height: 1.6;
+}
+
+.tiptap ul li,
+.tiptap ol li {
+  color: hsl(var(--foreground));
+  line-height: 1.6;
+  margin-bottom: 0.25rem;
+}
+
+.tiptap em {
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+.tiptap strong {
+  font-weight: 600;
+}
+
+.tiptap blockquote {
+  border-left: 3px solid hsl(var(--border));
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+
+.tiptap code {
+  background-color: hsl(var(--muted));
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-family: monospace;
+}
+
+.tiptap pre {
+  background: hsl(var(--muted));
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-family: monospace;
+}
+
+.tiptap pre code {
+  background: none;
+  padding: 0;
+}
+
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Timer Bar Animation */
+@keyframes timer-tick {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.timer-tick {
+  animation: timer-tick 0.3s ease-in-out;
+}
+
+/* Status Badge Animation */
+@keyframes status-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}
+
+.status-change-animation {
+  animation: status-pulse 0.4s ease-in-out;
+}
+
+/* Comment Counter Scale */
+@keyframes counter-scale {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.counter-update {
+  animation: counter-scale 0.3s ease-in-out;
+}
+
+/* Task Completion Slide */
+@keyframes slide-to-historik {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0.5;
+    transform: translateY(20px);
+  }
+}
+
+.task-completing {
+  animation: slide-to-historik 0.5s ease-in-out forwards;
+}
+
+/* Panel Slide Animations */
+.panel-slide-enter {
+  transform: translateX(100%);
+}
+
+.panel-slide-enter-active {
+  transform: translateX(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.panel-slide-exit {
+  transform: translateX(0);
+}
+
+.panel-slide-exit-active {
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Page View Transitions */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.view-enter {
+  animation: fadeSlideIn 0.4s ease-out forwards;
+}
+
+.view-exit {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+/* Task Chip Styles - Condensed inline design */
+.tiptap .task-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.375rem !important;
+  padding: 0.125rem 0.5rem !important;
+  margin: 0 1px !important;
+  border-radius: 0.375rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  vertical-align: middle !important;
+  line-height: 1.25 !important;
+  user-select: none !important;
+  white-space: nowrap !important;
+}
+
+/* Goal chip - teal styling */
+.tiptap .task-chip-goal {
+  background-color: rgba(20, 184, 166, 0.1) !important;
+  border-left: 3px solid #14b8a6 !important;
+  color: #0f766e !important;
+}
+
+/* Task chip - blue styling */
+.tiptap .task-chip-task {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  border-left: 3px solid #3b82f6 !important;
+  color: #1e40af !important;
+}
+
+.tiptap .task-chip:hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Goal chips - teal accent hover */
+.tiptap .task-chip-goal:hover {
+  background-color: rgba(20, 184, 166, 0.15) !important;
+}
+
+/* Task chips - blue accent hover */
+.tiptap .task-chip-task:hover {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+.tiptap .task-chip:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Insertion animation */
+@keyframes chip-insert {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.task-chip {
+  animation: chip-insert 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Pulse animation on creation */
+@keyframes chip-pulse {
+  0%, 100% {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  50% {
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  }
+}
+
+.task-chip-task {
+  animation: chip-insert 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+             chip-pulse 1s ease-in-out 0.25s;
+}
+
+@keyframes chip-pulse-goal {
+  0%, 100% {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  50% {
+    box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
+  }
+}
+
+.task-chip-goal {
+  animation: chip-insert 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+             chip-pulse-goal 1s ease-in-out 0.25s;
+}
+
+/* Confetti Animation for Task Completion */
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-60px) scale(0.5) rotate(180deg);
+  }
+}
+
+.animate-confetti {
+  animation: confetti-fall 0.8s ease-out forwards;
+}
