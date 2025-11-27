@@ -1,3 +1,6 @@
+@import './styles/_variables.scss';
+@import './styles/_keyframe-animations.scss';
+
 @import "tailwindcss";
 @import "@c.olander/proto-ui/theme.css";
 
@@ -316,4 +319,101 @@
 
 .animate-confetti {
   animation: confetti-fall 0.8s ease-out forwards;
+}
+
+/* TipTap Table Styles */
+.tiptap .editor-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+  table-layout: fixed;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+}
+
+.tiptap .editor-table td,
+.tiptap .editor-table th {
+  border: 1px solid hsl(var(--border));
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+  min-width: 100px;
+}
+
+.tiptap .editor-table th {
+  background-color: hsl(var(--muted));
+  font-weight: 600;
+  text-align: left;
+  color: hsl(var(--foreground));
+}
+
+.tiptap .editor-table td {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.tiptap .editor-table .selectedCell:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: hsl(var(--primary) / 0.1);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.tiptap .editor-table .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: -2px;
+  width: 4px;
+  background-color: hsl(var(--primary));
+  cursor: col-resize;
+  z-index: 20;
+}
+
+.tiptap .tableWrapper {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.tiptap .resize-cursor {
+  cursor: col-resize;
+}
+
+/* TipTap Placeholder Styles */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+  height: 0;
+}
+
+.tiptap h1.is-empty::before,
+.tiptap h2.is-empty::before,
+.tiptap h3.is-empty::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+  height: 0;
+}
+
+/* Horizontal Rule */
+.tiptap hr {
+  border: none;
+  border-top: 2px solid hsl(var(--border));
+  margin: 1.5rem 0;
+}
+
+/* Text Highlight Styles */
+.tiptap mark {
+  border-radius: 0.125rem;
+  padding: 0.125rem 0;
 }

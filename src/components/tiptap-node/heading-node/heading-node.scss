@@ -1,0 +1,43 @@
+.tiptap.ProseMirror {
+  h1,
+  h2,
+  h3,
+  h4 {
+    position: relative;
+    color: inherit;
+    font-style: inherit;
+    font-family: "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: -0.02em;
+
+    &:first-child,
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+
+  h1 {
+    font-size: 1.75em;
+    font-weight: 700;
+    margin-top: 2em;
+    letter-spacing: -0.03em;
+  }
+
+  h2 {
+    font-size: 1.375em;
+    font-weight: 600;
+    margin-top: 1.75em;
+    letter-spacing: -0.025em;
+  }
+
+  h3 {
+    font-size: 1.125em;
+    font-weight: 600;
+    margin-top: 1.5em;
+  }
+
+  h4 {
+    font-size: 1em;
+    font-weight: 600;
+    margin-top: 1.5em;
+  }
+}

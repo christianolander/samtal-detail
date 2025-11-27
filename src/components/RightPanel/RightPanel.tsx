@@ -5,7 +5,6 @@
  * Features: Verktyg, Detaljer, Tidigare samtal, Privata anteckningar
  */
 
-import { useState } from 'react'
 import { useStore } from '../../store/useStore'
 import {
   LayoutGrid,
@@ -29,8 +28,9 @@ import {
 import StatusDetaljer from './StatusDetaljer'
 import RelateradeSamtal from './RelateradeSamtal'
 import PrivateNotes from './PrivateNotes'
+import TimerTab from './TimerTab'
 
-type TabId = 'översikt' | 'detaljer' | 'tidigare' | 'privata'
+type TabId = 'översikt' | 'detaljer' | 'tidigare' | 'privata' | 'timer'
 
 interface Tab {
   id: TabId
@@ -46,12 +46,17 @@ export default function RightPanel() {
     setActiveTab,
     privateNotes,
     currentSamtal,
+    activeRightPanelTab,
+    setActiveRightPanelTab,
+    timerActive,
   } = useStore()
-  const [activeTabId, setActiveTabId] = useState<TabId>('översikt')
+  const activeTabId = activeRightPanelTab
+  const setActiveTabId = setActiveRightPanelTab
 
   const tabs: Tab[] = [
     { id: 'översikt', label: 'Översikt', icon: LayoutGrid },
     { id: 'detaljer', label: 'Detaljer', icon: Info },
+    { id: 'timer', label: 'Timer', icon: Timer },
     { id: 'tidigare', label: 'Tidigare samtal', icon: History },
     {
       id: 'privata',
@@ -211,10 +216,10 @@ export default function RightPanel() {
               buttons={[
                 {
                   icon: Timer,
-                  label: 'Starta timer',
-                  subtext: 'Starta tidtagning för mötet.',
+                  label: timerActive ? 'Hantera timer' : 'Visa timer',
+                  subtext: timerActive ? 'Se och hantera pågående tidtagning.' : 'Starta och hantera tidtagning för mötet.',
                   variant: 'blue',
-                  onClick: () => useStore.getState().startTimer(),
+                  onClick: () => setActiveTabId('timer'),
                 },
                 {
                   icon: Target,
@@ -246,27 +251,60 @@ export default function RightPanel() {
         {status === 'bokad' && timing === 'after' && (
           <>
             {/* Main card with CTA to mark as complete */}
-            <div className="bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800 rounded-lg p-6">
-              <div className="flex flex-col items-center">
-                <div className="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-3">
-                  <CheckCircle2 className="w-6 h-6 text-green-600 dark:text-green-400" />
+            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <CheckCircle2 className="w-5 h-5 text-primary" />
                 </div>
-                <div className="w-full">
+                <div className="flex-1">
                   <h4 className="text-sm font-semibold text-foreground mb-1">
                     Markera som klar
                   </h4>
-                  <p className="text-xs text-muted-foreground mb-4">
+                  <p className="text-xs text-muted-foreground mb-3">
                     Är samtalet genomfört och dokumenterat? Markera den då som klar.
                   </p>
                   <button
-                    onClick={() => console.log('Markera som klar')}
-                    className="w-full px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-md text-sm font-medium hover:bg-green-700 dark:hover:bg-green-600 transition-colors"
+                    onClick={() => useStore.getState().setStatus('klar')}
+                    className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
                   >
                     Markera som klar
                   </button>
                 </div>
               </div>
             </div>
+
+            <ToolSection
+              buttons={[
+                {
+                  icon: Timer,
+                  label: timerActive ? 'Hantera timer' : 'Visa timer',
+                  subtext: timerActive ? 'Se och hantera pågående tidtagning.' : 'Starta och hantera tidtagning för mötet.',
+                  variant: 'blue',
+                  onClick: () => setActiveTabId('timer'),
+                },
+                {
+                  icon: Target,
+                  label: 'Lägg till mål och uppgifter',
+                  subtext: 'Dokumentera beslut och uppgifter direkt.',
+                  variant: 'orange',
+                  onClick: () => setActiveTab('uppgifter-mål'),
+                },
+                {
+                  icon: Lock,
+                  label: 'Lägg till privata anteckningar',
+                  subtext: 'Endast för dig själv.',
+                  variant: 'purple',
+                  onClick: () => setActiveTabId('privata'),
+                },
+                {
+                  icon: History,
+                  label: 'Visa tidigare samtal',
+                  subtext: 'Referera till tidigare diskussioner.',
+                  variant: 'gray',
+                  onClick: () => setActiveTabId('tidigare'),
+                },
+              ]}
+            />
           </>
         )}
 
@@ -320,6 +358,8 @@ export default function RightPanel() {
     switch (activeTabId) {
       case 'översikt':
         return renderToolsContent()
+      case 'timer':
+        return <TimerTab />
       case 'detaljer':
         return <StatusDetaljer />
       case 'tidigare':
@@ -431,7 +471,7 @@ function ToolSection({
             </span>
           )}
           {headerChip && (
-            <span className="text-[10px] bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-300 px-1.5 py-0.5 rounded-full font-medium border border-blue-100 dark:border-blue-800">
+            <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-medium border border-primary/20">
               {headerChip}
             </span>
           )}
@@ -505,7 +545,7 @@ function OverviewCard({
         <div className="flex items-center gap-2">
           <div className="text-sm font-medium text-foreground">{label}</div>
           {badge && (
-            <span className="text-[10px] bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 px-1.5 py-0.5 rounded-full font-medium">
+            <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 py-0.5 rounded-full font-medium">
               {badge}
             </span>
           )}

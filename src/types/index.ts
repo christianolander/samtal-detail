@@ -47,6 +47,7 @@ export interface Samtal {
   comments: Comment[]
   timer?: Timer
   metadata: Metadata
+  duration: number // Duration in minutes, default 60
 }
 
 export interface User {

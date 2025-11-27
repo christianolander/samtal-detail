@@ -32,6 +32,7 @@ export interface AppStore {
   rightPanelCollapsed: boolean
   commentsCollapsed: boolean
   editorMode: 'agenda' | 'ai-summary' // For Anteckningar tab
+  activeRightPanelTab: 'översikt' | 'detaljer' | 'timer' | 'tidigare' | 'privata'
 
   // Task modal state
   taskModalOpen: boolean
@@ -49,6 +50,9 @@ export interface AppStore {
   timerStartedAt?: Date
   timerPausedAt?: Date
   timerTotalSeconds: number
+  timerBarVisible: boolean
+  timerMode: 'timer' | 'countdown'
+  timerCountdownSeconds: number // Initial countdown value
 
   // ========================================
   // Data
@@ -70,7 +74,13 @@ export interface AppStore {
   toggleRightPanel: () => void
   toggleComments: () => void
   setEditorMode: (mode: 'agenda' | 'ai-summary') => void
+  setActiveRightPanelTab: (tab: 'översikt' | 'detaljer' | 'timer' | 'tidigare' | 'privata') => void
   loadSamtal: (id: string) => void
+
+  // ========================================
+  // Actions - Samtal
+  // ========================================
+  setDuration: (minutes: number) => void
 
   // ========================================
   // Actions - Timer
@@ -79,6 +89,11 @@ export interface AppStore {
   pauseTimer: () => void
   stopTimer: () => void
   resetTimer: () => void
+  hideTimerBar: () => void
+  showTimerBar: () => void
+  setTimerMode: (mode: 'timer' | 'countdown') => void
+  setCountdownSeconds: (seconds: number) => void
+  addMinuteToCountdown: () => void
 
   // ========================================
   // Actions - Tasks
@@ -127,6 +142,7 @@ export const useStore = create<AppStore>((set, get) => ({
   rightPanelCollapsed: false,
   commentsCollapsed: true,
   editorMode: 'agenda',
+  activeRightPanelTab: 'översikt',
 
   taskModalOpen: false,
   taskModalType: null,
@@ -138,6 +154,9 @@ export const useStore = create<AppStore>((set, get) => ({
   timerStartedAt: undefined,
   timerPausedAt: undefined,
   timerTotalSeconds: 0,
+  timerBarVisible: false,
+  timerMode: 'countdown',
+  timerCountdownSeconds: (mockSamtals[0].duration || 60) * 60, // Use samtal duration as default
 
   currentSamtal: mockSamtals[0],
   allTasks: [...mockTasks],
@@ -215,7 +234,9 @@ export const useStore = create<AppStore>((set, get) => ({
         timerTotalSeconds: 0,
         timerActive: false,
         timerStartedAt: undefined,
-        timerPausedAt: undefined
+        timerPausedAt: undefined,
+        // Set timer countdown to samtal duration (default 60 min if not set)
+        timerCountdownSeconds: (samtal.duration || 60) * 60,
       })
     }
   },
@@ -230,6 +251,21 @@ export const useStore = create<AppStore>((set, get) => ({
 
   setEditorMode: (mode) => set({ editorMode: mode }),
 
+  setActiveRightPanelTab: (tab) => set({ activeRightPanelTab: tab }),
+
+  // ========================================
+  // Samtal Actions
+  // ========================================
+  setDuration: (minutes) =>
+    set((state) => ({
+      currentSamtal: {
+        ...state.currentSamtal,
+        duration: minutes,
+      },
+      // Also update timer countdown to match duration when changed
+      timerCountdownSeconds: minutes * 60,
+    })),
+
   // ========================================
   // Timer Actions
   // ========================================
@@ -238,6 +274,7 @@ export const useStore = create<AppStore>((set, get) => ({
       timerActive: true,
       timerStartedAt: new Date(),
       timerPausedAt: undefined,
+      timerBarVisible: true,
     }),
 
   pauseTimer: () =>
@@ -283,6 +320,17 @@ export const useStore = create<AppStore>((set, get) => ({
       timerPausedAt: undefined,
       timerTotalSeconds: 0,
     }),
+
+  hideTimerBar: () => set({ timerBarVisible: false }),
+
+  showTimerBar: () => set({ timerBarVisible: true }),
+
+  setTimerMode: (mode) => set({ timerMode: mode }),
+
+  setCountdownSeconds: (seconds) => set({ timerCountdownSeconds: seconds }),
+
+  addMinuteToCountdown: () =>
+    set((state) => ({ timerCountdownSeconds: state.timerCountdownSeconds + 60 })),
 
   // ========================================
   // Task Actions

@@ -18,9 +18,9 @@ export default function AnteckningarTab() {
 
   return (
     <div className="space-y-4">
-      {/* Timer Bar - Only visible when Bokad (simulating active meeting) */}
+      {/* Timer Bar - Draggable with smart sticky, visible when Bokad */}
       {currentStatus === 'bokad' && (
-        <div className="flex justify-center pb-2">
+        <div className="flex justify-center pb-4">
           <TimerBar />
         </div>
       )}

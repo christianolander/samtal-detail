@@ -158,6 +158,75 @@ export const salaryReviewAgenda = `<h1>💰 Lönesamtal</h1>
 <p><em>Gör anteckningar här under samtalet...</em></p>
 `
 
+// Marcus Lindqvist completed notes (performed but not marked done)
+const marcusCompletedNotes = `
+<div class="space-y-8">
+  <div>
+    <h1 class="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+      <span class="text-3xl">💰</span> Lönerevision 2025
+    </h1>
+    <div class="space-y-6">
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>📊</span> Prestationsöversikt</h2>
+        <div class="pl-0 space-y-2 text-foreground/80">
+          <p><strong>Sammanfattning av året:</strong></p>
+          <p>Marcus har haft ett exceptionellt år som QA Engineer. Hans insatser med automatiserad testning har revolutionerat vårt kvalitetsarbete. Testtäckningen har ökat från 45% till 78%, och antalet produktionsbuggar har minskat med 60%.</p>
+          <p><strong>Nyckel-leveranser:</strong></p>
+          <ul>
+            <li>Implementerat Cypress för E2E-testning</li>
+            <li>Byggt CI/CD pipeline med automatiska tester</li>
+            <li>Mentorat för 2 juniora QA-kollegor</li>
+            <li>Dokumenterat alla testprocesser</li>
+          </ul>
+        </div>
+      </section>
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>💼</span> Marknadsanalys</h2>
+        <div class="pl-0 space-y-2 text-foreground/80">
+          <p><strong>Lönejämförelse:</strong></p>
+          <p>Marcus ligger idag på 48 000 kr/mån. Marknadsmässigt för en Senior QA Engineer med hans erfarenhet (5 år) och specialkompetens inom test-automation ligger snittet på 52-56 000 kr/mån i Stockholmsområdet.</p>
+          <p><strong>Intern jämförelse:</strong></p>
+          <p>Hans bidrag till teamet och organisationen motiverar en justering mot övre kvartilen.</p>
+        </div>
+      </section>
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>🎯</span> Framtida förväntningar</h2>
+        <div class="pl-0 space-y-2 text-foreground/80">
+          <p><strong>Mål för 2026:</strong></p>
+          <p>Vi diskuterade Marcus nästa steg i karriären. Han är intresserad av att ta ett mer ledande ansvar för QA-strategin.</p>
+          <p><span data-task-chip="" data-task-id="goal-marcus-2025-1" data-title="Leda QA-strategiarbetet" data-type="goal"></span></p>
+          <p><span data-task-chip="" data-task-id="goal-marcus-2025-2" data-title="Uppnå 85% testtäckning" data-type="goal"></span></p>
+          <p><strong>Uppgifter:</strong></p>
+          <p><span data-task-chip="" data-task-id="task-marcus-2025-1" data-title="Skapa QA roadmap för Q1" data-type="task"></span></p>
+        </div>
+      </section>
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>💰</span> Löneöversyn</h2>
+        <div class="pl-0 space-y-2 text-foreground/80">
+          <p><strong>Beslut:</strong></p>
+          <p>Efter diskussion har vi kommit överens om en lönejustering på <strong>6.5%</strong>, vilket tar Marcus från 48 000 kr till 51 120 kr/mån. Detta träder i kraft från 1 januari 2026.</p>
+          <p><strong>Bonus:</strong></p>
+          <p>Marcus kvalificerar sig även för en engångsbonus på 15 000 kr för sitt extraordinära arbete med test-automationen.</p>
+          <p><strong>Marcus reaktion:</strong></p>
+          <p>Marcus är nöjd med utfallet och känner sig uppskattad. Han ser fram emot att ta mer ansvar framöver.</p>
+        </div>
+      </section>
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>📝</span> Chefens anteckningar</h2>
+        <div class="pl-0 space-y-2 text-foreground/80 bg-muted/30 p-4 rounded-lg border-l-4 border-primary">
+          <p><em>Privata reflektioner (ej delade med Marcus):</em></p>
+          <ul>
+            <li>Marcus är en nyckelperson - vi måste se till att han känner sig värdesatt</li>
+            <li>Överväg befordran till Senior QA Lead inom 6-12 månader</li>
+            <li>Risk att han blir attraktiv för konkurrenter - behålla med utvecklingsmöjligheter</li>
+            <li>Följ upp bonusfrågan - är det möjligt med kvartalsvis bonus för nyckeltal?</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>`
+
 // New Medarbetarsamtal Template
 const medarbetarsamtalTemplate = `
 <div class="space-y-8">
@@ -328,6 +397,7 @@ export const mockSamtals: Samtal[] = [
       }
     ],
     metadata: { location: 'Rum 305' },
+    duration: 60,
   },
 
   // 2. Lisa Svensson - Lönerevision (Ej bokad)
@@ -350,9 +420,10 @@ export const mockSamtals: Samtal[] = [
       }
     ],
     metadata: { surveySource: 'Pulse Q4 2024' },
+    duration: 60,
   },
 
-  // 3. Marcus Lindqvist - Lönerevision (Bokad)
+  // 3. Marcus Lindqvist - Lönerevision (Bokad but performed - needs marking as done)
   {
     id: 'samtal-marcus-2025',
     name: 'Lönerevision: Marcus Lindqvist',
@@ -361,18 +432,25 @@ export const mockSamtals: Samtal[] = [
     participants: [erikAxelsson, marcusLindqvist],
     conversationRound: 'Lön 2025',
     deadlineDate: new Date('2025-12-31'),
-    bookedDate: new Date(), // Set to today for timer verification
-    lastUpdated: new Date('2025-11-22'),
-    notes: salaryReviewAgenda,
+    bookedDate: new Date('2025-11-25T10:00:00'), // Meeting was on 25 Nov - needs marking as done
+    lastUpdated: new Date('2025-11-25'),
+    notes: marcusCompletedNotes, // Rich notes with manager's private reflections
     comments: [
       {
         id: 'c-marcus-1',
         author: marcusLindqvist,
         text: 'Jag har en fråga om bonusmodellen, tar vi det på mötet?',
         timestamp: new Date('2025-11-22T10:00:00')
+      },
+      {
+        id: 'c-marcus-2',
+        author: marcusLindqvist,
+        text: 'Tack för ett bra samtal Erik! Jag uppskattar verkligen att ni värdesätter mitt arbete. Ser fram emot att ta mer ansvar för QA-strategin framöver.',
+        timestamp: new Date('2025-11-25T11:30:00')
       }
     ],
-    metadata: { location: 'Teams' },
+    metadata: { location: 'Rum 201' },
+    duration: 45,
   },
 
   // 4. Anna Andersson - Medarbetarsamtal (Bokad/Ongoing)
@@ -396,6 +474,7 @@ export const mockSamtals: Samtal[] = [
       }
     ],
     metadata: { location: 'Rum 302' },
+    duration: 60,
   },
 
   // 5. David Persson - Lönerevision (Klar)
@@ -431,6 +510,7 @@ export const mockSamtals: Samtal[] = [
       }
     ],
     metadata: {},
+    duration: 45,
   },
 ]
 
@@ -661,6 +741,45 @@ export const mockTasks: Task[] = [
     assignee: marcusLindqvist as unknown as User,
     createdAt: new Date('2024-01-20'),
     origin: { conversationId: 'hist-marcus-2024', conversationTitle: 'Lönerevision 2024' },
+  },
+
+  // ========================================
+  // MARCUS LINDQVIST - Tasks from current Lönerevision 2025 (performed 25 Nov)
+  // ========================================
+  {
+    id: 'goal-marcus-2025-1',
+    type: 'goal',
+    title: 'Leda QA-strategiarbetet',
+    description: 'Ta ledande ansvar för QA-strategi och processutveckling inom teamet',
+    status: 'pending',
+    goalStatus: 'ej_paborjad',
+    due: new Date('2026-06-30'),
+    assignee: marcusLindqvist as unknown as User,
+    createdAt: new Date('2025-11-25'),
+    origin: { conversationId: 'samtal-marcus-2025', conversationTitle: 'Lönerevision 2025' },
+  },
+  {
+    id: 'goal-marcus-2025-2',
+    type: 'goal',
+    title: 'Uppnå 85% testtäckning',
+    description: 'Höja testtäckningen från nuvarande 78% till 85% genom utökad automatisering',
+    status: 'pending',
+    goalStatus: 'ej_paborjad',
+    due: new Date('2026-03-31'),
+    assignee: marcusLindqvist as unknown as User,
+    createdAt: new Date('2025-11-25'),
+    origin: { conversationId: 'samtal-marcus-2025', conversationTitle: 'Lönerevision 2025' },
+  },
+  {
+    id: 'task-marcus-2025-1',
+    type: 'task',
+    title: 'Skapa QA roadmap för Q1',
+    description: 'Ta fram en konkret plan för QA-arbetet under Q1 2026',
+    status: 'pending',
+    due: new Date('2025-12-15'),
+    assignee: marcusLindqvist as unknown as User,
+    createdAt: new Date('2025-11-25'),
+    origin: { conversationId: 'samtal-marcus-2025', conversationTitle: 'Lönerevision 2025' },
   },
 ]
 
