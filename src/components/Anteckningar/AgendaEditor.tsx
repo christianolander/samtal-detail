@@ -18,6 +18,8 @@ import { TableRow } from "@tiptap/extension-table-row"
 import { TableCell } from "@tiptap/extension-table-cell"
 import { TableHeader } from "@tiptap/extension-table-header"
 import { Placeholder } from "@tiptap/extension-placeholder"
+import { Color } from "@tiptap/extension-color"
+import { TextStyle } from "@tiptap/extension-text-style"
 
 // --- UI Primitives ---
 import { Button } from "@/components/tiptap-ui-primitive/button"
@@ -59,6 +61,11 @@ import {
 } from "@/components/tiptap-ui-primitive/dropdown-menu"
 import { Card, CardBody } from "@/components/tiptap-ui-primitive/card"
 import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/tiptap-ui-primitive/popover"
+import {
   LinkPopover,
   LinkContent,
   LinkButton,
@@ -71,7 +78,7 @@ import { ArrowLeftIcon } from "@/components/tiptap-icons/arrow-left-icon"
 import { HighlighterIcon } from "@/components/tiptap-icons/highlighter-icon"
 import { LinkIcon } from "@/components/tiptap-icons/link-icon"
 import { ChevronDownIcon } from "@/components/tiptap-icons/chevron-down-icon"
-import { Target, CheckSquare, Table as TableIcon, Plus, Minus, Trash2 } from "lucide-react"
+import { Target, CheckSquare, Table as TableIcon, Plus, Minus, Trash2, Type, Ban } from "lucide-react"
 
 // --- Hooks ---
 import { useIsBreakpoint } from "@/hooks/use-is-breakpoint"
@@ -206,6 +213,130 @@ function TableDropdown({ portal = false }: { portal?: boolean }) {
   )
 }
 
+// Text color popover - matching the highlight popover style
+const TEXT_COLORS = [
+  { label: "Default", value: "var(--tt-text-color)", border: "var(--tt-bg-color-contrast)" },
+  { label: "Grå", value: "var(--tt-color-text-gray)", border: "var(--tt-color-text-gray-contrast)" },
+  { label: "Brun", value: "var(--tt-color-text-brown)", border: "var(--tt-color-text-brown-contrast)" },
+  { label: "Orange", value: "var(--tt-color-text-orange)", border: "var(--tt-color-text-orange-contrast)" },
+  { label: "Gul", value: "var(--tt-color-text-yellow)", border: "var(--tt-color-text-yellow-contrast)" },
+  { label: "Grön", value: "var(--tt-color-text-green)", border: "var(--tt-color-text-green-contrast)" },
+  { label: "Blå", value: "var(--tt-color-text-blue)", border: "var(--tt-color-text-blue-contrast)" },
+  { label: "Lila", value: "var(--tt-color-text-purple)", border: "var(--tt-color-text-purple-contrast)" },
+  { label: "Rosa", value: "var(--tt-color-text-pink)", border: "var(--tt-color-text-pink-contrast)" },
+  { label: "Röd", value: "var(--tt-color-text-red)", border: "var(--tt-color-text-red-contrast)" },
+]
+
+function TextColorButton({
+  color,
+  isActive,
+  onClick
+}: {
+  color: typeof TEXT_COLORS[number]
+  isActive: boolean
+  onClick: () => void
+}) {
+  return (
+    <Button
+      type="button"
+      data-style="ghost"
+      onClick={onClick}
+      aria-label={color.label}
+      tooltip={color.label}
+      data-active-state={isActive ? "on" : "off"}
+      style={{ "--highlight-color": color.value, "--highlight-border": color.border } as React.CSSProperties}
+    >
+      <span
+        className="tiptap-button-highlight"
+        style={{ "--highlight-color": color.value } as React.CSSProperties}
+      />
+    </Button>
+  )
+}
+
+function TextColorPopover() {
+  const { editor } = useTiptapEditor()
+  const [isOpen, setIsOpen] = useState(false)
+
+  if (!editor) return null
+
+  const currentColor = editor.getAttributes("textStyle").color || null
+
+  const applyColor = (color: string) => {
+    if (color === "var(--tt-text-color)") {
+      editor.chain().focus().unsetColor().run()
+    } else {
+      editor.chain().focus().setColor(color).run()
+    }
+    setIsOpen(false)
+  }
+
+  const removeColor = () => {
+    editor.chain().focus().unsetColor().run()
+    setIsOpen(false)
+  }
+
+  return (
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          type="button"
+          data-style="ghost"
+          data-appearance="default"
+          aria-label="Text color"
+          tooltip="Textfärg"
+        >
+          <div className="relative">
+            <Type className="w-4 h-4" />
+            {currentColor && (
+              <div
+                className="absolute -bottom-0.5 left-0.5 right-0.5 h-0.5 rounded-full"
+                style={{ backgroundColor: currentColor }}
+              />
+            )}
+          </div>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent aria-label="Text colors">
+        <Card>
+          <CardBody>
+            <div className="flex items-center gap-0.5">
+              {TEXT_COLORS.slice(0, 5).map((color) => (
+                <TextColorButton
+                  key={color.label}
+                  color={color}
+                  isActive={currentColor === color.value}
+                  onClick={() => applyColor(color.value)}
+                />
+              ))}
+            </div>
+            <div className="flex items-center gap-0.5 mt-0.5">
+              {TEXT_COLORS.slice(5).map((color) => (
+                <TextColorButton
+                  key={color.label}
+                  color={color}
+                  isActive={currentColor === color.value}
+                  onClick={() => applyColor(color.value)}
+                />
+              ))}
+              <div className="w-px h-5 bg-border mx-1" />
+              <Button
+                type="button"
+                data-style="ghost"
+                onClick={removeColor}
+                aria-label="Ta bort färg"
+                tooltip="Ta bort färg"
+              >
+                <Ban className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 const MainToolbarContent = ({
   onHighlighterClick,
   onLinkClick,
@@ -246,6 +377,7 @@ const MainToolbarContent = ({
         <MarkButton type="italic" />
         <MarkButton type="strike" />
         <MarkButton type="code" />
+        <TextColorPopover />
         {!isMobile ? (
           <ColorHighlightPopover />
         ) : (
@@ -373,6 +505,8 @@ export default function AgendaEditor({ initialContent, readOnly = false }: Agend
       TaskList,
       TaskItem.configure({ nested: true }),
       Highlight.configure({ multicolor: true }),
+      TextStyle,
+      Color,
       Image,
       Typography,
       Superscript,

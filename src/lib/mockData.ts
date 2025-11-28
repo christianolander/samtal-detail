@@ -1220,6 +1220,11 @@ export const mockPrivateNotes: PrivateNote[] = [
   {
     id: 'note-1',
     content: 'Kom ihåg att fråga om certifieringen.',
-    createdAt: new Date('2025-11-20'),
+    timestamp: new Date('2025-11-20'),
+    author: {
+      id: '1',
+      name: 'Erik Axelsson',
+      role: 'manager',
+    },
   },
 ]

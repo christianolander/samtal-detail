@@ -6,8 +6,9 @@
  */
 
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useStore } from '@/store/useStore'
-import { Clock, ChevronRight, X } from 'lucide-react'
+import { Clock, ChevronRight, X, Lock } from 'lucide-react'
 import type { PrivateNote } from '@/types'
 
 export default function PrivateNotes() {
@@ -43,7 +44,7 @@ export default function PrivateNotes() {
             onClick={() => setShowModal(true)}
             className="w-full py-2 px-3 text-sm font-medium text-primary border border-dashed border-primary/30 rounded-lg hover:bg-primary/5 transition-colors"
           >
-            + Ny anteckning
+            + Ny privat anteckning
           </button>
         </div>
 
@@ -58,24 +59,17 @@ export default function PrivateNotes() {
                   key={note.id}
                   className="border border-border rounded-lg overflow-hidden bg-card hover:border-primary/20 transition-colors"
                 >
-                  {/* Note Header - Always visible */}
+                  {/* Note Header - Always visible (content hidden for privacy) */}
                   <button
                     onClick={() =>
                       setExpandedNoteId(isExpanded ? null : note.id)
                     }
                     className="w-full flex items-center justify-between p-3 hover:bg-accent/50 transition-colors"
                   >
-                    {/* Date and preview */}
-                    <div className="flex-1 text-left min-w-0">
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                        <Clock className="w-3 h-3" />
-                        <span>{formatTimestamp(note.timestamp)}</span>
-                      </div>
-                      {!isExpanded && (
-                        <div className="text-sm text-foreground line-clamp-1">
-                          {note.content}
-                        </div>
-                      )}
+                    {/* Date only - no preview for privacy when screen sharing */}
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Clock className="w-3 h-3" />
+                      <span>{formatTimestamp(note.timestamp)}</span>
                     </div>
 
                     {/* Expand chevron */}
@@ -105,9 +99,9 @@ export default function PrivateNotes() {
         )}
       </div>
 
-      {/* Modal for creating new note */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      {/* Modal for creating new note - using portal to escape stacking context */}
+      {showModal && createPortal(
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
           <div className="bg-card border border-border rounded-lg shadow-xl w-full max-w-md mx-4">
             {/* Modal header */}
             <div className="flex items-center justify-between p-4 border-b border-border">
@@ -126,7 +120,15 @@ export default function PrivateNotes() {
             </div>
 
             {/* Modal content */}
-            <div className="p-4">
+            <div className="p-4 space-y-3">
+              {/* Privacy info */}
+              <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                <Lock className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-muted-foreground">
+                  Privata anteckningar är endast synliga för dig och delas aldrig med medarbetaren eller andra.
+                </p>
+              </div>
+
               <textarea
                 value={newNoteContent}
                 onChange={(e) => setNewNoteContent(e.target.value)}
@@ -156,7 +158,8 @@ export default function PrivateNotes() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )
