@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useStore } from './store/useStore'
 import {
   MainNavigation,
@@ -38,11 +38,69 @@ import CommentsSection from './components/Comments/CommentsSection'
 import TaskModal from './components/modals/TaskModal'
 import { mockConversationList } from './lib/mockData'
 
+// Helper to get conversation ID from URL
+function getConversationIdFromUrl(): string | null {
+  const params = new URLSearchParams(window.location.search)
+  return params.get('id')
+}
+
+// Helper to update URL with conversation ID
+function updateUrlWithConversationId(id: string | null) {
+  const url = new URL(window.location.href)
+  if (id) {
+    url.searchParams.set('id', id)
+  } else {
+    url.searchParams.delete('id')
+  }
+  window.history.pushState({}, '', url.toString())
+}
+
 function App() {
   const { activeTab, rightPanelCollapsed, loadSamtal } = useStore()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
-  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null)
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(() => {
+    // Initialize from URL on first render
+    return getConversationIdFromUrl()
+  })
+
+  // Load samtal from URL on initial mount
+  useEffect(() => {
+    const idFromUrl = getConversationIdFromUrl()
+    if (idFromUrl) {
+      // Verify the ID exists in mock data
+      const exists = mockConversationList.some(c => c.id === idFromUrl)
+      if (exists) {
+        loadSamtal(idFromUrl)
+        setSelectedConversationId(idFromUrl)
+      } else {
+        // Invalid ID, clear from URL
+        updateUrlWithConversationId(null)
+        setSelectedConversationId(null)
+      }
+    }
+  }, [])
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const idFromUrl = getConversationIdFromUrl()
+      if (idFromUrl) {
+        const exists = mockConversationList.some(c => c.id === idFromUrl)
+        if (exists) {
+          loadSamtal(idFromUrl)
+          setSelectedConversationId(idFromUrl)
+        } else {
+          setSelectedConversationId(null)
+        }
+      } else {
+        setSelectedConversationId(null)
+      }
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [loadSamtal])
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -67,6 +125,13 @@ function App() {
   const handleSelectConversation = (id: string) => {
     loadSamtal(id)
     setSelectedConversationId(id)
+    updateUrlWithConversationId(id)
+  }
+
+  // Handle going back to list
+  const handleBackToList = () => {
+    setSelectedConversationId(null)
+    updateUrlWithConversationId(null)
   }
 
   // Get selected conversation details
@@ -202,7 +267,7 @@ function App() {
               breadcrumbs={
                 <span className="flex items-center gap-2">
                   <button
-                    onClick={() => setSelectedConversationId(null)}
+                    onClick={handleBackToList}
                     className="text-foreground hover:text-primary transition-colors"
                   >
                     Samtal
@@ -212,7 +277,7 @@ function App() {
                 </span>
               }
             >
-              <SamtalHeader onBack={() => setSelectedConversationId(null)} />
+              <SamtalHeader onBack={handleBackToList} />
             </PageHeader>
 
             <PageFilters>
