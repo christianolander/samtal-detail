@@ -5,6 +5,8 @@
  * Features: Verktyg, Detaljer, Tidigare samtal, Privata anteckningar
  */
 
+import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useStore } from '../../store/useStore'
 import {
   LayoutGrid,
@@ -12,6 +14,7 @@ import {
   History,
   Lock,
   Calendar,
+  CalendarCheck,
   Users,
   Target,
   PanelRightOpen,
@@ -29,6 +32,7 @@ import StatusDetaljer from './StatusDetaljer'
 import RelateradeSamtal from './RelateradeSamtal'
 import PrivateNotes from './PrivateNotes'
 import TimerTab from './TimerTab'
+import { BookingModal } from './BookingSection'
 
 type TabId = 'översikt' | 'detaljer' | 'tidigare' | 'privata' | 'timer'
 
@@ -49,9 +53,11 @@ export default function RightPanel() {
     activeRightPanelTab,
     setActiveRightPanelTab,
     timerActive,
+    setBooking,
   } = useStore()
   const activeTabId = activeRightPanelTab
   const setActiveTabId = setActiveRightPanelTab
+  const [showBookingModal, setShowBookingModal] = useState(false)
 
   const tabs: Tab[] = [
     { id: 'översikt', label: 'Översikt', icon: LayoutGrid },
@@ -104,24 +110,29 @@ export default function RightPanel() {
           <>
             {/* Prominent main card for unbooked */}
             <div className="bg-primary/5 border border-primary/30 rounded-lg p-6">
-              <div className="flex flex-col items-center">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+              <div className="flex flex-col">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Calendar className="w-6 h-6 text-primary" />
                 </div>
-                <div className="w-full">
-                  <h4 className="text-sm font-semibold text-foreground mb-1">
-                    Dags att boka in tid och plats för ditt samtal!
-                  </h4>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    Välj tid, plats och skicka inbjudan till deltagarna.
-                  </p>
-                  <button
-                    onClick={() => console.log('Boka samtal')}
-                    className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
-                  >
-                    Boka samtal
-                  </button>
-                </div>
+                <h4 className="text-sm font-semibold text-foreground mb-2">
+                  Dags att boka ditt samtal!
+                </h4>
+                <p className="text-sm text-muted-foreground mb-5">
+                  Samtalet ska genomföras senast{' '}
+                  <span className="font-medium text-foreground">
+                    {currentSamtal.deadlineDate.toLocaleDateString('sv-SE', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </span>
+                </p>
+                <button
+                  onClick={() => setShowBookingModal(true)}
+                  className="w-full px-4 py-2.5 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
+                >
+                  Boka samtal
+                </button>
               </div>
             </div>
 
@@ -156,20 +167,45 @@ export default function RightPanel() {
         {/* Status: Booked (bokad) - Before */}
         {status === 'bokad' && timing === 'before' && bookedDate && (
           <>
-            {/* Less prominent main card with booking info */}
-            <div className="bg-muted/50 border border-border rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-background flex items-center justify-center">
-                  <CalendarClock className="w-5 h-5 text-foreground" />
+            {/* Friendly booking info card */}
+            <div
+              className="bg-muted/30 border border-border rounded-lg p-6 group relative cursor-pointer hover:border-muted-foreground/30 transition-colors"
+              onClick={() => setShowBookingModal(true)}
+            >
+              {/* Edit hint on hover */}
+              <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-xs text-muted-foreground font-medium">Redigera</span>
+              </div>
+
+              <div className="flex flex-col">
+                <div className="w-12 h-12 rounded-lg bg-background border border-border flex items-center justify-center mb-4">
+                  <CalendarCheck className="w-6 h-6 text-foreground" />
                 </div>
-                <div className="flex-1">
-                  <h4 className="text-sm font-medium text-foreground mb-1">
-                    {formatDate(bookedDate)} kl. {formatTime(bookedDate)}
-                  </h4>
-                  <p className="text-xs text-muted-foreground">
-                    {currentSamtal.metadata.location || 'Plats ej angiven'}
+                <h4 className="text-sm font-semibold text-foreground mb-2">
+                  {(() => {
+                    const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+                    const eventDate = new Date(bookedDate.getFullYear(), bookedDate.getMonth(), bookedDate.getDate())
+                    const diffTime = eventDate.getTime() - nowDate.getTime()
+                    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24))
+
+                    if (diffDays === 0) return 'Samtalet är idag'
+                    if (diffDays === 1) return 'Samtalet är imorgon'
+                    if (diffDays > 1) return `Samtalet är om ${diffDays} dagar`
+                    return 'Samtalet är bokat'
+                  })()}
+                </h4>
+                <p className="text-sm text-muted-foreground mb-1">
+                  {bookedDate.toLocaleDateString('sv-SE', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                  }).replace(/^\w/, c => c.toUpperCase())} kl. {formatTime(bookedDate)}
+                </p>
+                {currentSamtal.metadata.location && (
+                  <p className="text-sm text-muted-foreground">
+                    {currentSamtal.metadata.location}
                   </p>
-                </div>
+                )}
               </div>
             </div>
 
@@ -193,7 +229,7 @@ export default function RightPanel() {
                   icon: History,
                   label: 'Se tidigare samtal',
                   subtext: 'Förbered dig genom att läsa tidigare möten.',
-                  variant: 'gray',
+                  variant: 'blue',
                   onClick: () => setActiveTabId('tidigare'),
                 },
                 {
@@ -239,7 +275,7 @@ export default function RightPanel() {
                   icon: History,
                   label: 'Visa tidigare samtal',
                   subtext: 'Referera till tidigare diskussioner.',
-                  variant: 'gray',
+                  variant: 'blue',
                   onClick: () => setActiveTabId('tidigare'),
                 },
               ]}
@@ -260,7 +296,7 @@ export default function RightPanel() {
                   <h4 className="text-sm font-semibold text-foreground mb-1">
                     Markera som klar
                   </h4>
-                  <p className="text-xs text-muted-foreground mb-3">
+                  <p className="text-sm text-muted-foreground mb-3">
                     Är samtalet genomfört och dokumenterat? Markera den då som klar.
                   </p>
                   <button
@@ -300,7 +336,7 @@ export default function RightPanel() {
                   icon: History,
                   label: 'Visa tidigare samtal',
                   subtext: 'Referera till tidigare diskussioner.',
-                  variant: 'gray',
+                  variant: 'blue',
                   onClick: () => setActiveTabId('tidigare'),
                 },
               ]}
@@ -318,20 +354,13 @@ export default function RightPanel() {
                   Samtalet är klart
                 </span>
               </div>
-              <p className="text-xs text-foreground">
+              <p className="text-sm text-foreground">
                 Sammanfattning har skickats ut till alla deltagare.
               </p>
             </div>
 
             <ToolSection
               buttons={[
-                {
-                  icon: Sparkles,
-                  label: 'Visa sammanfattning',
-                  subtext: 'Läs AI-genererad sammanfattning.',
-                  variant: 'pink',
-                  onClick: () => setActiveTab('anteckningar'),
-                },
                 {
                   icon: ListChecks,
                   label: 'Se mål och uppgifter',
@@ -369,24 +398,43 @@ export default function RightPanel() {
     }
   }
 
-  // Collapsed state - just show maximize button
+  // Collapsed state - show vertical rail of tab icons (Fellow-style)
   if (rightPanelCollapsed) {
+    const handleTabClick = (tabId: TabId) => {
+      setActiveTabId(tabId)
+      toggleRightPanel() // Expand when clicking a tab
+    }
+
     return (
-      <div className="flex justify-end">
-        <button
-          onClick={toggleRightPanel}
-          className="p-1.5 hover:bg-muted rounded-md transition-colors"
-          title="Visa panel"
-        >
-          <PanelRightOpen className="w-3.5 h-3.5 text-muted-foreground" />
-        </button>
+      <div className="flex flex-col items-center">
+        {tabs.map((tab) => {
+          const Icon = tab.icon
+          return (
+            <button
+              key={tab.id}
+              onClick={() => handleTabClick(tab.id)}
+              className="relative p-3 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors group"
+              title={tab.label}
+            >
+              <Icon className="w-5 h-5" />
+              {/* Notification dot for private notes */}
+              {tab.count !== undefined && tab.count > 0 && (
+                <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full" />
+              )}
+              {/* Tooltip on hover */}
+              <span className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-foreground text-background text-xs font-medium rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
+                {tab.label}
+              </span>
+            </button>
+          )
+        })}
       </div>
     )
   }
 
   // Expanded state - tabs above panel with minimize button to right
   return (
-    <div className="flex flex-col h-full max-h-full overflow-hidden">
+    <div className="flex flex-col">
       {/* Tab navigation row - above panel */}
       <div className="flex items-center justify-between mb-2 flex-shrink-0">
         <div className="flex gap-1 bg-muted rounded-lg p-1">
@@ -426,9 +474,23 @@ export default function RightPanel() {
       </div>
 
       {/* Panel content */}
-      <div className="bg-card border border-border rounded-lg p-4 overflow-y-auto flex-1">
+      <div className="bg-card border border-border rounded-lg p-4">
         {renderTabContent()}
       </div>
+
+      {/* Booking Modal */}
+      {showBookingModal &&
+        createPortal(
+          <BookingModal
+            isOpen={showBookingModal}
+            onClose={() => setShowBookingModal(false)}
+            onSave={(date, duration, location, meetingLink) => {
+              setBooking(date, duration, location, meetingLink)
+              setShowBookingModal(false)
+            }}
+          />,
+          document.body
+        )}
     </div>
   )
 }
@@ -534,7 +596,7 @@ function OverviewCard({
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all text-left group relative ${getVariantStyles()}`}
+      className={`w-full flex items-start gap-3 p-3 rounded-lg transition-all text-left group relative ${getVariantStyles()}`}
     >
       <div
         className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${getIconStyles()}`}
@@ -543,7 +605,7 @@ function OverviewCard({
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <div className="text-sm font-medium text-foreground">{label}</div>
+          <div className="text-sm font-semibold text-foreground">{label}</div>
           {badge && (
             <span className="text-[10px] bg-destructive/10 text-destructive px-1.5 py-0.5 rounded-full font-medium">
               {badge}
@@ -551,7 +613,7 @@ function OverviewCard({
           )}
         </div>
         {subtext && (
-          <div className="text-xs text-muted-foreground mt-0.5 group-hover:text-foreground/80 transition-colors">
+          <div className="text-sm text-muted-foreground mt-0.5 group-hover:text-foreground/80 transition-colors">
             {subtext}
           </div>
         )}

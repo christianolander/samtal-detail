@@ -60,6 +60,9 @@ export interface User {
 // Goal status types for tracking progress
 export type GoalStatus = 'ej_paborjad' | 'ligger_efter' | 'gar_enligt_plan' | 'uppnatt' | null
 
+// Follow-up frequency for goals
+export type FollowUpFrequency = 'varje_vecka' | 'varannan_vecka' | 'varje_manad' | 'varje_kvartal' | null
+
 export interface Task {
   id: string
   type: 'task' | 'goal'
@@ -70,6 +73,7 @@ export interface Task {
   assignee?: User
   createdAt: Date
   goalStatus?: GoalStatus // Status tracking for goals only
+  followUpFrequency?: FollowUpFrequency // Follow-up frequency for goals
   lastStatusUpdate?: Date
   origin?: {
     conversationId: string

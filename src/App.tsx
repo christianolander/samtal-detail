@@ -261,7 +261,7 @@ function App() {
             </PageContent>
           </div>
         ) : (
-          <div key="detail-view" className="view-enter flex-1 flex flex-col min-h-0">
+          <div key="detail-view" className="view-enter flex-1 flex flex-col min-h-0 overflow-hidden">
             {/* Detail View with Breadcrumbs */}
             <PageHeader
               breadcrumbs={
@@ -284,31 +284,35 @@ function App() {
               <TabNavigation />
             </PageFilters>
 
-            <PageContent>
+            <PageContent className="!overflow-hidden !p-0 !h-full">
               <div
-                className={`${
+                className={`h-full ${
                   activeTab === 'anteckningar'
                     ? rightPanelCollapsed
                       ? 'grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6'
                       : 'grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6'
                     : ''
-                }`}
+                } px-6 py-6`}
               >
-                {/* Center Column - Tab Content */}
-                <div className="space-y-6 transition-all duration-300">
-                  {activeTab === 'anteckningar' ? (
-                    <AnteckningarTab />
-                  ) : (
-                    <UppgifterMalTab />
-                  )}
+                {/* Center Column - Tab Content with independent scroll */}
+                <div className="overflow-y-auto min-h-0 h-full">
+                  <div className="space-y-6 transition-all duration-300 pb-6 pr-2">
+                    {/* Keep AnteckningarTab always mounted so editor stays available for task chip insertion */}
+                    <div className={activeTab === 'anteckningar' ? '' : 'hidden'}>
+                      <AnteckningarTab />
+                    </div>
+                    <div className={activeTab === 'uppgifter-mål' ? '' : 'hidden'}>
+                      <UppgifterMalTab />
+                    </div>
 
-                  {/* Comments Section - Only show on Anteckningar tab */}
-                  {activeTab === 'anteckningar' && <CommentsSection />}
+                    {/* Comments Section - Only show on Anteckningar tab */}
+                    {activeTab === 'anteckningar' && <CommentsSection />}
+                  </div>
                 </div>
 
-                {/* Right Panel - Always show on Anteckningar tab, sticky at top */}
+                {/* Right Panel - Independent scroll, only as tall as content */}
                 {activeTab === 'anteckningar' && (
-                  <div className="lg:sticky lg:top-6 lg:self-start">
+                  <div className="overflow-y-auto min-h-0 max-h-full">
                     <RightPanel />
                   </div>
                 )}

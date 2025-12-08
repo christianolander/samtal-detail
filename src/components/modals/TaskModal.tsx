@@ -13,8 +13,8 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { useStore } from '@/store/useStore'
-import { X, Target, CheckSquare, User, Calendar } from 'lucide-react'
-import type { Task, GoalStatus } from '@/types'
+import { X, Target, CheckSquare, User, Calendar, Info } from 'lucide-react'
+import type { Task, GoalStatus, FollowUpFrequency } from '@/types'
 
 export default function TaskModal() {
   const {
@@ -43,6 +43,7 @@ export default function TaskModal() {
   const [dueDate, setDueDate] = useState('')
   const [assigneeId, setAssigneeId] = useState<string>('') // Will be set from participant
   const [goalStatus, setGoalStatus] = useState<GoalStatus>(null)
+  const [followUpFrequency, setFollowUpFrequency] = useState<FollowUpFrequency>(null)
 
   const isEditing = !!taskModalTask?.id
 
@@ -55,6 +56,7 @@ export default function TaskModal() {
       setDueDate(taskModalTask.due ? new Date(taskModalTask.due).toISOString().split('T')[0] : '')
       setAssigneeId(taskModalTask.assignee?.id || currentParticipant?.id || '')
       setGoalStatus(taskModalTask.goalStatus ?? null)
+      setFollowUpFrequency(taskModalTask.followUpFrequency ?? null)
     } else {
       // Reset form - default assignee to current participant
       setTitle('')
@@ -63,6 +65,7 @@ export default function TaskModal() {
       setDueDate('')
       setAssigneeId(currentParticipant?.id || '')
       setGoalStatus(null)
+      setFollowUpFrequency(null)
     }
   }, [taskModalTask, taskModalOpen, currentParticipant])
 
@@ -89,6 +92,7 @@ export default function TaskModal() {
         role: isManager ? 'manager' : 'employee',
       } as Task['assignee'] : undefined,
       goalStatus: taskModalType === 'goal' ? goalStatus : undefined,
+      followUpFrequency: taskModalType === 'goal' ? followUpFrequency : undefined,
     }
 
     if (isEditing && taskModalTask) {
@@ -172,59 +176,48 @@ export default function TaskModal() {
             />
           </div>
 
-          {/* Status & Due Date Row */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Status */}
+          {/* Due Date - Different label for goals vs tasks */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              {taskModalType === 'goal'
+                ? 'När ska målet vara uppfyllt? (valfritt)'
+                : 'Deadline (valfritt)'}
+            </label>
+            <input
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+          </div>
+
+          {/* Follow-up Frequency - Goals only */}
+          {taskModalType === 'goal' && (
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Status
+              <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-1.5">
+                Uppföljningsfrekvens
+                <span className="relative group">
+                  <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                  <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs bg-foreground text-background rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                    Hur ofta ska målet följas upp?
+                  </span>
+                </span>
               </label>
               <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value as Task['status'])}
+                value={followUpFrequency ?? ''}
+                onChange={(e) => setFollowUpFrequency(e.target.value === '' ? null : e.target.value as FollowUpFrequency)}
                 className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               >
-                <option value="pending">Ej påbörjad</option>
-                <option value="in_progress">Pågår</option>
-                <option value="completed">Klar</option>
+                <option value="">Välj frekvens...</option>
+                <option value="varje_vecka">Varje vecka</option>
+                <option value="varannan_vecka">Varannan vecka</option>
+                <option value="varje_manad">Varje månad</option>
+                <option value="varje_kvartal">Varje kvartal</option>
               </select>
             </div>
+          )}
 
-            {/* Due Date */}
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                Deadline
-              </label>
-              <input
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-          </div>
-
-          {/* Assignee */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-1">
-              <User className="w-4 h-4" />
-              Ansvarig
-            </label>
-            <select
-              value={assigneeId}
-              onChange={(e) => setAssigneeId(e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              {currentSamtal.participants.map((participant) => (
-                <option key={participant.id} value={participant.id}>
-                  {participant.name} ({participant.roleInSamtal === 'Ansvarig' ? 'Manager' : 'Medarbetare'})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Goal Status */}
+          {/* Goal Status - Goals only */}
           {taskModalType === 'goal' && (
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
@@ -241,11 +234,43 @@ export default function TaskModal() {
                 <option value="gar_enligt_plan">Går enligt plan</option>
                 <option value="uppnatt">Uppnått</option>
               </select>
-              <p className="text-xs text-muted-foreground mt-1">
-                Status för måluppföljning (valfritt)
-              </p>
             </div>
           )}
+
+          {/* Task Status - Tasks only (simple done/not done) */}
+          {taskModalType === 'task' && (
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Status
+              </label>
+              <select
+                value={status === 'completed' ? 'completed' : 'pending'}
+                onChange={(e) => setStatus(e.target.value as Task['status'])}
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="pending">Ej klar</option>
+                <option value="completed">Klar</option>
+              </select>
+            </div>
+          )}
+
+          {/* Ägare (Owner/Assignee) */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Ägare
+            </label>
+            <select
+              value={assigneeId}
+              onChange={(e) => setAssigneeId(e.target.value)}
+              className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              {currentSamtal.participants.map((participant) => (
+                <option key={participant.id} value={participant.id}>
+                  {participant.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">

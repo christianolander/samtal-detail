@@ -31,7 +31,7 @@ export default function RelateradeSamtal() {
     <div className="space-y-4 animate-in fade-in duration-300">
       <div>
         <h3 className="text-sm font-medium text-foreground mb-1">Tidigare samtal</h3>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Historik för {currentSamtal.participants.find(p => p.roleInSamtal === 'Medarbetare')?.name || 'medarbetaren'}
         </p>
       </div>
@@ -56,13 +56,13 @@ export default function RelateradeSamtal() {
                   <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
+                    <Calendar className="w-3.5 h-3.5" />
                     <span>{formatDate(meeting.date)}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
+                    <Clock className="w-3.5 h-3.5" />
                     <span>{meeting.duration} min</span>
                   </div>
                 </div>

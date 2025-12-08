@@ -1,12 +1,37 @@
+import { useState } from 'react'
 import { useStore } from '../../store/useStore'
-import TimerBar from './TimerBar'
 import AgendaEditor from './AgendaEditor'
 import AISummary from './AISummary'
 import MeetingContent from '../shared/MeetingContent'
 import TaskItem from '../UppgifterMal/TaskItem'
+import MarkAsKlarModal from '@/components/modals/MarkAsKlarModal'
 
 export default function AnteckningarTab() {
-  const { currentStatus, editorMode, currentSamtal, setEditorMode, tasks } = useStore()
+  const {
+    currentStatus,
+    editorMode,
+    currentSamtal,
+    setEditorMode,
+    hasUnsavedChanges,
+    isEditingNotes,
+    lastSaved,
+    saveNotes,
+    setIsEditingNotes,
+    timerActive,
+    timerTotalSeconds,
+    timerStartedAt,
+    timerMode,
+    timerCountdownSeconds,
+    startTimer,
+    pauseTimer,
+    resetTimer,
+    timerAlwaysVisible,
+    timerStyle,
+    hideTimerBar,
+    setTimerStyle,
+  } = useStore()
+
+  const [showMarkAsKlarModal, setShowMarkAsKlarModal] = useState(false)
 
   const handleSend = () => {
     console.log('Send notes')
@@ -16,15 +41,19 @@ export default function AnteckningarTab() {
     console.log('Download PDF')
   }
 
-  return (
-    <div className="space-y-4">
-      {/* Timer Bar - Draggable with smart sticky, visible when Bokad */}
-      {currentStatus === 'bokad' && (
-        <div className="flex justify-center pb-4">
-          <TimerBar />
-        </div>
-      )}
+  const handleSave = () => {
+    saveNotes()
+  }
 
+  const handleToggleEdit = () => {
+    setIsEditingNotes(!isEditingNotes)
+  }
+
+  // Determine if editor should be read-only
+  const isReadOnly = currentStatus === 'klar' && !isEditingNotes
+
+  return (
+    <div>
       {/* Main Card */}
       <div className="min-h-[600px]">
         <MeetingContent
@@ -32,12 +61,36 @@ export default function AnteckningarTab() {
           status={currentStatus}
           activeTab={editorMode === 'agenda' ? 'notes' : 'recap'}
           onTabChange={(tab) => setEditorMode(tab === 'notes' ? 'agenda' : 'ai-summary')}
-          notesContent={<AgendaEditor initialContent={currentSamtal.notes} />}
+          notesContent={<AgendaEditor initialContent={currentSamtal.notes} readOnly={isReadOnly} />}
           recapContent={<div className="p-6"><AISummary /></div>}
           onSend={handleSend}
           onDownload={handleDownloadPDF}
+          hasUnsavedChanges={hasUnsavedChanges}
+          onSave={handleSave}
+          isEditingNotes={isEditingNotes}
+          onToggleEdit={handleToggleEdit}
+          lastSaved={lastSaved}
+          onMarkAsKlar={() => setShowMarkAsKlarModal(true)}
+          timerActive={timerActive}
+          timerTotalSeconds={timerTotalSeconds}
+          timerStartedAt={timerStartedAt}
+          onStartTimer={startTimer}
+          onPauseTimer={pauseTimer}
+          onResetTimer={resetTimer}
+          timerAlwaysVisible={timerAlwaysVisible}
+          timerStyle={timerStyle}
+          timerMode={timerMode}
+          timerCountdownSeconds={timerCountdownSeconds}
+          onHideTimer={hideTimerBar}
+          onSetTimerStyle={setTimerStyle}
         />
       </div>
+
+      {/* Mark as Klar Modal */}
+      <MarkAsKlarModal
+        isOpen={showMarkAsKlarModal}
+        onClose={() => setShowMarkAsKlarModal(false)}
+      />
     </div>
   )
 }

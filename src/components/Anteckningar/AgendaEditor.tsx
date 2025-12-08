@@ -454,8 +454,9 @@ export default function AgendaEditor({ initialContent, readOnly = false }: Agend
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">("main")
   const toolbarRef = useRef<HTMLDivElement>(null)
 
-  const { editorContent, setEditorContent, rightPanelCollapsed } = useStore()
+  const { editorContent, setEditorContent, rightPanelCollapsed, setHasUnsavedChanges } = useStore()
   const openTaskModal = useStore((state) => state.openTaskModal)
+  const isInitialMount = useRef(true)
 
   // Expose store globally for slash menu
   useEffect(() => {
@@ -489,7 +490,7 @@ export default function AgendaEditor({ initialContent, readOnly = false }: Agend
         autocorrect: "off",
         autocapitalize: "off",
         "aria-label": "Anteckningar",
-        class: "simple-editor",
+        class: readOnly ? "simple-editor simple-editor-readonly" : "simple-editor",
       },
     },
     extensions: [
@@ -541,10 +542,27 @@ export default function AgendaEditor({ initialContent, readOnly = false }: Agend
     content: getInitialContent(),
     onUpdate: ({ editor }) => {
       if (!readOnly) {
-        setEditorContent(editor.getHTML())
+        // Skip setting unsaved changes on first render
+        if (isInitialMount.current) {
+          isInitialMount.current = false
+          // Still update the content in store, but reset the unsaved flag
+          const html = editor.getHTML()
+          setEditorContent(html)
+          // Immediately reset unsaved changes since this is initial load
+          setTimeout(() => setHasUnsavedChanges(false), 0)
+        } else {
+          setEditorContent(editor.getHTML())
+        }
       }
     },
   })
+
+  // Update editor editable state when readOnly prop changes
+  useEffect(() => {
+    if (editor && !editor.isDestroyed) {
+      editor.setEditable(!readOnly)
+    }
+  }, [editor, readOnly])
 
   // Expose editor globally for task chip insertion
   useEffect(() => {
@@ -598,7 +616,7 @@ export default function AgendaEditor({ initialContent, readOnly = false }: Agend
             ref={toolbarRef}
             style={{
               position: "sticky",
-              top: 0,
+              top: 59, // Height of avatar-bar above
               zIndex: 10,
               ...(isMobile
                 ? {

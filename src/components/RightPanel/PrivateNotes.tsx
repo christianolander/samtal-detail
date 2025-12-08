@@ -67,8 +67,8 @@ export default function PrivateNotes() {
                     className="w-full flex items-center justify-between p-3 hover:bg-accent/50 transition-colors"
                   >
                     {/* Date only - no preview for privacy when screen sharing */}
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Clock className="w-3 h-3" />
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock className="w-3.5 h-3.5" />
                       <span>{formatTimestamp(note.timestamp)}</span>
                     </div>
 
@@ -93,7 +93,7 @@ export default function PrivateNotes() {
             })}
           </div>
         ) : (
-          <div className="text-xs text-muted-foreground text-center py-8 border border-dashed border-border rounded-lg">
+          <div className="text-sm text-muted-foreground text-center py-8 border border-dashed border-border rounded-lg">
             Inga privata anteckningar ännu
           </div>
         )}

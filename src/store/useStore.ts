@@ -43,6 +43,11 @@ export interface AppStore {
   plateEditor: any | null
   savedEditorSelection: any | null
 
+  // Editor state
+  hasUnsavedChanges: boolean
+  isEditingNotes: boolean
+  lastSaved?: Date
+
   // ========================================
   // Timer State
   // ========================================
@@ -51,8 +56,11 @@ export interface AppStore {
   timerPausedAt?: Date
   timerTotalSeconds: number
   timerBarVisible: boolean
+  timerAlwaysVisible: boolean // Show mini timer when panel is closed
   timerMode: 'timer' | 'countdown'
   timerCountdownSeconds: number // Initial countdown value
+  timerStyle: 'default' | 'minimal' | 'neon' | 'nature' | 'retro' | 'cheerful' // Timer visual style
+  timerBarPosition: { x: number; y: number } | null // Dragged position, null = default position
 
   // ========================================
   // Data
@@ -91,9 +99,12 @@ export interface AppStore {
   resetTimer: () => void
   hideTimerBar: () => void
   showTimerBar: () => void
+  setTimerAlwaysVisible: (visible: boolean) => void
   setTimerMode: (mode: 'timer' | 'countdown') => void
   setCountdownSeconds: (seconds: number) => void
   addMinuteToCountdown: () => void
+  setTimerStyle: (style: 'default' | 'minimal' | 'neon' | 'nature' | 'retro' | 'cheerful') => void
+  setTimerBarPosition: (position: { x: number; y: number } | null) => void
 
   // ========================================
   // Actions - Tasks
@@ -131,6 +142,15 @@ export interface AppStore {
   // Actions - Editor
   // ========================================
   setEditorContent: (content: string) => void
+  setHasUnsavedChanges: (hasChanges: boolean) => void
+  setIsEditingNotes: (isEditing: boolean) => void
+  saveNotes: () => void
+
+  // ========================================
+  // Actions - Booking
+  // ========================================
+  setBooking: (date: Date, duration: number, location?: string, meetingLink?: string) => void
+  removeBooking: () => void
 }
 
 export const useStore = create<AppStore>((set, get) => ({
@@ -150,13 +170,20 @@ export const useStore = create<AppStore>((set, get) => ({
   plateEditor: null,
   savedEditorSelection: null,
 
+  hasUnsavedChanges: false,
+  isEditingNotes: false,
+  lastSaved: undefined,
+
   timerActive: false,
   timerStartedAt: undefined,
   timerPausedAt: undefined,
   timerTotalSeconds: 0,
-  timerBarVisible: false,
+  timerBarVisible: true,
+  timerAlwaysVisible: true,
   timerMode: 'countdown',
   timerCountdownSeconds: (mockSamtals[0].duration || 60) * 60, // Use samtal duration as default
+  timerStyle: 'default',
+  timerBarPosition: null,
 
   currentSamtal: mockSamtals[0],
   allTasks: [...mockTasks],
@@ -321,9 +348,11 @@ export const useStore = create<AppStore>((set, get) => ({
       timerTotalSeconds: 0,
     }),
 
-  hideTimerBar: () => set({ timerBarVisible: false }),
+  hideTimerBar: () => set({ timerBarVisible: false, timerAlwaysVisible: false }),
 
   showTimerBar: () => set({ timerBarVisible: true }),
+
+  setTimerAlwaysVisible: (visible) => set({ timerAlwaysVisible: visible, timerBarVisible: visible }),
 
   setTimerMode: (mode) => set({ timerMode: mode }),
 
@@ -331,6 +360,10 @@ export const useStore = create<AppStore>((set, get) => ({
 
   addMinuteToCountdown: () =>
     set((state) => ({ timerCountdownSeconds: state.timerCountdownSeconds + 60 })),
+
+  setTimerStyle: (style) => set({ timerStyle: style }),
+
+  setTimerBarPosition: (position) => set({ timerBarPosition: position }),
 
   // ========================================
   // Task Actions
@@ -511,24 +544,19 @@ export const useStore = create<AppStore>((set, get) => ({
     // Insert visual indicator in editor (TipTap implementation)
     // Create a condensed inline chip that flows with text
     const editor = (window as any).__tiptapEditor
-    
+
     if (editor && !editor.isDestroyed) {
       try {
-        // Restore selection if available, otherwise fallback to focus logic
+        // Check if the editor was focused (i.e., adding from within the editor)
+        // vs adding from the separate tasks tab (editor not focused)
+        const wasEditorFocused = editor.isFocused
         const savedSelection = get().savedEditorSelection
-        
-        if (savedSelection) {
+
+        if (wasEditorFocused && savedSelection) {
+          // Adding from within editor - restore cursor position
           console.log('[addTaskWithChip] Restoring selection:', savedSelection)
-          // We need to resolve the selection from JSON
-          // Since we can't easily import TextSelection here without TipTap dependency issues in store,
-          // we'll try to manually set it if it's a simple text selection
           try {
-            // Use the editor's command to set selection from range if possible
-            // Or just focus if we can't restore perfectly
             editor.commands.focus()
-            
-            // If we have from/to, try to set text selection
-            // Note: TipTap's setTextSelection expects a number or range
             if (savedSelection.type === 'text' && typeof savedSelection.anchor === 'number') {
                editor.commands.setTextSelection({
                  from: savedSelection.anchor,
@@ -540,13 +568,8 @@ export const useStore = create<AppStore>((set, get) => ({
             editor.commands.focus('end')
           }
         } else {
-          // If editor is not focused and no saved selection, move selection to end
-          if (!editor.isFocused) {
-            editor.commands.focus('end')
-          } else {
-            // Ensure we have focus but keep selection
-            editor.commands.focus()
-          }
+          // Adding from tasks tab - always append to the end of document
+          editor.commands.focus('end')
         }
 
         // Try using the setTaskChip command directly first
@@ -568,8 +591,54 @@ export const useStore = create<AppStore>((set, get) => ({
   // Editor Actions
   // ========================================
   setEditorContent: (content) => {
-    set({ editorContent: content })
+    set({ editorContent: content, hasUnsavedChanges: true })
     // TODO: Auto-save to localStorage
     localStorage.setItem('samtal-editor-content', content)
   },
+
+  setHasUnsavedChanges: (hasChanges) => set({ hasUnsavedChanges: hasChanges }),
+
+  setIsEditingNotes: (isEditing) => set({ isEditingNotes: isEditing }),
+
+  saveNotes: () => {
+    set({ hasUnsavedChanges: false, lastSaved: new Date() })
+    // Additional save logic here (e.g., API call)
+    console.log('[saveNotes] Notes saved successfully')
+  },
+
+  // ========================================
+  // Booking Actions
+  // ========================================
+  setBooking: (date, duration, location, meetingLink) =>
+    set((state) => ({
+      currentSamtal: {
+        ...state.currentSamtal,
+        bookedDate: date,
+        duration: duration,
+        status: 'bokad',
+        metadata: {
+          ...state.currentSamtal.metadata,
+          location: location,
+          meetingLink: meetingLink,
+        },
+      },
+      currentStatus: 'bokad',
+      // Also update timer countdown to match new duration
+      timerCountdownSeconds: duration * 60,
+    })),
+
+  removeBooking: () =>
+    set((state) => ({
+      currentSamtal: {
+        ...state.currentSamtal,
+        bookedDate: undefined,
+        status: 'ej_bokad',
+        metadata: {
+          ...state.currentSamtal.metadata,
+          location: undefined,
+          meetingLink: undefined,
+        },
+      },
+      currentStatus: 'ej_bokad',
+    })),
 }))

@@ -462,7 +462,7 @@ export const mockSamtals: Samtal[] = [
     participants: [erikAxelsson, annaAndersson],
     conversationRound: 'Medarbetarsamtal 2025',
     deadlineDate: new Date('2025-12-31'),
-    bookedDate: new Date(), // Today
+    bookedDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
     lastUpdated: new Date(),
     notes: medarbetarsamtalTemplate,
     comments: [
