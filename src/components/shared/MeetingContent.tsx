@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { FileText, Sparkles, Share2, MoreVertical, FileDown, Send, Edit3, X, Check, AlertTriangle, ChevronDown, CheckCircle2, Timer, Play, Pause, RotateCcw, Palette, ChevronRight, EyeOff, Clock, Zap, Leaf, Sparkles as SparklesIcon, Coffee, Heart, Loader2 } from 'lucide-react'
 import ParticipantAvatar from './ParticipantAvatar'
 import { Participant, User } from '../../types'
@@ -234,6 +235,7 @@ export default function MeetingContent({
   // Confirm editing - user accepted the modal
   const handleEditConfirm = () => {
     setShowEditConfirmModal(false)
+    onTabChange('notes') // Switch to notes/anteckningar view
     onToggleEdit?.()
   }
 
@@ -449,7 +451,7 @@ export default function MeetingContent({
                       <span>Sparat</span>
                     </>
                   ) : (
-                    <span>Spara</span>
+                    <span>{isCompleted && isEditingNotes ? 'Spara och skicka uppdateringar' : 'Spara'}</span>
                   )}
                 </button>
                 <button
@@ -482,7 +484,7 @@ export default function MeetingContent({
                         disabled={!hasUnsavedChanges || isSaving}
                         className="w-full px-3 py-2.5 text-sm text-left hover:bg-muted flex items-center gap-2 rounded-t-md disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <span className="flex-1">Spara</span>
+                        <span className="flex-1">{isCompleted && isEditingNotes ? 'Spara och skicka uppdateringar' : 'Spara'}</span>
                       </button>
                       <button
                         onClick={async () => {
@@ -591,41 +593,42 @@ export default function MeetingContent({
       </div>
 
       {/* Edit Confirmation Modal */}
-      {showEditConfirmModal && (
+      {showEditConfirmModal && createPortal(
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in duration-200">
-          <div className="bg-card border border-border rounded-xl shadow-xl max-w-md w-full mx-4 animate-in zoom-in-95 duration-200">
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <AlertTriangle className="w-6 h-6 text-amber-500" />
+          <div className="bg-card border border-border rounded-xl shadow-xl max-w-lg w-full mx-4 animate-in zoom-in-95 duration-200">
+            <div className="p-8">
+              <div className="flex items-center gap-3 mb-5">
+                <AlertTriangle className="w-7 h-7 text-amber-500" />
                 <div>
-                  <h2 className="text-lg font-semibold text-foreground">
+                  <h2 className="text-xl font-semibold text-foreground">
                     Redigera klarmarkerat samtal
                   </h2>
                 </div>
               </div>
 
-              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+              <p className="text-sm text-muted-foreground mb-8 leading-relaxed">
                 När du sparat nya anteckningar kommer vi skicka ut uppdateringar till alla deltagare.
               </p>
 
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowEditConfirmModal(false)}
-                  className="flex-1 px-4 py-2.5 border border-border rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors"
+                  className="flex-1 px-5 py-3 border border-border rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors"
                 >
                   Avbryt
                 </button>
                 <button
                   onClick={handleEditConfirm}
-                  className="flex-1 px-4 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 px-5 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
                 >
                   <Edit3 className="w-4 h-4" />
-                  <span>Redigera</span>
+                  <span>Redigera anteckningar</span>
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )
