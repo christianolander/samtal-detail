@@ -38,6 +38,7 @@ export interface AppStore {
   taskModalOpen: boolean
   taskModalType: 'task' | 'goal' | null
   taskModalTask: Task | null
+  taskModalSource: 'editor' | 'tab' | null // Where was the modal opened from
 
   // Plate editor reference
   plateEditor: any | null
@@ -134,7 +135,7 @@ export interface AppStore {
   // ========================================
   // Actions - Task Modal
   // ========================================
-  openTaskModal: (type: 'task' | 'goal', task?: Task) => void
+  openTaskModal: (type: 'task' | 'goal', task?: Task, source?: 'editor' | 'tab') => void
   closeTaskModal: () => void
   addTaskWithChip: (taskData: Omit<Task, 'id' | 'createdAt'>) => void
 
@@ -167,6 +168,7 @@ export const useStore = create<AppStore>((set, get) => ({
   taskModalOpen: false,
   taskModalType: null,
   taskModalTask: null,
+  taskModalSource: null,
   plateEditor: null,
   savedEditorSelection: null,
 
@@ -480,16 +482,16 @@ export const useStore = create<AppStore>((set, get) => ({
   // ========================================
   // Task Modal Actions
   // ========================================
-  openTaskModal: (type, task) => {
-    // Capture current editor selection if available
+  openTaskModal: (type, task, source = 'tab') => {
+    // Capture current editor selection if available (only when opening from editor)
     const editor = (window as any).__tiptapEditor
     let selection = null
     let selectedText = ''
-    
-    if (editor && !editor.isDestroyed) {
+
+    if (source === 'editor' && editor && !editor.isDestroyed) {
       // Save the current selection (JSON format)
       selection = editor.state.selection.toJSON()
-      console.log('[openTaskModal] Saved selection:', selection)
+      console.log('[openTaskModal] Saved selection:', selection, 'source:', source)
 
       // Try to extract selected text for title pre-fill
       const { from, to, empty } = editor.state.selection
@@ -510,10 +512,11 @@ export const useStore = create<AppStore>((set, get) => ({
     // Cast to any to bypass strict Task type check since we only need title for pre-fill
     const modalTask = task || (selectedText ? { title: selectedText } as any : null)
 
-    set({ 
-      taskModalOpen: true, 
-      taskModalType: type, 
+    set({
+      taskModalOpen: true,
+      taskModalType: type,
       taskModalTask: modalTask,
+      taskModalSource: source,
       savedEditorSelection: selection
     })
   },
@@ -522,6 +525,7 @@ export const useStore = create<AppStore>((set, get) => ({
       taskModalOpen: false,
       taskModalType: null,
       taskModalTask: null,
+      taskModalSource: null,
     }),
 
   addTaskWithChip: (taskData) => {
@@ -547,14 +551,14 @@ export const useStore = create<AppStore>((set, get) => ({
 
     if (editor && !editor.isDestroyed) {
       try {
-        // Check if the editor was focused (i.e., adding from within the editor)
-        // vs adding from the separate tasks tab (editor not focused)
-        const wasEditorFocused = editor.isFocused
+        // Use taskModalSource to determine where the modal was opened from
+        // This is more reliable than checking editor.isFocused (modal steals focus)
+        const source = get().taskModalSource
         const savedSelection = get().savedEditorSelection
 
-        if (wasEditorFocused && savedSelection) {
+        if (source === 'editor' && savedSelection) {
           // Adding from within editor - restore cursor position
-          console.log('[addTaskWithChip] Restoring selection:', savedSelection)
+          console.log('[addTaskWithChip] Restoring selection:', savedSelection, 'source:', source)
           try {
             editor.commands.focus()
             if (savedSelection.type === 'text' && typeof savedSelection.anchor === 'number') {
@@ -569,18 +573,16 @@ export const useStore = create<AppStore>((set, get) => ({
           }
         } else {
           // Adding from tasks tab - always append to the end of document
+          console.log('[addTaskWithChip] Appending to end, source:', source)
           editor.commands.focus('end')
         }
 
-        // Try using the setTaskChip command directly first
+        // Insert the task chip
         editor.commands.setTaskChip({
           taskId: newTask.id,
           title: newTask.title,
           type: taskData.type,
         })
-
-        // Add empty paragraph after
-        editor.commands.insertContent('<p></p>')
       } catch (err) {
         console.error('[addTaskWithChip] Failed to insert task chip:', err)
       }

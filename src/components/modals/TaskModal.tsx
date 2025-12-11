@@ -221,7 +221,7 @@ export default function TaskModal() {
           {taskModalType === 'goal' && (
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Status
+                Nuvarande status (valfritt)
               </label>
               <select
                 value={goalStatus ?? ''}
@@ -229,7 +229,6 @@ export default function TaskModal() {
                 className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">Välj status...</option>
-                <option value="ej_paborjad">Ej påbörjad</option>
                 <option value="ligger_efter">Ligger efter</option>
                 <option value="gar_enligt_plan">Går enligt plan</option>
                 <option value="uppnatt">Uppnått</option>

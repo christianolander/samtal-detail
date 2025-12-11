@@ -58,7 +58,7 @@ export interface User {
 }
 
 // Goal status types for tracking progress
-export type GoalStatus = 'ej_paborjad' | 'ligger_efter' | 'gar_enligt_plan' | 'uppnatt' | null
+export type GoalStatus = 'ligger_efter' | 'gar_enligt_plan' | 'uppnatt' | null
 
 // Follow-up frequency for goals
 export type FollowUpFrequency = 'varje_vecka' | 'varannan_vecka' | 'varje_manad' | 'varje_kvartal' | null

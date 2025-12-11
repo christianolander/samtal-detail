@@ -38,7 +38,6 @@ export default function TaskChipNodeView({ node }: any) {
   // Goal status color helpers
   const getGoalStatusBorderColor = (goalStatus: GoalStatus): string => {
     switch (goalStatus) {
-      case 'ej_paborjad': return 'bg-gray-400'
       case 'ligger_efter': return 'bg-amber-500'
       case 'gar_enligt_plan': return 'bg-teal-500'
       case 'uppnatt': return 'bg-green-500'
@@ -46,11 +45,9 @@ export default function TaskChipNodeView({ node }: any) {
     }
   }
 
-  // Get status display for goals
+  // Get status display for goals (returns null if no status set)
   const getStatusDisplay = (goalStatus: GoalStatus) => {
     switch (goalStatus) {
-      case 'ej_paborjad':
-        return { emoji: '⏸️', text: 'Ej påbörjad' }
       case 'ligger_efter':
         return { emoji: '⚠️', text: 'Ligger efter' }
       case 'gar_enligt_plan':
@@ -58,7 +55,7 @@ export default function TaskChipNodeView({ node }: any) {
       case 'uppnatt':
         return { emoji: '🏁', text: 'Uppnått' }
       default:
-        return { emoji: '⏸️', text: 'Ej påbörjad' }
+        return null
     }
   }
 
@@ -91,7 +88,7 @@ export default function TaskChipNodeView({ node }: any) {
   const taskDeadline = !isGoal && task?.due ? formatDate(task.due) : null
 
   return (
-    <NodeViewWrapper className="block my-3" contentEditable={false}>
+    <NodeViewWrapper className="block my-2" contentEditable={false}>
       <div
         onClick={handleClick}
         className="task-chip-card group cursor-pointer bg-muted/30 hover:bg-muted/50 border border-border rounded-lg transition-all hover:shadow-sm relative overflow-hidden"

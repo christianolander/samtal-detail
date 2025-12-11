@@ -630,8 +630,8 @@ export default function AgendaEditor({ initialContent, readOnly = false }: Agend
                 onHighlighterClick={() => setMobileView("highlighter")}
                 onLinkClick={() => setMobileView("link")}
                 isMobile={isMobile}
-                onGoalClick={() => openTaskModal("goal")}
-                onTaskClick={() => openTaskModal("task")}
+                onGoalClick={() => openTaskModal("goal", undefined, "editor")}
+                onTaskClick={() => openTaskModal("task", undefined, "editor")}
               />
             ) : (
               <MobileToolbarContent

@@ -32,8 +32,6 @@ export default function TaskItem({ task, showOrigin = false }: TaskItemProps) {
 
   const getGoalStatusLabel = (goalStatus: GoalStatus) => {
     switch (goalStatus) {
-      case 'ej_paborjad':
-        return 'Ej påbörjad'
       case 'ligger_efter':
         return 'Ligger efter'
       case 'gar_enligt_plan':
@@ -47,8 +45,6 @@ export default function TaskItem({ task, showOrigin = false }: TaskItemProps) {
 
   const getGoalStatusColor = (goalStatus: GoalStatus): string => {
     switch (goalStatus) {
-      case 'ej_paborjad':
-        return 'bg-gray-400'
       case 'ligger_efter':
         return 'bg-amber-500'
       case 'gar_enligt_plan':
@@ -62,8 +58,6 @@ export default function TaskItem({ task, showOrigin = false }: TaskItemProps) {
 
   const getGoalStatusTextColor = (goalStatus: GoalStatus): string => {
     switch (goalStatus) {
-      case 'ej_paborjad':
-        return 'text-gray-600'
       case 'ligger_efter':
         return 'text-amber-600'
       case 'gar_enligt_plan':

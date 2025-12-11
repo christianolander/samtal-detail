@@ -28,7 +28,6 @@ interface TaskChipElementProps {
 // Goal status color helpers
 const getGoalStatusBorderColor = (goalStatus: GoalStatus): string => {
   switch (goalStatus) {
-    case 'ej_paborjad': return 'border-gray-400'
     case 'ligger_efter': return 'border-amber-500'
     case 'gar_enligt_plan': return 'border-teal-500'
     case 'uppnatt': return 'border-green-500'
@@ -38,7 +37,6 @@ const getGoalStatusBorderColor = (goalStatus: GoalStatus): string => {
 
 const getGoalStatusBgColor = (goalStatus: GoalStatus): string => {
   switch (goalStatus) {
-    case 'ej_paborjad': return 'bg-gray-50/80 hover:bg-gray-100'
     case 'ligger_efter': return 'bg-amber-50/80 hover:bg-amber-100'
     case 'gar_enligt_plan': return 'bg-teal-50/80 hover:bg-teal-100'
     case 'uppnatt': return 'bg-green-50/80 hover:bg-green-100'
@@ -48,7 +46,6 @@ const getGoalStatusBgColor = (goalStatus: GoalStatus): string => {
 
 const getGoalStatusTextColor = (goalStatus: GoalStatus): string => {
   switch (goalStatus) {
-    case 'ej_paborjad': return 'text-gray-700'
     case 'ligger_efter': return 'text-amber-900'
     case 'gar_enligt_plan': return 'text-teal-900'
     case 'uppnatt': return 'text-green-900'
@@ -58,7 +55,6 @@ const getGoalStatusTextColor = (goalStatus: GoalStatus): string => {
 
 const getGoalStatusLabel = (goalStatus: GoalStatus): string | null => {
   switch (goalStatus) {
-    case 'ej_paborjad': return 'Ej påbörjad'
     case 'ligger_efter': return 'Ligger efter'
     case 'gar_enligt_plan': return 'Enligt plan'
     case 'uppnatt': return 'Uppnått'

@@ -158,7 +158,7 @@ const SLASH_MENU_GROUPS: SlashMenuGroup[] = [
           editor.chain().focus().deleteRange(range).run()
           // Trigger goal modal via global store
           const { openTaskModal } = (window as any).__zustandStore?.getState?.() || {}
-          if (openTaskModal) openTaskModal('goal')
+          if (openTaskModal) openTaskModal('goal', undefined, 'editor')
         },
       },
       {
@@ -169,7 +169,7 @@ const SLASH_MENU_GROUPS: SlashMenuGroup[] = [
           editor.chain().focus().deleteRange(range).run()
           // Trigger task modal via global store
           const { openTaskModal } = (window as any).__zustandStore?.getState?.() || {}
-          if (openTaskModal) openTaskModal('task')
+          if (openTaskModal) openTaskModal('task', undefined, 'editor')
         },
       },
     ],

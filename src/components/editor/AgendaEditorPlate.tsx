@@ -73,13 +73,13 @@ export default function AgendaEditorPlate() {
       // Cmd/Ctrl+Shift+G: Create goal
       if (isMod && e.shiftKey && e.key === 'G') {
         e.preventDefault()
-        useStore.getState().openTaskModal('goal')
+        useStore.getState().openTaskModal('goal', undefined, 'editor')
       }
 
       // Cmd/Ctrl+Shift+T: Create task
       if (isMod && e.shiftKey && e.key === 'T') {
         e.preventDefault()
-        useStore.getState().openTaskModal('task')
+        useStore.getState().openTaskModal('task', undefined, 'editor')
       }
     }
 

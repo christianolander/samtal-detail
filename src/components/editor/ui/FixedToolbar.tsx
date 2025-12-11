@@ -171,7 +171,7 @@ export function FixedToolbar() {
           {/* Task & Goal - visible on larger screens */}
           <div className="hidden xl:flex items-center gap-2">
             <button
-              onClick={() => openTaskModal('goal')}
+              onClick={() => openTaskModal('goal', undefined, 'editor')}
               className="px-3 py-1.5 text-sm font-medium bg-teal-50 text-teal-700 hover:bg-teal-100 rounded-md transition-colors flex items-center gap-1.5"
               title="Nytt mål (Cmd+Shift+G)"
             >
@@ -179,7 +179,7 @@ export function FixedToolbar() {
               Nytt mål
             </button>
             <button
-              onClick={() => openTaskModal('task')}
+              onClick={() => openTaskModal('task', undefined, 'editor')}
               className="px-3 py-1.5 text-sm font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-md transition-colors flex items-center gap-1.5"
               title="Ny uppgift (Cmd+Shift+T)"
             >
@@ -223,7 +223,7 @@ export function FixedToolbar() {
                 <div className="h-px bg-border my-1" />
                 <button
                   onClick={() => {
-                    openTaskModal('goal')
+                    openTaskModal('goal', undefined, 'editor')
                     setShowMoreMenu(false)
                   }}
                   className="w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors flex items-center gap-2 xl:hidden"
@@ -233,7 +233,7 @@ export function FixedToolbar() {
                 </button>
                 <button
                   onClick={() => {
-                    openTaskModal('task')
+                    openTaskModal('task', undefined, 'editor')
                     setShowMoreMenu(false)
                   }}
                   className="w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors flex items-center gap-2 xl:hidden"

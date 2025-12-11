@@ -148,7 +148,7 @@ export const getSlashMenuItems = (editor: any): SlashMenuItem[] => [
     onSelect: () => {
       // Open task modal
       const { openTaskModal } = require('@/store/useStore').useStore.getState()
-      openTaskModal('task')
+      openTaskModal('task', undefined, 'editor')
     },
   },
   {
@@ -160,7 +160,7 @@ export const getSlashMenuItems = (editor: any): SlashMenuItem[] => [
     onSelect: () => {
       // Open goal modal
       const { openTaskModal } = require('@/store/useStore').useStore.getState()
-      openTaskModal('goal')
+      openTaskModal('goal', undefined, 'editor')
     },
   },
 ]
