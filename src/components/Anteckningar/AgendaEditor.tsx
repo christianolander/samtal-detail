@@ -91,6 +91,7 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 
 // --- Custom extensions ---
 import { TaskChip } from "@/components/editor/TaskChipExtension"
+import { AIBlock } from "@/components/editor/AIBlockExtension"
 
 // --- Store ---
 import { useStore } from "@/store/useStore"
@@ -531,6 +532,7 @@ export default function AgendaEditor({ initialContent, readOnly = false }: Agend
         },
       }),
       TaskChip,
+      AIBlock,
       ImageUploadNode.configure({
         accept: "image/*",
         maxSize: MAX_FILE_SIZE,

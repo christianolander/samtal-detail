@@ -462,7 +462,7 @@ export const mockSamtals: Samtal[] = [
     participants: [erikAxelsson, annaAndersson],
     conversationRound: 'Medarbetarsamtal 2025',
     deadlineDate: new Date('2025-12-31'),
-    bookedDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+    bookedDate: new Date('2025-12-16T12:00:00'), // 16 Dec 2025 at 12:00
     lastUpdated: new Date(),
     notes: medarbetarsamtalTemplate,
     comments: [
@@ -470,7 +470,7 @@ export const mockSamtals: Samtal[] = [
         id: 'c-anna-prep',
         author: annaAndersson,
         text: 'Hej Erik!\n\nHär är mina förberedelser inför samtalet.\n\nReflektion senaste året:\nJag är stolt över rekryteringsarbetet - vi har byggt ett starkt team! Onboarding-processen känns nu mycket smidigare.\n\nVill prata om:\n• Min utveckling mot mer strategiskt HR-arbete\n• Möjlighet till CIPD-certifiering\n• Arbetsbelastning under rekryteringstoppar\n\nFråga:\nHur ser du på att jag tar ett större ansvar för employer branding framöver?',
-        timestamp: new Date(Date.now() - 86400000 * 3) // 3 days ago
+        timestamp: new Date('2025-12-15T14:30:00') // 3 days ago
       }
     ],
     metadata: { location: 'Rum 302' },

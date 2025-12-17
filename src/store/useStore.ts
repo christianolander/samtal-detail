@@ -12,7 +12,7 @@
  */
 
 import { create } from 'zustand'
-import type { Samtal, Task, HistoricalMeeting, SurveyData, HistoricalSurveyData, Comment, PrivateNote, Participant } from '../types'
+import type { Samtal, Task, HistoricalMeeting, SurveyData, HistoricalSurveyData, Comment, PrivateNote, Participant, UploadedFile, AIGeneratedBlock } from '../types'
 import {
   mockSamtals,
   mockTasks,
@@ -32,7 +32,7 @@ export interface AppStore {
   rightPanelCollapsed: boolean
   commentsCollapsed: boolean
   editorMode: 'agenda' | 'ai-summary' // For Anteckningar tab
-  activeRightPanelTab: 'översikt' | 'detaljer' | 'timer' | 'tidigare' | 'privata'
+  activeRightPanelTab: 'översikt' | 'detaljer' | 'timer' | 'tidigare' | 'privata' | 'filer'
 
   // Task modal state
   taskModalOpen: boolean
@@ -75,6 +75,12 @@ export interface AppStore {
   privateNotes: PrivateNote[]
   editorContent: string
 
+  // Files for automatic documentation
+  uploadedFiles: UploadedFile[]
+  aiGeneratedBlocks: AIGeneratedBlock[]
+  automaticNotesModalOpen: boolean
+  automaticNotesModalStep: 1 | 2 | 3 // 1=select files, 2=processing, 3=review blocks
+
   // ========================================
   // Actions - UI State
   // ========================================
@@ -83,7 +89,7 @@ export interface AppStore {
   toggleRightPanel: () => void
   toggleComments: () => void
   setEditorMode: (mode: 'agenda' | 'ai-summary') => void
-  setActiveRightPanelTab: (tab: 'översikt' | 'detaljer' | 'timer' | 'tidigare' | 'privata') => void
+  setActiveRightPanelTab: (tab: 'översikt' | 'detaljer' | 'timer' | 'tidigare' | 'privata' | 'filer') => void
   loadSamtal: (id: string) => void
 
   // ========================================
@@ -152,6 +158,21 @@ export interface AppStore {
   // ========================================
   setBooking: (date: Date, duration: number, location?: string, meetingLink?: string) => void
   removeBooking: () => void
+
+  // ========================================
+  // Actions - Files & Automatic Documentation
+  // ========================================
+  addFile: (file: Omit<UploadedFile, 'id' | 'uploadedAt'>) => void
+  removeFile: (id: string) => void
+  updateFileStatus: (id: string, status: UploadedFile['status']) => void
+  openAutomaticNotesModal: () => void
+  closeAutomaticNotesModal: () => void
+  setAutomaticNotesModalStep: (step: 1 | 2 | 3) => void
+  addAIGeneratedBlocks: (blocks: Omit<AIGeneratedBlock, 'id'>[]) => void
+  updateAIBlockStatus: (id: string, status: AIGeneratedBlock['status']) => void
+  updateAIBlockContent: (id: string, content: string) => void
+  removeAIBlock: (id: string) => void
+  clearAIBlocks: () => void
 }
 
 export const useStore = create<AppStore>((set, get) => ({
@@ -200,6 +221,12 @@ export const useStore = create<AppStore>((set, get) => ({
   historicalSurveyData: mockHistoricalSurveyData,
   privateNotes: mockPrivateNotes,
   editorContent: mockSamtals[0].notes || defaultAgendaTemplate,
+
+  // Files for automatic documentation
+  uploadedFiles: [],
+  aiGeneratedBlocks: [],
+  automaticNotesModalOpen: false,
+  automaticNotesModalStep: 1,
 
   // ========================================
   // UI Actions
@@ -643,4 +670,73 @@ export const useStore = create<AppStore>((set, get) => ({
       },
       currentStatus: 'ej_bokad',
     })),
+
+  // ========================================
+  // File & Automatic Documentation Actions
+  // ========================================
+  addFile: (fileData) =>
+    set((state) => ({
+      uploadedFiles: [
+        ...state.uploadedFiles,
+        {
+          ...fileData,
+          id: `file-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          uploadedAt: new Date(),
+        },
+      ],
+    })),
+
+  removeFile: (id) =>
+    set((state) => ({
+      uploadedFiles: state.uploadedFiles.filter((file) => file.id !== id),
+    })),
+
+  updateFileStatus: (id, status) =>
+    set((state) => ({
+      uploadedFiles: state.uploadedFiles.map((file) =>
+        file.id === id ? { ...file, status } : file
+      ),
+    })),
+
+  openAutomaticNotesModal: () =>
+    set({ automaticNotesModalOpen: true, automaticNotesModalStep: 1 }),
+
+  closeAutomaticNotesModal: () =>
+    set({ automaticNotesModalOpen: false, automaticNotesModalStep: 1 }),
+
+  setAutomaticNotesModalStep: (step) =>
+    set({ automaticNotesModalStep: step }),
+
+  addAIGeneratedBlocks: (blocks) =>
+    set((state) => ({
+      aiGeneratedBlocks: [
+        ...state.aiGeneratedBlocks,
+        ...blocks.map((block) => ({
+          ...block,
+          id: `ai-block-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        })),
+      ],
+    })),
+
+  updateAIBlockStatus: (id, status) =>
+    set((state) => ({
+      aiGeneratedBlocks: state.aiGeneratedBlocks.map((block) =>
+        block.id === id ? { ...block, status } : block
+      ),
+    })),
+
+  updateAIBlockContent: (id, content) =>
+    set((state) => ({
+      aiGeneratedBlocks: state.aiGeneratedBlocks.map((block) =>
+        block.id === id ? { ...block, content } : block
+      ),
+    })),
+
+  removeAIBlock: (id) =>
+    set((state) => ({
+      aiGeneratedBlocks: state.aiGeneratedBlocks.filter((block) => block.id !== id),
+    })),
+
+  clearAIBlocks: () =>
+    set({ aiGeneratedBlocks: [] }),
 }))

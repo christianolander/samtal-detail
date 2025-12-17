@@ -27,14 +27,17 @@ import {
   CalendarPlus,
   ListChecks,
   ChevronRight,
+  FileText,
 } from 'lucide-react'
 import StatusDetaljer from './StatusDetaljer'
 import RelateradeSamtal from './RelateradeSamtal'
 import PrivateNotes from './PrivateNotes'
 import TimerTab from './TimerTab'
+import FilesTab from './FilesTab'
 import { BookingModal } from './BookingSection'
+import AutomaticNotesModal from '../modals/AutomaticNotesModal'
 
-type TabId = 'översikt' | 'detaljer' | 'tidigare' | 'privata' | 'timer'
+type TabId = 'översikt' | 'detaljer' | 'timer' | 'tidigare' | 'privata' | 'filer'
 
 interface Tab {
   id: TabId
@@ -54,6 +57,10 @@ export default function RightPanel() {
     setActiveRightPanelTab,
     timerActive,
     setBooking,
+    uploadedFiles,
+    automaticNotesModalOpen,
+    openAutomaticNotesModal,
+    closeAutomaticNotesModal,
   } = useStore()
   const activeTabId = activeRightPanelTab
   const setActiveTabId = setActiveRightPanelTab
@@ -69,6 +76,12 @@ export default function RightPanel() {
       label: 'Privata anteckningar',
       icon: Lock,
       count: privateNotes.length,
+    },
+    {
+      id: 'filer',
+      label: 'Filer',
+      icon: FileText,
+      count: uploadedFiles.length > 0 ? uploadedFiles.length : undefined,
     },
   ]
 
@@ -312,6 +325,13 @@ export default function RightPanel() {
             <ToolSection
               buttons={[
                 {
+                  icon: Sparkles,
+                  label: 'Automatiska anteckningar',
+                  subtext: 'Skapa dokumentering från handskrivna anteckningar.',
+                  variant: 'purple',
+                  onClick: openAutomaticNotesModal,
+                },
+                {
                   icon: Timer,
                   label: timerActive ? 'Hantera timer' : 'Visa timer',
                   subtext: timerActive ? 'Se och hantera pågående tidtagning.' : 'Starta och hantera tidtagning för mötet.',
@@ -359,8 +379,41 @@ export default function RightPanel() {
               </p>
             </div>
 
+            {/* Automatic documentation CTA - shows when there are files */}
+            {uploadedFiles.length > 0 && (
+              <div className="bg-[#f3e8ff] border border-[#7e22ce]/20 rounded-lg p-4 mb-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#7e22ce]/10 flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 text-[#7e22ce]" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-semibold text-foreground mb-1">
+                      Automatiska anteckningar
+                    </h4>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      Vill du automatiskt strukturera anteckningarna efter agendan?
+                    </p>
+                    <button
+                      onClick={openAutomaticNotesModal}
+                      className="px-3 py-1.5 bg-[#7e22ce] text-white rounded-md text-xs font-medium hover:bg-[#7e22ce]/90 transition-colors flex items-center gap-1.5"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Skapa automatisk dokumentering
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <ToolSection
               buttons={[
+                {
+                  icon: Sparkles,
+                  label: 'Automatiska anteckningar',
+                  subtext: 'Strukturera anteckningar med AI.',
+                  variant: 'purple',
+                  onClick: openAutomaticNotesModal,
+                },
                 {
                   icon: ListChecks,
                   label: 'Se mål och uppgifter',
@@ -395,6 +448,8 @@ export default function RightPanel() {
         return <RelateradeSamtal />
       case 'privata':
         return <PrivateNotes />
+      case 'filer':
+        return <FilesTab />
     }
   }
 
@@ -488,6 +543,16 @@ export default function RightPanel() {
               setBooking(date, duration, location, meetingLink)
               setShowBookingModal(false)
             }}
+          />,
+          document.body
+        )}
+
+      {/* Automatic Notes Modal */}
+      {automaticNotesModalOpen &&
+        createPortal(
+          <AutomaticNotesModal
+            isOpen={automaticNotesModalOpen}
+            onClose={closeAutomaticNotesModal}
           />,
           document.body
         )}

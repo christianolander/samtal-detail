@@ -153,3 +153,39 @@ export interface PrivateNote {
   content: string
   timestamp: Date
 }
+
+// File types for automatic documentation feature
+export type FileUploadStatus = 'uploading' | 'uploaded' | 'processing' | 'error'
+
+export interface UploadedFile {
+  id: string
+  name: string
+  type: string // MIME type
+  size: number
+  url: string // Object URL or data URL for preview
+  thumbnailUrl?: string
+  status: FileUploadStatus
+  uploadedAt: Date
+  source: 'desktop' | 'mobile' // How was the file uploaded
+}
+
+// AI Block types for automatic notes
+export type AIBlockStatus = 'pending' | 'approved' | 'rejected' | 'editing'
+
+export interface AIGeneratedBlock {
+  id: string
+  title: string
+  content: string // HTML/Markdown content
+  goals?: Array<{
+    id: string
+    title: string
+    description?: string
+  }>
+  tasks?: Array<{
+    id: string
+    title: string
+    assignee?: string
+  }>
+  status: AIBlockStatus
+  originalSourceFileIds: string[] // Which files this block was generated from
+}
