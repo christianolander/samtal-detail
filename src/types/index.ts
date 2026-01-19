@@ -63,6 +63,15 @@ export type GoalStatus = 'ligger_efter' | 'gar_enligt_plan' | 'uppnatt' | null
 // Follow-up frequency for goals
 export type FollowUpFrequency = 'varje_vecka' | 'varannan_vecka' | 'varje_manad' | 'varje_kvartal' | null
 
+// Goal status history entry
+export interface GoalStatusUpdate {
+  id: string
+  status: GoalStatus
+  comment?: string
+  user: User
+  timestamp: Date
+}
+
 export interface Task {
   id: string
   type: 'task' | 'goal'
@@ -74,6 +83,7 @@ export interface Task {
   createdAt: Date
   goalStatus?: GoalStatus // Status tracking for goals only
   followUpFrequency?: FollowUpFrequency // Follow-up frequency for goals
+  statusHistory?: GoalStatusUpdate[] // History of status updates (goals only)
   lastStatusUpdate?: Date
   origin?: {
     conversationId: string

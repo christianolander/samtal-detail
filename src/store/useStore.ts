@@ -119,6 +119,7 @@ export interface AppStore {
   addTask: (task: Omit<Task, 'id' | 'createdAt'>) => void
   updateTask: (id: string, updates: Partial<Task>) => void
   removeTask: (id: string) => void
+  addGoalStatusUpdate: (taskId: string, status: Task['goalStatus'], comment?: string) => void
 
   // ========================================
   // Actions - Comments
@@ -428,6 +429,40 @@ export const useStore = create<AppStore>((set, get) => ({
       allTasks: state.allTasks.filter((task) => task.id !== id),
       tasks: state.tasks.filter((task) => task.id !== id),
     })),
+
+  addGoalStatusUpdate: (taskId, status, comment) =>
+    set((state) => {
+      // Get current user (manager in this case)
+      const currentUser = {
+        id: '1',
+        name: 'Erik Axelsson',
+        role: 'manager' as const,
+      }
+
+      const updateEntry = {
+        id: `status-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        status,
+        comment,
+        user: currentUser,
+        timestamp: new Date(),
+      }
+
+      const updateTaskWithHistory = (task: Task) => {
+        if (task.id !== taskId) return task
+
+        return {
+          ...task,
+          goalStatus: status,
+          statusHistory: [updateEntry, ...(task.statusHistory || [])],
+          lastStatusUpdate: new Date(),
+        }
+      }
+
+      return {
+        allTasks: state.allTasks.map(updateTaskWithHistory),
+        tasks: state.tasks.map(updateTaskWithHistory),
+      }
+    }),
 
   // ========================================
   // Comment Actions

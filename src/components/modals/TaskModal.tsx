@@ -15,6 +15,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useStore } from '@/store/useStore'
 import { X, Target, CheckSquare, User, Calendar, Info } from 'lucide-react'
 import type { Task, GoalStatus, FollowUpFrequency } from '@/types'
+import GoalEditModal from './GoalEditModal'
 
 export default function TaskModal() {
   const {
@@ -70,6 +71,11 @@ export default function TaskModal() {
   }, [taskModalTask, taskModalOpen, currentParticipant])
 
   if (!taskModalOpen || !taskModalType) return null
+
+  // If editing an existing goal, show the enhanced GoalEditModal
+  if (isEditing && taskModalTask && taskModalType === 'goal') {
+    return <GoalEditModal goal={taskModalTask} onClose={closeTaskModal} />
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -213,25 +219,6 @@ export default function TaskModal() {
                 <option value="varannan_vecka">Varannan vecka</option>
                 <option value="varje_manad">Varje månad</option>
                 <option value="varje_kvartal">Varje kvartal</option>
-              </select>
-            </div>
-          )}
-
-          {/* Goal Status - Goals only */}
-          {taskModalType === 'goal' && (
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Nuvarande status (valfritt)
-              </label>
-              <select
-                value={goalStatus ?? ''}
-                onChange={(e) => setGoalStatus(e.target.value === '' ? null : e.target.value as GoalStatus)}
-                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option value="">Välj status...</option>
-                <option value="ligger_efter">Ligger efter</option>
-                <option value="gar_enligt_plan">Går enligt plan</option>
-                <option value="uppnatt">Uppnått</option>
               </select>
             </div>
           )}

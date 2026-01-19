@@ -127,33 +127,6 @@ export default function FilesTab() {
         </div>
       </button>
 
-      {/* Automatic notes CTA */}
-      {uploadedFiles.length > 0 && (
-        <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-          <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <div className="flex-1">
-              <h4 className="text-sm font-semibold text-foreground mb-1">
-                Automatiska anteckningar
-              </h4>
-              <p className="text-xs text-muted-foreground mb-3">
-                Vill du automatiskt strukturera anteckningarna efter agendan?
-              </p>
-              <button
-                onClick={openAutomaticNotesModal}
-                className="px-3 py-1.5 bg-primary text-primary-foreground rounded-md text-xs font-medium hover:bg-primary/90 transition-colors"
-              >
-                Skapa automatisk dokumentering
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* File list */}
       {uploadedFiles.length > 0 && (
         <div className="space-y-2">

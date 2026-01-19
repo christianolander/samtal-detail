@@ -562,6 +562,29 @@ export const mockTasks: Task[] = [
     assignee: annaAndersson as unknown as User,
     createdAt: new Date('2025-01-15'),
     origin: { conversationId: 'hist-anna-2024', conversationTitle: 'Medarbetarsamtal 2024' },
+    statusHistory: [
+      {
+        id: 'update-anna-1-3',
+        status: 'gar_enligt_plan',
+        comment: 'Har börjat arbeta mer med strategiska frågor. Inledde employer branding-projektet med gott resultat.',
+        user: annaAndersson as unknown as User,
+        timestamp: new Date('2025-11-10T10:00:00')
+      },
+      {
+        id: 'update-anna-1-2',
+        status: 'gar_enligt_plan',
+        comment: 'Bra framsteg! Anna deltar nu aktivt i ledningsgruppsmöten och bidrar med HR-perspektiv.',
+        user: erikAxelsson as unknown as User,
+        timestamp: new Date('2025-08-15T14:30:00')
+      },
+      {
+        id: 'update-anna-1-1',
+        status: null,
+        comment: 'Målbilden är satt, börjar nu kartlägga vilka strategiska initiativ som behövs.',
+        user: annaAndersson as unknown as User,
+        timestamp: new Date('2025-02-01T09:00:00')
+      }
+    ]
   },
   {
     id: 'goal-anna-2',
@@ -608,6 +631,22 @@ export const mockTasks: Task[] = [
     assignee: annaAndersson as unknown as User,
     createdAt: new Date('2025-01-15'),
     origin: { conversationId: 'hist-anna-2024', conversationTitle: 'Medarbetarsamtal 2024' },
+    statusHistory: [
+      {
+        id: 'update-onboard-2',
+        status: 'gar_enligt_plan',
+        comment: 'NPS ligger nu på 8.2! Nya welcome-kitet har fått fantastisk feedback. Kör vidare mot 9.0.',
+        user: erikAxelsson as unknown as User,
+        timestamp: new Date('2025-10-15T11:00:00')
+      },
+      {
+        id: 'update-onboard-1',
+        status: 'ligger_efter',
+        comment: 'Fick lägre NPS än förväntat (7.8). Feedback visar att vi behöver bättre struktur första veckan.',
+        user: annaAndersson as unknown as User,
+        timestamp: new Date('2025-05-20T14:00:00')
+      }
+    ]
   },
   {
     id: 'task-anna-ongoing-1',

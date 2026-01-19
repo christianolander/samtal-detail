@@ -16,7 +16,7 @@ interface TaskItemProps {
 }
 
 export default function TaskItem({ task, showOrigin = false }: TaskItemProps) {
-  const { updateTask } = useStore()
+  const { updateTask, openTaskModal } = useStore()
   const [isCompletingAnimation, setIsCompletingAnimation] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -90,7 +90,10 @@ export default function TaskItem({ task, showOrigin = false }: TaskItemProps) {
     })
   }
 
-  const handleStatusChange = () => {
+  const handleStatusChange = (e: React.MouseEvent) => {
+    // Stop event from bubbling up to parent div's onClick
+    e.stopPropagation()
+
     // Toggle between pending and completed (skip in_progress)
     const newStatus = task.status === 'completed' ? 'pending' : 'completed'
 
@@ -121,6 +124,14 @@ export default function TaskItem({ task, showOrigin = false }: TaskItemProps) {
     })
   }
 
+  const handleEdit = (e: React.MouseEvent) => {
+    // Prevent triggering if clicking on the checkbox
+    if ((e.target as HTMLElement).closest('button[data-checkbox]')) {
+      return
+    }
+    openTaskModal(task.type, task, 'tab')
+  }
+
   // Goal card design (with left border based on status)
   if (task.type === 'goal') {
     const borderColor = getGoalStatusColor(task.goalStatus ?? null)
@@ -128,7 +139,10 @@ export default function TaskItem({ task, showOrigin = false }: TaskItemProps) {
     const statusTextColor = getGoalStatusTextColor(task.goalStatus ?? null)
 
     return (
-      <div className="group relative bg-card border border-border rounded-md hover:shadow-sm transition-shadow">
+      <div
+        onClick={handleEdit}
+        className="group relative bg-card border border-border rounded-md hover:shadow-sm transition-shadow cursor-pointer"
+      >
         {/* Left border - color based on goalStatus */}
         <div className={`absolute left-0 top-0 bottom-0 w-1 ${borderColor} rounded-l-md`} />
 
@@ -179,16 +193,20 @@ export default function TaskItem({ task, showOrigin = false }: TaskItemProps) {
   const showAsCompleted = isCompleted || isCompletingAnimation
 
   return (
-    <div className={`group relative rounded-md transition-all duration-300 overflow-hidden ${
-      showAsCompleted
-        ? 'bg-green-50 border border-green-200 scale-[1.01]'
-        : 'bg-card border border-border hover:shadow-sm'
-    }`}>
+    <div
+      onClick={handleEdit}
+      className={`group relative rounded-md transition-all duration-300 overflow-hidden cursor-pointer ${
+        showAsCompleted
+          ? 'bg-green-50 border border-green-200 scale-[1.01]'
+          : 'bg-card border border-border hover:shadow-sm'
+      }`}
+    >
       <div className="px-3 py-2.5">
         <div className="flex items-center gap-2">
           {/* Checkbox */}
           <button
             ref={buttonRef}
+            data-checkbox
             onClick={handleStatusChange}
             className="flex-shrink-0 transition-transform hover:scale-110 active:scale-95"
           >

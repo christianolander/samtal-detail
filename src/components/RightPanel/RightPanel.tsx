@@ -379,41 +379,8 @@ export default function RightPanel() {
               </p>
             </div>
 
-            {/* Automatic documentation CTA - shows when there are files */}
-            {uploadedFiles.length > 0 && (
-              <div className="bg-[#f3e8ff] border border-[#7e22ce]/20 rounded-lg p-4 mb-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#7e22ce]/10 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-[#7e22ce]" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-sm font-semibold text-foreground mb-1">
-                      Automatiska anteckningar
-                    </h4>
-                    <p className="text-xs text-muted-foreground mb-3">
-                      Vill du automatiskt strukturera anteckningarna efter agendan?
-                    </p>
-                    <button
-                      onClick={openAutomaticNotesModal}
-                      className="px-3 py-1.5 bg-[#7e22ce] text-white rounded-md text-xs font-medium hover:bg-[#7e22ce]/90 transition-colors flex items-center gap-1.5"
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      Skapa automatisk dokumentering
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
             <ToolSection
               buttons={[
-                {
-                  icon: Sparkles,
-                  label: 'Automatiska anteckningar',
-                  subtext: 'Strukturera anteckningar med AI.',
-                  variant: 'purple',
-                  onClick: openAutomaticNotesModal,
-                },
                 {
                   icon: ListChecks,
                   label: 'Se mål och uppgifter',
