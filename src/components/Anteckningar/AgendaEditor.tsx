@@ -102,6 +102,7 @@ import "@/components/tiptap-templates/simple/simple-editor.scss"
 interface AgendaEditorProps {
   initialContent?: string
   readOnly?: boolean
+  conversationId?: string // Used for localStorage keying
 }
 
 // Table dropdown component
@@ -449,36 +450,46 @@ const MobileToolbarContent = ({
   </>
 )
 
-export default function AgendaEditor({ initialContent, readOnly = false }: AgendaEditorProps) {
+export default function AgendaEditor({ initialContent, readOnly = false, conversationId }: AgendaEditorProps) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">("main")
   const toolbarRef = useRef<HTMLDivElement>(null)
 
-  const { editorContent, setEditorContent, rightPanelCollapsed, setHasUnsavedChanges } = useStore()
+  const { setEditorContent, setHasUnsavedChanges } = useStore()
   const openTaskModal = useStore((state) => state.openTaskModal)
   const isInitialMount = useRef(true)
+  const lastConversationId = useRef(conversationId)
+
+  // Get conversation-specific localStorage key
+  const getLocalStorageKey = (id?: string) => {
+    return id ? `samtal-editor-content-${id}` : "samtal-editor-content"
+  }
 
   // Expose store globally for slash menu
   useEffect(() => {
     ;(window as any).__zustandStore = useStore
   }, [])
 
-  // Load content from localStorage on mount (for persistence across sessions)
+  // Load content for the current conversation
   const getInitialContent = () => {
     // For read-only mode (historical meetings), always use the provided initialContent
     if (readOnly) {
       return initialContent || "<p>Inga anteckningar tillgängliga.</p>"
     }
 
-    // Priority: 1. Stored content from store (includes localStorage), 2. initialContent prop, 3. default template
-    const storedContent = editorContent || localStorage.getItem("samtal-editor-content")
+    // Check for conversation-specific localStorage content first
+    const storageKey = getLocalStorageKey(conversationId)
+    const storedContent = localStorage.getItem(storageKey)
     if (storedContent && storedContent.trim()) {
       return storedContent
     }
+
+    // Fall back to the provided initialContent (from mock data)
     if (initialContent && initialContent.trim()) {
       return initialContent
     }
+
     return "<h1>Lönesamtal</h1><p>Skriv dina anteckningar här...</p>"
   }
 
@@ -553,11 +564,26 @@ export default function AgendaEditor({ initialContent, readOnly = false }: Agend
           // Immediately reset unsaved changes since this is initial load
           setTimeout(() => setHasUnsavedChanges(false), 0)
         } else {
-          setEditorContent(editor.getHTML())
+          const html = editor.getHTML()
+          setEditorContent(html)
+          // Save to conversation-specific localStorage key
+          const storageKey = getLocalStorageKey(conversationId)
+          localStorage.setItem(storageKey, html)
         }
       }
     },
   })
+
+  // Reset editor content when conversation changes
+  useEffect(() => {
+    if (editor && !editor.isDestroyed && conversationId !== lastConversationId.current) {
+      lastConversationId.current = conversationId
+      isInitialMount.current = true
+      const newContent = getInitialContent()
+      editor.commands.setContent(newContent)
+      setTimeout(() => setHasUnsavedChanges(false), 0)
+    }
+  }, [editor, conversationId, initialContent])
 
   // Update editor editable state when readOnly prop changes
   useEffect(() => {

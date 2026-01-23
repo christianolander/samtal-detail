@@ -656,8 +656,7 @@ export const useStore = create<AppStore>((set, get) => ({
   // ========================================
   setEditorContent: (content) => {
     set({ editorContent: content, hasUnsavedChanges: true })
-    // TODO: Auto-save to localStorage
-    localStorage.setItem('samtal-editor-content', content)
+    // Note: localStorage saving is handled per-conversation in AgendaEditor
   },
 
   setHasUnsavedChanges: (hasChanges) => set({ hasUnsavedChanges: hasChanges }),

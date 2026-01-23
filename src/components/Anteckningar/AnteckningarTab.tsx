@@ -61,7 +61,7 @@ export default function AnteckningarTab() {
           status={currentStatus}
           activeTab={editorMode === 'agenda' ? 'notes' : 'recap'}
           onTabChange={(tab) => setEditorMode(tab === 'notes' ? 'agenda' : 'ai-summary')}
-          notesContent={<AgendaEditor initialContent={currentSamtal.notes} readOnly={isReadOnly} />}
+          notesContent={<AgendaEditor initialContent={currentSamtal.notes} readOnly={isReadOnly} conversationId={currentSamtal.id} />}
           recapContent={<div className="p-6"><AISummary /></div>}
           onSend={handleSend}
           onDownload={handleDownloadPDF}
