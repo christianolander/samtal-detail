@@ -34,3 +34,4 @@ yalc.lock
 
 # Playwright MCP
 .playwright-mcp
+.claude/

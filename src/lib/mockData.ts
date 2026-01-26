@@ -120,6 +120,15 @@ export const karinLarsson: Participant = {
   avatar: 'https://i.pravatar.cc/150?u=karin',
 }
 
+export const erikDanielsson: Participant = {
+  id: '12',
+  name: 'Erik Danielsson',
+  email: 'erik.danielsson@workly.se',
+  title: 'Marketing Specialist',
+  roleInSamtal: 'Deltagare',
+  avatar: 'https://i.pravatar.cc/150?u=erikd',
+}
+
 // ========================================
 // Agendas
 // ========================================
@@ -227,75 +236,203 @@ const marcusCompletedNotes = `
   </div>
 </div>`
 
-// New Medarbetarsamtal Template
+// Medarbetarsamtal Template 2026
 const medarbetarsamtalTemplate = `
 <div class="space-y-8">
   <div>
-    <img src="https://i.ibb.co/Vpwbjtty/image.jpg" alt="Medarbetarsamtal" class="w-full rounded-lg mb-6" />
-    <h1 class="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
-      <span class="text-3xl">💬</span> Medarbetarsamtal 2025
-    </h1>
-    
-    <div class="space-y-6">
+    <h1 class="text-3xl font-bold text-foreground mb-4">Välkommen</h1>
+    <p class="text-foreground/80 mb-8">Medarbetarsamtalet är ett planerat och strukturerat samtal mellan chef och medarbetare med syfte att skapa dialog kring arbetssituation, trivsel, prestation och utveckling. Samtalet ger oss möjlighet att stanna upp, reflektera över nuläget och gemensamt blicka framåt. Samtalet bygger på att vi har en öppen dialog och ett gemensamt ansvar.</p>
+
+    <p><br></p>
+
+    <div class="space-y-8">
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
-          <span>👋</span> Välkommen
-        </h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p>Välkommen till vårt medarbetarsamtal! Detta är en möjlighet för oss att diskutera din utveckling, mål och trivsel.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">1. Inledning, tillbakablick och nuläge</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p><strong>Hur är din känsla på jobbet i nuläget? Vad tar och ger dig energi?</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
         </div>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
-          <span>🎯</span> Prestationer & Mål
-        </h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Reflektion över senaste perioden:</strong></p>
-          <p class="text-muted-foreground italic">Lägg till kommentarer här...</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">2. Arbetsuppgifter och ansvar</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Säkerställa tydlighet, rimlig arbetsbelastning, fokus och förutsättningar.</p>
+          <p><strong>Vad är viktigt i jobbet för att du ska må bra och prestera?</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
         </div>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
-          <span>💬</span> Feedback
-        </h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Vad fungerar bra i ditt arbete just nu?</strong></p>
-          <p class="text-muted-foreground italic">Lägg till kommentarer här...</p>
-          <p><strong>Finns det något du skulle vilja förändra eller förbättra?</strong></p>
-          <p class="text-muted-foreground italic">Lägg till kommentarer här...</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">3. Samarbete och arbetsmiljö</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Trivsel och relationer till kollegor.</p>
+          <p><strong>Hur fungerar samarbetet med dina kollegor? Något som kan fungera bättre?</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
         </div>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
-          <span>📈</span> Utveckling
-        </h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Vilka kompetenser vill du utveckla framöver?</strong></p>
-          <p class="text-muted-foreground italic">Lägg till kommentarer här...</p>
-          <p><strong>Finns det utbildningar eller kurser som skulle vara värdefulla?</strong></p>
-          <p class="text-muted-foreground italic">Lägg till kommentarer här...</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">4. Utveckling och lärande</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Motivation, engagemang och långsiktig kompetensutveckling.</p>
+
+          <p><strong>Finns det områden i din nuvarande roll där du vill eller behöver utvecklas?</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+
+          <p><strong>Hur vill du utvecklas på kort och lång sikt, finns det roller eller ansvarsområden som du är intresserad av?</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+
+          <p><strong>Hur kan jag som chef bäst stötta dig i din utveckling och i ditt lärande?</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
         </div>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
-          <span>📊</span> Enkätresultat - Diskussion
-        </h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Gå igenom enkätresultaten tillsammans och notera viktiga punkter:</strong></p>
-          <p class="text-muted-foreground italic">Lägg till kommentarer här...</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">5. Mål och fokus framåt</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Måluppfyllnad under året, skapa en tydlig riktning och målsättning kommande år.</p>
+
+          <p><strong>Hur har uppsatta mål uppnåtts?</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+
+          <p><strong>Hur ser kommande mål ut?</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
         </div>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
-          <span>😊</span> Trivsel
-        </h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p class="text-muted-foreground italic">Lägg till kommentarer här...</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">6. Feedback/återkoppling till chef</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Öppen dialog om samarbete med närmsta chef.</p>
+          <p><strong>Vad i samarbetet/dialogen med din chef tycker du fungerar bra? Finns det något som kan fungera bättre framåt?</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">7. Sammanfattning och överenskommelser</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Samsyn om samtalet och kommande period.</p>
+
+          <p><strong>Finns det något mer som du vill ta upp och som vi inte har berört under samtalet?</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+
+          <p><strong>Vilka är de viktigaste insikterna och slutsatserna från dagens samtal?</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+`
+
+// Medarbetarsamtal Template 2026 - Fun Emoji Version
+const medarbetarsamtalTemplateEmoji = `
+<div class="space-y-8">
+  <div>
+    <h1 class="text-3xl font-bold text-foreground mb-4">👋 Välkommen!</h1>
+    <p class="text-foreground/80 mb-8">Medarbetarsamtalet är ett planerat och strukturerat samtal mellan chef och medarbetare med syfte att skapa dialog kring arbetssituation, trivsel, prestation och utveckling. Samtalet ger oss möjlighet att stanna upp, reflektera över nuläget och gemensamt blicka framåt. Samtalet bygger på att vi har en öppen dialog och ett gemensamt ansvar. 🤝</p>
+
+    <p><br></p>
+
+    <div class="space-y-8">
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">1. 🔄 Inledning, tillbakablick och nuläge</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p><strong>Hur är din känsla på jobbet i nuläget? Vad tar och ger dig energi? ⚡</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">2. 📋 Arbetsuppgifter och ansvar</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Säkerställa tydlighet, rimlig arbetsbelastning, fokus och förutsättningar.</p>
+          <p><strong>Vad är viktigt i jobbet för att du ska må bra och prestera? 💪</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">3. 🤝 Samarbete och arbetsmiljö</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Trivsel och relationer till kollegor.</p>
+          <p><strong>Hur fungerar samarbetet med dina kollegor? Något som kan fungera bättre? 👥</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">4. 📈 Utveckling och lärande</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Motivation, engagemang och långsiktig kompetensutveckling. 🌱</p>
+
+          <p><strong>Finns det områden i din nuvarande roll där du vill eller behöver utvecklas?</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+
+          <p><strong>Hur vill du utvecklas på kort och lång sikt, finns det roller eller ansvarsområden som du är intresserad av? 🚀</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+
+          <p><strong>Hur kan jag som chef bäst stötta dig i din utveckling och i ditt lärande? 🙌</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">5. 🎯 Mål och fokus framåt</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Måluppfyllnad under året, skapa en tydlig riktning och målsättning kommande år.</p>
+
+          <p><strong>Hur har uppsatta mål uppnåtts? ✅</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+
+          <p><strong>Hur ser kommande mål ut? 🌟</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">6. 💬 Feedback/återkoppling till chef</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Öppen dialog om samarbete med närmsta chef.</p>
+          <p><strong>Vad i samarbetet/dialogen med din chef tycker du fungerar bra? Finns det något som kan fungera bättre framåt? 💡</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">7. ✨ Sammanfattning och överenskommelser</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Samsyn om samtalet och kommande period.</p>
+
+          <p><strong>Finns det något mer som du vill ta upp och som vi inte har berört under samtalet? 🤔</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
+
+          <p><strong>Vilka är de viktigaste insikterna och slutsatserna från dagens samtal? 🎉</strong></p>
+          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><br></p>
         </div>
       </section>
     </div>
@@ -477,7 +614,31 @@ export const mockSamtals: Samtal[] = [
     duration: 60,
   },
 
-  // 5. David Persson - Lönerevision (Klar)
+  // 5. Erik Danielsson - Medarbetarsamtal (Bokad)
+  {
+    id: 'samtal-erik-d-2025',
+    name: 'Medarbetarsamtal: Erik Danielsson',
+    status: 'bokad',
+    type: 'Medarbetarsamtal',
+    participants: [erikAxelsson, erikDanielsson],
+    conversationRound: 'Medarbetarsamtal 2025',
+    deadlineDate: new Date('2025-12-31'),
+    bookedDate: new Date('2025-12-18T14:00:00'), // 18 Dec 2025 at 14:00
+    lastUpdated: new Date(),
+    notes: medarbetarsamtalTemplateEmoji,
+    comments: [
+      {
+        id: 'c-erik-d-prep',
+        author: erikDanielsson,
+        text: 'Hej Erik!\n\nSer fram emot vårt samtal! Har förberett några punkter:\n\n✨ Höjdpunkter:\n- Kampanjen för nya produktlanseringen gick över förväntan\n- Bra samarbete med säljteamet\n\n💭 Vill diskutera:\n• Karriärutveckling inom digital marknadsföring\n• Möjlighet att leda fler projekt\n• Balans mellan kreativt arbete och administration\n\nVi ses!',
+        timestamp: new Date('2025-12-16T10:00:00')
+      }
+    ],
+    metadata: { location: 'Rum 305' },
+    duration: 60,
+  },
+
+  // 6. David Persson - Lönerevision (Klar)
   {
     id: 'samtal-david-2025',
     name: 'Lönerevision: David Persson',
