@@ -478,11 +478,22 @@ export default function AgendaEditor({ initialContent, readOnly = false, convers
       return initialContent || "<p>Inga anteckningar tillgängliga.</p>"
     }
 
-    // Check for conversation-specific localStorage content first
+    // Allow ?v=new to force fresh content from mock data (clears stale localStorage)
+    const params = new URLSearchParams(window.location.search)
+    const forceRefresh = params.get('v') === 'new'
+
     const storageKey = getLocalStorageKey(conversationId)
-    const storedContent = localStorage.getItem(storageKey)
-    if (storedContent && storedContent.trim()) {
-      return storedContent
+
+    if (forceRefresh) {
+      localStorage.removeItem(storageKey)
+    }
+
+    // Check for conversation-specific localStorage content first
+    if (!forceRefresh) {
+      const storedContent = localStorage.getItem(storageKey)
+      if (storedContent && storedContent.trim()) {
+        return storedContent
+      }
     }
 
     // Fall back to the provided initialContent (from mock data)
