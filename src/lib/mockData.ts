@@ -240,198 +240,85 @@ const marcusCompletedNotes = `
 const medarbetarsamtalTemplate = `
 <div class="space-y-8">
   <div>
-    <h1 class="text-3xl font-bold text-foreground mb-4">Välkommen</h1>
-    <p class="text-foreground/80 mb-8">Medarbetarsamtalet är ett planerat och strukturerat samtal mellan chef och medarbetare med syfte att skapa dialog kring arbetssituation, trivsel, prestation och utveckling. Samtalet ger oss möjlighet att stanna upp, reflektera över nuläget och gemensamt blicka framåt. Samtalet bygger på att vi har en öppen dialog och ett gemensamt ansvar.</p>
+    <h1 class="text-3xl font-bold text-foreground mb-4">👋 Välkommen</h1>
+    <p class="text-foreground/80 mb-8">Medarbetarsamtalet är ett planerat och strukturerat samtal med syfte att skapa dialog kring arbetssituation, prestation och utveckling. Samtalet ger oss möjlighet att stanna upp, reflektera och gemensamt blicka framåt. Under samtalet har vi en öppen dialog och ett gemensamt ansvar.</p>
 
     <p><br></p>
 
     <div class="space-y-8">
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">1. Inledning, tillbakablick och nuläge</h2>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🔄 Inledning, tillbakablick och nuläge</h2>
         <div class="pl-0 space-y-3 text-foreground/80">
-          <p><strong>Hur är din känsla på jobbet i nuläget? Vad tar och ger dig energi?</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><strong>1. Hur upplever du din arbetssituation just nu? Vad tar och ger dig energi?</strong></p>
           <p><br></p>
         </div>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">2. Arbetsuppgifter och ansvar</h2>
+        <h2 class="text-xl font-semibold text-foreground mb-3">📋 Arbetsuppgifter och ansvar</h2>
         <div class="pl-0 space-y-3 text-foreground/80">
           <p class="text-muted-foreground">Säkerställa tydlighet, rimlig arbetsbelastning, fokus och förutsättningar.</p>
-          <p><strong>Vad är viktigt i jobbet för att du ska må bra och prestera?</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><strong>2. Vad är viktigt i jobbet för att du ska må bra och prestera?</strong></p>
           <p><br></p>
         </div>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">3. Samarbete och arbetsmiljö</h2>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🤝 Samarbete och arbetsmiljö</h2>
         <div class="pl-0 space-y-3 text-foreground/80">
           <p class="text-muted-foreground">Trivsel och relationer till kollegor.</p>
-          <p><strong>Hur fungerar samarbetet med dina kollegor? Något som kan fungera bättre?</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><strong>3. Hur fungerar samarbetet med dina kollegor? Något som kan fungera bättre?</strong></p>
           <p><br></p>
         </div>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">4. Utveckling och lärande</h2>
+        <h2 class="text-xl font-semibold text-foreground mb-3">📈 Utveckling och lärande</h2>
         <div class="pl-0 space-y-3 text-foreground/80">
           <p class="text-muted-foreground">Motivation, engagemang och långsiktig kompetensutveckling.</p>
 
-          <p><strong>Finns det områden i din nuvarande roll där du vill eller behöver utvecklas?</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><strong>4. Finns det områden i din nuvarande roll där du vill eller behöver utvecklas?</strong></p>
           <p><br></p>
 
-          <p><strong>Hur vill du utvecklas på kort och lång sikt, finns det roller eller ansvarsområden som du är intresserad av?</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><strong>5. Hur vill du utvecklas på kort och lång sikt, finns det roller eller ansvarsområden som du är intresserad av?</strong></p>
           <p><br></p>
 
-          <p><strong>Hur kan jag som chef bäst stötta dig i din utveckling och i ditt lärande?</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><strong>6. Hur kan jag som chef bäst stötta dig i din utveckling och i ditt lärande?</strong></p>
           <p><br></p>
         </div>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">5. Mål och fokus framåt</h2>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🎯 Mål och fokus framåt</h2>
         <div class="pl-0 space-y-3 text-foreground/80">
           <p class="text-muted-foreground">Måluppfyllnad under året, skapa en tydlig riktning och målsättning kommande år.</p>
 
-          <p><strong>Hur har uppsatta mål uppnåtts?</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><strong>7. Hur har uppsatta mål uppnåtts?</strong></p>
           <p><br></p>
 
-          <p><strong>Hur ser kommande mål ut?</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><strong>8. Hur ser kommande mål ut?</strong></p>
           <p><br></p>
         </div>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">6. Feedback/återkoppling till chef</h2>
+        <h2 class="text-xl font-semibold text-foreground mb-3">💬 Feedback/återkoppling till chef</h2>
         <div class="pl-0 space-y-3 text-foreground/80">
           <p class="text-muted-foreground">Öppen dialog om samarbete med närmsta chef.</p>
-          <p><strong>Vad i samarbetet/dialogen med din chef tycker du fungerar bra? Finns det något som kan fungera bättre framåt?</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><strong>9. Vad i samarbetet/dialogen med din chef tycker du fungerar bra? Finns det något som kan fungera bättre framåt?</strong></p>
           <p><br></p>
         </div>
       </section>
 
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">7. Sammanfattning och överenskommelser</h2>
+        <h2 class="text-xl font-semibold text-foreground mb-3">✨ Sammanfattning och överenskommelser</h2>
         <div class="pl-0 space-y-3 text-foreground/80">
           <p class="text-muted-foreground">Samsyn om samtalet och kommande period.</p>
 
-          <p><strong>Finns det något mer som du vill ta upp och som vi inte har berört under samtalet?</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><strong>10. Finns det något mer som du vill ta upp och som vi inte har berört under samtalet?</strong></p>
           <p><br></p>
 
-          <p><strong>Vilka är de viktigaste insikterna och slutsatserna från dagens samtal?</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
-          <p><br></p>
-        </div>
-      </section>
-    </div>
-  </div>
-</div>
-`
-
-// Medarbetarsamtal Template 2026 - Fun Emoji Version
-const medarbetarsamtalTemplateEmoji = `
-<div class="space-y-8">
-  <div>
-    <h1 class="text-3xl font-bold text-foreground mb-4">👋 Välkommen!</h1>
-    <p class="text-foreground/80 mb-8">Medarbetarsamtalet är ett planerat och strukturerat samtal mellan chef och medarbetare med syfte att skapa dialog kring arbetssituation, trivsel, prestation och utveckling. Samtalet ger oss möjlighet att stanna upp, reflektera över nuläget och gemensamt blicka framåt. Samtalet bygger på att vi har en öppen dialog och ett gemensamt ansvar. 🤝</p>
-
-    <p><br></p>
-
-    <div class="space-y-8">
-      <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">1. 🔄 Inledning, tillbakablick och nuläge</h2>
-        <div class="pl-0 space-y-3 text-foreground/80">
-          <p><strong>Hur är din känsla på jobbet i nuläget? Vad tar och ger dig energi? ⚡</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
-          <p><br></p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">2. 📋 Arbetsuppgifter och ansvar</h2>
-        <div class="pl-0 space-y-3 text-foreground/80">
-          <p class="text-muted-foreground">Säkerställa tydlighet, rimlig arbetsbelastning, fokus och förutsättningar.</p>
-          <p><strong>Vad är viktigt i jobbet för att du ska må bra och prestera? 💪</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
-          <p><br></p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">3. 🤝 Samarbete och arbetsmiljö</h2>
-        <div class="pl-0 space-y-3 text-foreground/80">
-          <p class="text-muted-foreground">Trivsel och relationer till kollegor.</p>
-          <p><strong>Hur fungerar samarbetet med dina kollegor? Något som kan fungera bättre? 👥</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
-          <p><br></p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">4. 📈 Utveckling och lärande</h2>
-        <div class="pl-0 space-y-3 text-foreground/80">
-          <p class="text-muted-foreground">Motivation, engagemang och långsiktig kompetensutveckling. 🌱</p>
-
-          <p><strong>Finns det områden i din nuvarande roll där du vill eller behöver utvecklas?</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
-          <p><br></p>
-
-          <p><strong>Hur vill du utvecklas på kort och lång sikt, finns det roller eller ansvarsområden som du är intresserad av? 🚀</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
-          <p><br></p>
-
-          <p><strong>Hur kan jag som chef bäst stötta dig i din utveckling och i ditt lärande? 🙌</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
-          <p><br></p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">5. 🎯 Mål och fokus framåt</h2>
-        <div class="pl-0 space-y-3 text-foreground/80">
-          <p class="text-muted-foreground">Måluppfyllnad under året, skapa en tydlig riktning och målsättning kommande år.</p>
-
-          <p><strong>Hur har uppsatta mål uppnåtts? ✅</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
-          <p><br></p>
-
-          <p><strong>Hur ser kommande mål ut? 🌟</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
-          <p><br></p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">6. 💬 Feedback/återkoppling till chef</h2>
-        <div class="pl-0 space-y-3 text-foreground/80">
-          <p class="text-muted-foreground">Öppen dialog om samarbete med närmsta chef.</p>
-          <p><strong>Vad i samarbetet/dialogen med din chef tycker du fungerar bra? Finns det något som kan fungera bättre framåt? 💡</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
-          <p><br></p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3">7. ✨ Sammanfattning och överenskommelser</h2>
-        <div class="pl-0 space-y-3 text-foreground/80">
-          <p class="text-muted-foreground">Samsyn om samtalet och kommande period.</p>
-
-          <p><strong>Finns det något mer som du vill ta upp och som vi inte har berört under samtalet? 🤔</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
-          <p><br></p>
-
-          <p><strong>Vilka är de viktigaste insikterna och slutsatserna från dagens samtal? 🎉</strong></p>
-          <p class="text-muted-foreground"><em>Svar/Anteckningar</em></p>
+          <p><strong>11. Vilka är de viktigaste insikterna och slutsatserna från dagens samtal?</strong></p>
           <p><br></p>
         </div>
       </section>
@@ -444,58 +331,96 @@ const medarbetarsamtalTemplateEmoji = `
 const karinCompletedNotes = `
 <div class="space-y-8">
   <div>
-    <img src="https://i.ibb.co/Vpwbjtty/image.jpg" alt="Medarbetarsamtal" class="w-full rounded-lg mb-6" />
-    <h1 class="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
-      <span class="text-3xl">💬</span> Medarbetarsamtal 2025
-    </h1>
-    <div class="space-y-6">
+    <h1 class="text-3xl font-bold text-foreground mb-4">👋 Välkommen</h1>
+    <p class="text-foreground/80 mb-8">Medarbetarsamtalet är ett planerat och strukturerat samtal med syfte att skapa dialog kring arbetssituation, prestation och utveckling. Samtalet ger oss möjlighet att stanna upp, reflektera och gemensamt blicka framåt. Under samtalet har vi en öppen dialog och ett gemensamt ansvar.</p>
+
+    <p><br></p>
+
+    <div class="space-y-8">
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>👋</span> Välkommen</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p>Välkommen till vårt medarbetarsamtal! Detta är en möjlighet för oss att diskutera din utveckling, mål och trivsel.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🔄 Inledning, tillbakablick och nuläge</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p><strong>1. Hur upplever du din arbetssituation just nu? Vad tar och ger dig energi?</strong></p>
+          <p>Karin känner sig mycket nöjd med sin roll som projektledare. Hon får energi av att se projekt komma i mål och teamet växa. Projekt Alpha var en höjdpunkt - levererat i tid och under budget!</p>
+          <p>Det som tar energi är ibland stresspuckorna när deadlines närmar sig och teamet behöver mer stöttning. Hon känner att hon tar på sig lite för mycket själv i de lägena.</p>
         </div>
       </section>
+
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>🎯</span> Prestationer & Mål</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Reflektion över senaste perioden:</strong></p>
-          <p>Karin har gjort ett fantastiskt jobb med projektledningen i år. Projekt Alpha levererades i tid och under budget. Hon har visat starkt ledarskap och fått mycket positiv feedback från teamet.</p>
-          <p>Hon har också tagit initiativ till att förbättra våra projektrutiner, vilket har gett märkbara resultat.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">📋 Arbetsuppgifter och ansvar</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Säkerställa tydlighet, rimlig arbetsbelastning, fokus och förutsättningar.</p>
+          <p><strong>2. Vad är viktigt i jobbet för att du ska må bra och prestera?</strong></p>
+          <p>Karin behöver tydliga ramar och mandat för att driva projekt framåt. Hon uppskattar förtroendet att fatta beslut själv, men vill kunna eskalera när det behövs.</p>
+          <p>Viktigt är också att ha bra verktyg och stöd från ledningen. De nya projektrutinerna hon implementerat har gjort stor skillnad.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🤝 Samarbete och arbetsmiljö</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Trivsel och relationer till kollegor.</p>
+          <p><strong>3. Hur fungerar samarbetet med dina kollegor? Något som kan fungera bättre?</strong></p>
+          <p>Samarbetet med utvecklingsteamet fungerar utmärkt! De nya standup-rutinerna har gjort kommunikationen mycket bättre. Teamet litar på henne och hon känner ett starkt teamarbete.</p>
+          <p>Inget specifikt som behöver förbättras just nu - det flyter på bra.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">📈 Utveckling och lärande</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Motivation, engagemang och långsiktig kompetensutveckling.</p>
+
+          <p><strong>4. Finns det områden i din nuvarande roll där du vill eller behöver utvecklas?</strong></p>
+          <p>Karin vill bli bättre på att delegera. Hon tar ibland på sig för mycket själv istället för att fördela arbetet i teamet. Vi diskuterade att skapa en checklista för delegering.</p>
+          <p><span data-task-chip="" data-task-id="task-karin-1" data-title="Skapa delegerings-checklista" data-type="task"></span></p>
+
+          <p><strong>5. Hur vill du utvecklas på kort och lång sikt, finns det roller eller ansvarsområden som du är intresserad av?</strong></p>
+          <p>Karin vill fördjupa sina kunskaper inom projektledning och tar sikte på PMP-certifiering under 2026. Hon är också intresserad av att lära sig mer om agila metoder på skalad nivå (SAFe).</p>
+          <p>På längre sikt vill hon leda större, tvärfunktionella projekt som sträcker sig över flera team.</p>
           <p><span data-task-chip="" data-task-id="goal-karin-1" data-title="Ta PMP-certifiering" data-type="goal"></span></p>
           <p><span data-task-chip="" data-task-id="goal-karin-2" data-title="Leda tvärfunktionellt projekt" data-type="goal"></span></p>
-        </div>
-      </section>
-      <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>💬</span> Feedback</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Vad fungerar bra i ditt arbete just nu?</strong></p>
-          <p>Karin lyfter att samarbetet med utvecklingsteamet fungerar utmärkt. De nya standup-rutinerna har gjort kommunikationen mycket bättre. Hon uppskattar också förtroendet att driva projekt självständigt.</p>
-          <p><strong>Vad kan förbättras?</strong></p>
-          <p>Karin vill bli bättre på att delegera. Hon tar ibland på sig för mycket själv istället för att fördela arbetet i teamet.</p>
-          <p><span data-task-chip="" data-task-id="task-karin-1" data-title="Skapa delegerings-checklista" data-type="task"></span></p>
-        </div>
-      </section>
-      <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>📈</span> Utveckling</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Vilka kompetenser vill du utveckla framöver?</strong></p>
-          <p>Karin vill fördjupa sina kunskaper inom projektledning och tar sikte på PMP-certifiering under 2026. Hon är också intresserad av att lära sig mer om agila metoder på skalad nivå (SAFe).</p>
-          <p><strong>Utbildning och kurser:</strong></p>
-          <p>Vi diskuterade PMP-certifiering som nästa steg. Karin ska ta fram en studieplan och presentera för godkännande.</p>
+
+          <p><strong>6. Hur kan jag som chef bäst stötta dig i din utveckling och i ditt lärande?</strong></p>
+          <p>Karin skulle uppskatta stöd med att hitta en bra PMP-kurs och tid att studera. Också feedback när hon delegerar så att hon kan lära sig göra det bättre.</p>
           <p><span data-task-chip="" data-task-id="task-karin-2" data-title="Ta fram studieplan för PMP" data-type="task"></span></p>
         </div>
       </section>
+
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>😊</span> Trivsel</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p>Karin trivs mycket bra och känner sig motiverad. Hon uppskattar teamkänslan och den flexibla arbetsmiljön. Enda funderingen är att hon ibland känner sig stressad vid projektdeadlines - vi ska titta på bättre resursplanering.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🎯 Mål och fokus framåt</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Måluppfyllnad under året, skapa en tydlig riktning och målsättning kommande år.</p>
+
+          <p><strong>7. Hur har uppsatta mål uppnåtts?</strong></p>
+          <p>Projekt Alpha levererades i tid och under budget - fantastiskt resultat! Teamet är mycket nöjda med ledningen. Alla mål från förra året har uppnåtts.</p>
+
+          <p><strong>8. Hur ser kommande mål ut?</strong></p>
+          <p>Fokus framåt är att fortsätta leverera projekt i samma kvalitet, samtidigt som Karin utvecklar sin kompetens med PMP-certifiering. Också viktigt att förbättra resursplaneringen så att stress minskar vid deadlines.</p>
           <p><span data-task-chip="" data-task-id="task-karin-3" data-title="Granska resursplanering för Q1" data-type="task"></span></p>
         </div>
       </section>
+
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>📊</span> Enkätresultat</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p>Gick igenom senaste medarbetarenkäten. Karin är nöjd med resultaten och uppskattar den öppna feedbackkulturen vi byggt upp.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">💬 Feedback/återkoppling till chef</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Öppen dialog om samarbete med närmsta chef.</p>
+          <p><strong>9. Vad i samarbetet/dialogen med din chef tycker du fungerar bra? Finns det något som kan fungera bättre framåt?</strong></p>
+          <p>Karin uppskattar att Erik är tillgänglig och lyssnar. Hon får det mandat hon behöver och känner att hon får förtroende att driva sina projekt.</p>
+          <p>Skulle vilja ha lite mer regelbundna 1:1 möten för att kunna bolla idéer och få feedback löpande.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">✨ Sammanfattning och överenskommelser</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Samsyn om samtalet och kommande period.</p>
+
+          <p><strong>10. Finns det något mer som du vill ta upp och som vi inte har berört under samtalet?</strong></p>
+          <p>Karin nämnde att hon är nyfiken på vad som händer med organisationsförändringar framöver, men inget brådskande.</p>
+
+          <p><strong>11. Vilka är de viktigaste insikterna och slutsatserna från dagens samtal?</strong></p>
+          <p>Karin har haft ett fantastiskt år med Projekt Alpha. Hon behöver jobba på delegering och ta fram en plan för PMP-certifiering. Vi ska också se över resursplanering för att minska stress vid deadlines. Fortsätt det goda arbetet!</p>
         </div>
       </section>
     </div>
@@ -625,7 +550,7 @@ export const mockSamtals: Samtal[] = [
     deadlineDate: new Date('2025-12-31'),
     bookedDate: new Date('2025-12-18T14:00:00'), // 18 Dec 2025 at 14:00
     lastUpdated: new Date(),
-    notes: medarbetarsamtalTemplateEmoji,
+    notes: medarbetarsamtalTemplate,
     comments: [
       {
         id: 'c-erik-d-prep',
@@ -1000,37 +925,115 @@ export const mockHistoricalMeetings: HistoricalMeeting[] = [
     agendaContent: `
 <div class="space-y-8">
   <div>
-    <h1 class="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
-      <span class="text-3xl">💬</span> Medarbetarsamtal 2024
-    </h1>
-    <div class="space-y-6">
+    <h1 class="text-3xl font-bold text-foreground mb-4">👋 Välkommen</h1>
+    <p class="text-foreground/80 mb-8">Medarbetarsamtalet är ett planerat och strukturerat samtal med syfte att skapa dialog kring arbetssituation, prestation och utveckling. Samtalet ger oss möjlighet att stanna upp, reflektera och gemensamt blicka framåt. Under samtalet har vi en öppen dialog och ett gemensamt ansvar.</p>
+
+    <p><br></p>
+
+    <div class="space-y-8">
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>🎯</span> Prestationer & Mål</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Reflektion:</strong></p>
-          <p>Karin har visat starkt ledarskap i projektet Alpha.</p>
-          <p><span data-task-chip="" data-task-id="goal-hist-karin-1" data-title="Certifiering i Projektledning" data-type="goal"></span></p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🔄 Inledning, tillbakablick och nuläge</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p><strong>1. Hur upplever du din arbetssituation just nu? Vad tar och ger dig energi?</strong></p>
+          <p>Karin mår bra och känner sig bekväm i sin roll. Projekt Alpha har varit utmanande men väldigt givande. Hon får energi av att leda team och se saker bli verklighet.</p>
         </div>
       </section>
+
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>📈</span> Utveckling</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p>Karin vill ta mer ansvar för budgetering.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">📋 Arbetsuppgifter och ansvar</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Säkerställa tydlighet, rimlig arbetsbelastning, fokus och förutsättningar.</p>
+          <p><strong>2. Vad är viktigt i jobbet för att du ska må bra och prestera?</strong></p>
+          <p>Tydliga ramar och mandat. Karin behöver veta att hon har stöd från ledningen när hon fattar beslut.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🤝 Samarbete och arbetsmiljö</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Trivsel och relationer till kollegor.</p>
+          <p><strong>3. Hur fungerar samarbetet med dina kollegor? Något som kan fungera bättre?</strong></p>
+          <p>Bra samarbete med teamet. Ingen större anmärkning. Möjligen lite mer struktur i kommunikationen framöver.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">📈 Utveckling och lärande</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Motivation, engagemang och långsiktig kompetensutveckling.</p>
+
+          <p><strong>4. Finns det områden i din nuvarande roll där du vill eller behöver utvecklas?</strong></p>
+          <p>Karin vill lära sig mer om projektledningsmetodik formellt. Hon har erfarenhet men saknar certifiering.</p>
+
+          <p><strong>5. Hur vill du utvecklas på kort och lång sikt, finns det roller eller ansvarsområden som du är intresserad av?</strong></p>
+          <p>Karin vill ta certifiering i projektledning och på sikt ta mer ansvar för budget och ekonomistyrning.</p>
+          <p><span data-task-chip="" data-task-id="goal-hist-karin-1" data-title="Certifiering i Projektledning" data-type="goal"></span></p>
+
+          <p><strong>6. Hur kan jag som chef bäst stötta dig i din utveckling och i ditt lärande?</strong></p>
+          <p>Stöd med utbildning och möjlighet att jobba med budgetansvar i kommande projekt.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🎯 Mål och fokus framåt</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Måluppfyllnad under året, skapa en tydlig riktning och målsättning kommande år.</p>
+
+          <p><strong>7. Hur har uppsatta mål uppnåtts?</strong></p>
+          <p>Projekt Alpha levererades framgångsrikt. Karin visade starkt ledarskap och fick positiv feedback från teamet.</p>
+
+          <p><strong>8. Hur ser kommande mål ut?</strong></p>
+          <p>Ta certifiering och börja jobba med budget i nästa projekt.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">💬 Feedback/återkoppling till chef</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Öppen dialog om samarbete med närmsta chef.</p>
+          <p><strong>9. Vad i samarbetet/dialogen med din chef tycker du fungerar bra? Finns det något som kan fungera bättre framåt?</strong></p>
+          <p>Erik är lyhörd och ger bra stöd. Fungerar bra.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">✨ Sammanfattning och överenskommelser</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Samsyn om samtalet och kommande period.</p>
+
+          <p><strong>10. Finns det något mer som du vill ta upp och som vi inte har berört under samtalet?</strong></p>
+          <p>Inget särskilt just nu.</p>
+
+          <p><strong>11. Vilka är de viktigaste insikterna och slutsatserna från dagens samtal?</strong></p>
+          <p>Karin har levererat starkt. Nästa steg är certifiering och mer budgetansvar. Bra år framöver!</p>
         </div>
       </section>
     </div>
   </div>
 </div>`,
     aiSummary: {
-      overview: 'Karin har haft ett mycket bra år med fokus på ledarskap.',
-      keyDiscussions: ['Projekt Alpha succé', 'Budgetansvar'],
-      managerNotes: ['Karin är redo för senior roll'],
+      overview: 'Ett positivt medarbetarsamtal med Karin Larsson. Karin mår bra i sin roll och fick energi av att leda Projekt Alpha. Hon vill formalisera sin projektledningskompetens med certifiering och på sikt ta mer budgetansvar.',
+      keyDiscussions: [
+        'Karin upplever arbetssituationen positivt och får energi av att leda team och se projekt bli verklighet.',
+        'Samarbetet fungerar bra men mer struktur i kommunikationen önskas.',
+        'Vill ta certifiering i projektledning och få mer budgetansvar i kommande projekt.',
+        'Uppskattar stöd och lyhördhet från chef. Inga förbättringsområden lyfta.'
+      ],
+      managerNotes: [
+        'Karin är redo för en senior roll - ge henne möjlighet till certifiering och budgetansvar',
+        'Projekt Alpha levererades framgångsrikt under hennes ledning',
+        'Stöd med utbildning och möjlighet att jobba med budget i nästa projekt'
+      ],
       surveyInsights: [],
       goalsAndTasks: {
         goals: [{ title: 'Certifiering i Projektledning', status: 'completed', origin: { conversationId: 'hist-karin-2024' } }],
         tasks: []
       },
-      nextSteps: []
+      nextSteps: [
+        'Hitta lämplig certifieringskurs i projektledning',
+        'Ge Karin budgetansvar i nästa projekt',
+        'Uppföljning av certifieringsframsteg vid nästa samtal'
+      ]
     },
     comments: [
       {
@@ -1064,15 +1067,26 @@ export const mockHistoricalMeetings: HistoricalMeeting[] = [
 <h2>💰 Löneöversyn</h2>
 <p>Löneökning 5%.</p>`,
     aiSummary: {
-      overview: 'Starkt säljår för Lisa.',
-      keyDiscussions: ['Säljmål', 'Storkunder'],
-      managerNotes: ['5% ökning'],
+      overview: 'Lönerevision med Lisa Svensson. Lisa har haft ett starkt säljår och överträffade sina försäljningsmål med 15%. Fokus framåt ligger på att fortsätta växa storkundsportföljen. Löneökning på 5% överenskommen.',
+      keyDiscussions: [
+        'Lisa överträffade sina försäljningsmål med 15% under året.',
+        'Fortsatt fokus på storkunder som strategisk prioritering.',
+        'Löneökning på 5% beslutad baserat på stark prestation.'
+      ],
+      managerNotes: [
+        'Lisa levererar konsekvent över förväntan - viktig att behålla',
+        'Storkunder är rätt fokus, stötta med resurser vid behov',
+        '5% löneökning motiverad av starka resultat'
+      ],
       surveyInsights: [],
       goalsAndTasks: {
         goals: [{ title: 'Öka försäljning Q3 2024', status: 'completed', origin: { conversationId: 'hist-lisa-2024' } }],
         tasks: []
       },
-      nextSteps: []
+      nextSteps: [
+        'Uppföljning av storkundsstrategi i Q2',
+        'Bekräfta lönejustering med HR'
+      ]
     },
     comments: [
       {
@@ -1106,15 +1120,26 @@ export const mockHistoricalMeetings: HistoricalMeeting[] = [
 <h2>💰 Löneöversyn</h2>
 <p>Löneökning 4%.</p>`,
     aiSummary: {
-      overview: 'Marcus levererar bra kvalitet.',
-      keyDiscussions: ['Testtäckning', 'Automatisering'],
-      managerNotes: ['4% ökning'],
+      overview: 'Lönerevision med Marcus Lindqvist. Marcus har förbättrat testtäckningen avsevärt under året och levererar konsekvent hög kvalitet. Automatisering av testsviten prioriteras framåt. Löneökning på 4% överenskommen.',
+      keyDiscussions: [
+        'Marcus har förbättrat testtäckningen avsevärt under året.',
+        'Automatisering av testsviten är nästa steg och högsta prioritet.',
+        'Löneökning på 4% beslutad baserat på kvalitetsförbättringar.'
+      ],
+      managerNotes: [
+        'Marcus är pålitlig och levererar hög kvalitet konsekvent',
+        'Automatisering av testsviten ger stor affärsvärde - stötta med tid och resurser',
+        '4% löneökning motiverad av förbättrad testtäckning och stabilitet'
+      ],
       surveyInsights: [],
       goalsAndTasks: {
         goals: [{ title: 'Automatisera testsvit', status: 'completed', origin: { conversationId: 'hist-marcus-2024' } }],
         tasks: []
       },
-      nextSteps: []
+      nextSteps: [
+        'Påbörja automatiseringsprojektet under Q2',
+        'Uppföljning av testtäckningsmetrik kvartalsvis'
+      ]
     },
     comments: [
       {
@@ -1138,58 +1163,99 @@ export const mockHistoricalMeetings: HistoricalMeeting[] = [
     agendaContent: `
 <div class="space-y-8">
   <div>
-    <h1 class="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
-      <span class="text-3xl">💬</span> Medarbetarsamtal 2024
-    </h1>
-    <div class="space-y-6">
+    <h1 class="text-3xl font-bold text-foreground mb-4">👋 Välkommen</h1>
+    <p class="text-foreground/80 mb-8">Medarbetarsamtalet är ett planerat och strukturerat samtal med syfte att skapa dialog kring arbetssituation, prestation och utveckling. Samtalet ger oss möjlighet att stanna upp, reflektera och gemensamt blicka framåt. Under samtalet har vi en öppen dialog och ett gemensamt ansvar.</p>
+
+    <p><br></p>
+
+    <div class="space-y-8">
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>👋</span> Välkommen</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p>Årets första medarbetarsamtal med Anna. Vi går igenom hennes fantastiska insatser under 2023 och planerar för ett spännande 2024.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🔄 Inledning, tillbakablick och nuläge</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p><strong>1. Hur upplever du din arbetssituation just nu? Vad tar och ger dig energi?</strong></p>
+          <p>Anna känner sig väldigt nöjd med 2023! Hon får energi av att bygga upp rekryteringsprocesser och se nya kollegor komma in. Särskilt roligt när kandidater berömmer vår rekryteringsupplevelse.</p>
+          <p>Det som tar energi är perioder med många öppna tjänster samtidigt - kan bli rörigt och intensivt.</p>
         </div>
       </section>
+
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>🎯</span> Prestationer & Mål</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Reflektion över 2023:</strong></p>
-          <p>Anna har hanterat företagets tillväxt på ett imponerande sätt. Hon har byggt upp en solid rekryteringsprocess som både är effektiv och ger en fantastisk kandidatupplevelse. Vi fick mycket positiv feedback i Glassdoor-recensioner om vår rekryteringsprocess.</p>
-          <p>Employer branding-arbetet hon startade har gett resultat - vi ser 40% fler spontanansökningar jämfört med förra året.</p>
-          <p><strong>Mål för 2024:</strong></p>
-          <p>Vi behöver växa teknikteamet rejält. Anna tar ansvar för att rekrytera 5 nya utvecklare under året, med fokus på seniora profiler.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">📋 Arbetsuppgifter och ansvar</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Säkerställa tydlighet, rimlig arbetsbelastning, fokus och förutsättningar.</p>
+          <p><strong>2. Vad är viktigt i jobbet för att du ska må bra och prestera?</strong></p>
+          <p>Anna behöver tydlighet om prioriteringar när det är många rekryteringar samtidigt. Också viktigt med bra verktyg - nuvarande ATS:et är lite begränsande.</p>
+          <p>Hon uppskattar att ha ett nära samarbete med cheferna för att förstå exakt vad de söker.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🤝 Samarbete och arbetsmiljö</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Trivsel och relationer till kollegor.</p>
+          <p><strong>3. Hur fungerar samarbetet med dina kollegor? Något som kan fungera bättre?</strong></p>
+          <p>Samarbetet är jättebra! Anna har byggt starka relationer med alla chefer. Hon känner att hon har förtroende och blir lyssnad på.</p>
+          <p>Inget specifikt att förbättra - det fungerar väldigt bra.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">📈 Utveckling och lärande</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Motivation, engagemang och långsiktig kompetensutveckling.</p>
+
+          <p><strong>4. Finns det områden i din nuvarande roll där du vill eller behöver utvecklas?</strong></p>
+          <p>Anna vill bli bättre på att delegera - hon tar ibland på sig för mycket själv. Också vill hon lära sig säga nej när arbetsbelastningen blir för hög.</p>
+          <p>Hon vill också strukturera onboarding-processen bättre.</p>
+          <p><span data-task-chip="" data-task-id="task-hist-anna-1" data-title="Skapa onboarding-handbok" data-type="task"></span></p>
+
+          <p><strong>5. Hur vill du utvecklas på kort och lång sikt, finns det roller eller ansvarsområden som du är intresserad av?</strong></p>
+          <p>Anna vill fördjupa sig inom strategiskt HR-arbete och People Analytics. Hon är intresserad av att gå från operativt till mer strategiskt fokus på längre sikt.</p>
+          <p>Också intresserad av DEI-arbete (Diversity, Equity & Inclusion) för att stärka vår rekrytering.</p>
+
+          <p><strong>6. Hur kan jag som chef bäst stötta dig i din utveckling och i ditt lärande?</strong></p>
+          <p>Anna skulle uppskatta stöd med att gå en kurs i People Analytics under våren. Också bra med regelbundna diskussioner om strategiska HR-frågor.</p>
+          <p><span data-task-chip="" data-task-id="task-hist-anna-2" data-title="Gå People Analytics-kurs" data-type="task"></span></p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🎯 Mål och fokus framåt</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Måluppfyllnad under året, skapa en tydlig riktning och målsättning kommande år.</p>
+
+          <p><strong>7. Hur har uppsatta mål uppnåtts?</strong></p>
+          <p>Anna har levererat fantastiskt! Byggt upp solid rekryteringsprocess och fått positiv Glassdoor-feedback. Employer branding-arbetet har gett 40% fler spontanansökningar.</p>
+          <p>Kandidatupplevelsen får konsekvent högt beröm från intervjuade kandidater.</p>
+
+          <p><strong>8. Hur ser kommande mål ut?</strong></p>
+          <p>Vi behöver växa teknikteamet rejält under 2024. Anna tar ansvar för att rekrytera 5 nya utvecklare, med fokus på seniora profiler.</p>
+          <p>Också implementera ett nytt ATS-system för att effektivisera processen.</p>
           <p><span data-task-chip="" data-task-id="goal-hist-anna-1" data-title="Rekrytera 5 utvecklare" data-type="goal"></span></p>
           <p><span data-task-chip="" data-task-id="goal-hist-anna-2" data-title="Implementera nytt ATS-system" data-type="goal"></span></p>
         </div>
       </section>
+
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>💬</span> Feedback</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Vad fungerar bra?</strong></p>
-          <p>Anna är extremt strukturerad och har byggt starka relationer med alla chefer i organisationen. Hennes förmåga att förstå varje teams behov gör att rekryteringarna blir träffsäkra. Kandidatupplevelse-arbetet får konsekvent mycket beröm från alla som intervjuas.</p>
-          <p><strong>Vad kan förbättras?</strong></p>
-          <p>Anna tar ibland på sig för mycket själv. Vi diskuterade vikten av att delegera mer till junior HR-kollegor. Hon vill också bli bättre på att säga nej när arbetsbelastningen blir för hög.</p>
-          <p><span data-task-chip="" data-task-id="task-hist-anna-1" data-title="Skapa onboarding-handbok" data-type="task"></span></p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">💬 Feedback/återkoppling till chef</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Öppen dialog om samarbete med närmsta chef.</p>
+          <p><strong>9. Vad i samarbetet/dialogen med din chef tycker du fungerar bra? Finns det något som kan fungera bättre framåt?</strong></p>
+          <p>Anna uppskattar förtroendet och flexibiliteten hon får. Erik är lyhörd och stöttande.</p>
+          <p>Inget särskilt att förbättra - samarbetet fungerar jättebra.</p>
         </div>
       </section>
+
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>📈</span> Utveckling</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Vilka kompetenser vill Anna utveckla?</strong></p>
-          <p>Anna vill fördjupa sig inom strategiskt HR-arbete och People Analytics. Hon är också intresserad av att lära sig mer om DEI-arbete (Diversity, Equity & Inclusion) för att stärka vår rekrytering.</p>
-          <p><strong>Utbildning:</strong></p>
-          <p>Vi beslutade att Anna ska gå en kurs i People Analytics under våren.</p>
-          <p><span data-task-chip="" data-task-id="task-hist-anna-2" data-title="Gå People Analytics-kurs" data-type="task"></span></p>
-        </div>
-      </section>
-      <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>📊</span> Enkätresultat</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p>Gick igenom Annas enkätresultat. Hon får höga betyg på samarbete (4.8/5) och tillgänglighet (4.6/5). Något lägre på work-life balance (3.5/5) - kopplat till den höga arbetsbelastningen vi diskuterade.</p>
-        </div>
-      </section>
-      <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>😊</span> Trivsel</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p>Anna trivs mycket bra och uppskattar teamet och kulturen. Hon nämner att arbetsbelastningen ibland är utmanande, särskilt under rekryteringstoppar, men att det är hanterbart med bättre planering. Hon uppskattar flexibiliteten och förtroendet hon får.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">✨ Sammanfattning och överenskommelser</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Samsyn om samtalet och kommande period.</p>
+
+          <p><strong>10. Finns det något mer som du vill ta upp och som vi inte har berört under samtalet?</strong></p>
+          <p>Anna nämnde enkätresultaten - hon fick höga betyg på samarbete (4.8/5) och tillgänglighet (4.6/5). Work-life balance (3.5/5) kopplat till arbetsbelastningen vi diskuterade.</p>
+          <p>Också att hon trivs mycket bra och uppskattar teamet och kulturen. Arbetsbelastningen hanteras med bättre planering.</p>
+
+          <p><strong>11. Vilka är de viktigaste insikterna och slutsatserna från dagens samtal?</strong></p>
+          <p>Anna har haft ett fantastiskt 2023 med stark rekryteringsprocess och employer branding-resultat. 2024 fokuserar vi på 5 utvecklarrekryteringar och nytt ATS-system. Anna ska jobba på att delegera mer och gå People Analytics-kurs. Fortsätt det fantastiska arbetet!</p>
         </div>
       </section>
     </div>
@@ -1256,49 +1322,89 @@ export const mockHistoricalMeetings: HistoricalMeeting[] = [
     agendaContent: `
 <div class="space-y-8">
   <div>
-    <h1 class="text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
-      <span class="text-3xl">💬</span> Medarbetarsamtal 2023
-    </h1>
-    <div class="space-y-6">
+    <h1 class="text-3xl font-bold text-foreground mb-4">👋 Välkommen</h1>
+    <p class="text-foreground/80 mb-8">Medarbetarsamtalet är ett planerat och strukturerat samtal med syfte att skapa dialog kring arbetssituation, prestation och utveckling. Samtalet ger oss möjlighet att stanna upp, reflektera och gemensamt blicka framåt. Under samtalet har vi en öppen dialog och ett gemensamt ansvar.</p>
+
+    <p><br></p>
+
+    <div class="space-y-8">
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>👋</span> Välkommen</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p>Annas första medarbetarsamtal efter att hon började hos oss i september 2022. Vi diskuterar hennes första månader och sätter mål för 2023.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🔄 Inledning, tillbakablick och nuläge</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p><strong>1. Hur upplever du din arbetssituation just nu? Vad tar och ger dig energi?</strong></p>
+          <p>Anna har bara varit hos oss sedan september 2022 men har kommit in snabbt i rollen. Hon trivs och känner sig välkommen. Det som ger energi är att kunna påverka och bygga nya processer från grunden.</p>
         </div>
       </section>
+
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>🎯</span> Prestationer & Mål</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Reflektion över första månaderna:</strong></p>
-          <p>Anna har kommit in snabbt i rollen och redan börjat göra skillnad. Hon har identifierat flera förbättringsområden i vår rekryteringsprocess och börjat arbeta med att strukturera intervjuprocessen.</p>
-          <p>Hon har också tagit initiativ till att börja med employer branding på LinkedIn.</p>
-          <p><strong>Mål för 2023:</strong></p>
-          <p>Fokus på att bygga en skalbar rekryteringsprocess och etablera ett starkt employer brand.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">📋 Arbetsuppgifter och ansvar</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Säkerställa tydlighet, rimlig arbetsbelastning, fokus och förutsättningar.</p>
+          <p><strong>2. Vad är viktigt i jobbet för att du ska må bra och prestera?</strong></p>
+          <p>Tydlighet kring förväntningar och möjlighet att ta egna initiativ. Anna uppskattar den öppna kulturen och att hon får förtroende att driva saker framåt.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🤝 Samarbete och arbetsmiljö</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Trivsel och relationer till kollegor.</p>
+          <p><strong>3. Hur fungerar samarbetet med dina kollegor? Något som kan fungera bättre?</strong></p>
+          <p>Anna har snabbt byggt förtroende med cheferna och visar god förståelse för verksamheten. Samarbetet fungerar bra. Inget specifikt att förbättra just nu.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-semibold text-foreground mb-3">📈 Utveckling och lärande</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Motivation, engagemang och långsiktig kompetensutveckling.</p>
+
+          <p><strong>4. Finns det områden i din nuvarande roll där du vill eller behöver utvecklas?</strong></p>
+          <p>Anna vill lära sig mer om svensk arbetsrätt och fördjupa sig inom rekrytering av tech-profiler. Hon är ibland för självkritisk och behöver lita mer på sin kompetens.</p>
+          <p><span data-task-chip="" data-task-id="task-hist-anna-3" data-title="Gå arbetsrättskurs" data-type="task"></span></p>
+
+          <p><strong>5. Hur vill du utvecklas på kort och lång sikt, finns det roller eller ansvarsområden som du är intresserad av?</strong></p>
+          <p>Kort sikt: bygga en skalbar rekryteringsprocess och etablera employer brand. Lång sikt: mer strategiskt HR-arbete.</p>
           <p><span data-task-chip="" data-task-id="goal-hist-anna-3" data-title="Bygga skalbar rekryteringsprocess" data-type="goal"></span></p>
           <p><span data-task-chip="" data-task-id="goal-hist-anna-4" data-title="Etablera employer brand" data-type="goal"></span></p>
+
+          <p><strong>6. Hur kan jag som chef bäst stötta dig i din utveckling och i ditt lärande?</strong></p>
+          <p>Ge utrymme att växa och uppmuntra Anna att ta mer plats i möten. Stöd med arbetsrättskurs under Q1.</p>
         </div>
       </section>
+
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>💬</span> Feedback</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Vad fungerar bra?</strong></p>
-          <p>Anna är proaktiv och tar egna initiativ. Hon har snabbt byggt förtroende med cheferna och visar god förståelse för verksamheten. Hennes struktur och noggrannhet uppskattas.</p>
-          <p><strong>Vad kan förbättras?</strong></p>
-          <p>Anna är ibland för självkritisk och behöver lita mer på sin kompetens. Vi uppmuntrar henne att ta mer plats i möten.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">🎯 Mål och fokus framåt</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Måluppfyllnad under året, skapa en tydlig riktning och målsättning kommande år.</p>
+
+          <p><strong>7. Hur har uppsatta mål uppnåtts?</strong></p>
+          <p>Första samtalet - inga tidigare mål att följa upp. Anna har dock redan identifierat förbättringsområden i rekryteringsprocessen och börjat strukturera intervjuprocessen. Startat employer branding på LinkedIn.</p>
+
+          <p><strong>8. Hur ser kommande mål ut?</strong></p>
+          <p>Bygga en skalbar rekryteringsprocess och etablera ett starkt employer brand under 2023.</p>
         </div>
       </section>
+
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>📈</span> Utveckling</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p><strong>Utvecklingsområden:</strong></p>
-          <p>Anna vill lära sig mer om svensk arbetsrätt och fördjupa sig inom rekrytering av tech-profiler.</p>
-          <p><span data-task-chip="" data-task-id="task-hist-anna-3" data-title="Gå arbetsrättskurs" data-type="task"></span></p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">💬 Feedback/återkoppling till chef</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Öppen dialog om samarbete med närmsta chef.</p>
+          <p><strong>9. Vad i samarbetet/dialogen med din chef tycker du fungerar bra? Finns det något som kan fungera bättre framåt?</strong></p>
+          <p>Anna upplever att samarbetet fungerar bra. Hon uppskattar det förtroende hon fått och den öppna kulturen.</p>
         </div>
       </section>
+
       <section>
-        <h2 class="text-xl font-semibold text-foreground mb-3 flex items-center gap-2"><span>😊</span> Trivsel</h2>
-        <div class="pl-0 space-y-2 text-foreground/80">
-          <p>Anna trivs utmärkt och känner sig välkommen i teamet. Hon uppskattar den öppna kulturen och möjligheten att påverka. Ser fram emot att växa med företaget.</p>
+        <h2 class="text-xl font-semibold text-foreground mb-3">✨ Sammanfattning och överenskommelser</h2>
+        <div class="pl-0 space-y-3 text-foreground/80">
+          <p class="text-muted-foreground">Samsyn om samtalet och kommande period.</p>
+
+          <p><strong>10. Finns det något mer som du vill ta upp och som vi inte har berört under samtalet?</strong></p>
+          <p>Anna ser fram emot att växa med företaget. Inget ytterligare att ta upp.</p>
+
+          <p><strong>11. Vilka är de viktigaste insikterna och slutsatserna från dagens samtal?</strong></p>
+          <p>Anna har gjort ett starkt intryck under sina första månader. Fokus för 2023 är att bygga skalbar rekryteringsprocess och employer brand. Boka arbetsrättskurs under mars. Uppmuntra Anna att ta mer plats och lita på sin kompetens.</p>
         </div>
       </section>
     </div>
@@ -1364,15 +1470,26 @@ export const mockHistoricalMeetings: HistoricalMeeting[] = [
 <h2>💰 Löneöversyn</h2>
 <p>Löneökning 3.5%.</p>`,
     aiSummary: {
-      overview: 'Stabil insats av David.',
-      keyDiscussions: ['Backend', 'Cloud'],
-      managerNotes: ['3.5% ökning'],
+      overview: 'Lönerevision med David Persson. David har varit stabil i backend-teamet under året. Nästa stora fokus är cloud-migrering som David ska leda. Löneökning på 3.5% överenskommen.',
+      keyDiscussions: [
+        'David har levererat stabilt i backend-teamet under hela året.',
+        'Cloud-migrering identifierat som nästa strategiska projekt för David.',
+        'Löneökning på 3.5% beslutad baserat på stabil insats.'
+      ],
+      managerNotes: [
+        'David är pålitlig och levererar jämnt - viktig för teamets stabilitet',
+        'Cloud-migrering är ett bra utvecklingssteg för David',
+        '3.5% löneökning rimlig för stabil prestation'
+      ],
       surveyInsights: [],
       goalsAndTasks: {
         goals: [{ title: 'Migrera till Cloud', status: 'completed', origin: { conversationId: 'hist-david-2024' } }],
         tasks: []
       },
-      nextSteps: []
+      nextSteps: [
+        'Sätt upp projektplan för cloud-migrering',
+        'Uppföljning av migreringsprogress i Q3'
+      ]
     },
     comments: [
       {

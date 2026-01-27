@@ -16,31 +16,31 @@ interface AISummaryProps {
 export default function AISummary({ summaryData }: AISummaryProps) {
   const { tasks, currentSamtal, rightPanelCollapsed } = useStore()
 
-  // Use provided data or fallback to hardcoded/store data (for active view prototype)
+  // Get the non-manager participant name for dynamic fallback
+  const participant = currentSamtal.participants.find(p => p.roleInSamtal !== 'Ansvarig')
+  const participantName = participant?.name || 'medarbetaren'
+
+  // Use provided data or fallback to dynamic store-based data (for active view prototype)
   const data = summaryData || {
-    overview: 'Ett konstruktivt medarbetarsamtal med Lisa Eriksson där vi diskuterade hennes prestationer under 2025 och framtida utvecklingsmål. Lisa har visat stark försäljningsförmåga och god kundrelationshantering. Samtalet fokuserade främst på löneöversyn och hennes mål för Q1 2026.',
+    overview: `Ett konstruktivt samtal med ${participantName} där vi diskuterade arbetssituation, prestation och utveckling. Samtalet fokuserade på nuläge, samarbete, utvecklingsmål och riktning framåt.`,
     keyDiscussions: [
-      'Prestationsöversikt: Lisa överträffade sina försäljningsmål med 15% under året och fick utmärkt feedback från kunder i norra regionen.',
-      'Marknadsanalys: Diskuterade branschstandard för lönenivåer och Lisas position i förhållande till marknaden och interna kollegor.',
-      'Utvecklingsområden: Lisa uttryckte intresse för att utveckla sina ledarskapsfärdigheter och eventuellt ta på sig mer mentorskapsansvar.'
+      `Inledning och nuläge: ${participantName} reflekterade över sin arbetssituation och vad som ger och tar energi i rollen.`,
+      `Arbetsuppgifter och ansvar: Diskuterade vad som är viktigt för att ${participantName} ska prestera och må bra på jobbet.`,
+      `Utveckling: ${participantName} delade sina tankar kring kompetensområden att utveckla och karriärmål på kort och lång sikt.`
     ],
     managerNotes: [
-      'Lisa är redo för mer ansvar - överväg teamledarpositionen som öppnas i Q2',
-      'Stark kandidat för CRM-ambassadör i organisationen',
-      'Behöver stöd med tidplanering - många parallella projekt'
+      `Följ upp ${participantName}s utvecklingsmål vid nästa 1:1`,
+      'Se över eventuella utbildningsbehov och resurser',
+      'Stäm av arbetssituation och samarbete löpande'
     ],
     goalsAndTasks: {
       goals: tasks.filter(t => t.origin?.conversationId === currentSamtal.id && t.type === 'goal').map(g => ({ title: g.title, due: g.due, status: g.status })),
       tasks: tasks.filter(t => t.origin?.conversationId === currentSamtal.id && t.type === 'task').map(t => ({ title: t.title, due: t.due, status: t.status }))
     },
-    surveyInsights: [
-      'Högt betyg på arbetstillfredsställelse (4.5/5) och teamsamarbete (4.8/5)',
-      'Något lägre betyg på work-life balance (3.5/5) - diskutera arbetsbörda'
-    ],
+    surveyInsights: [],
     nextSteps: [
-      'Bekräfta lönejustering med HR senast 30 november',
-      'Boka CRM-utbildning för januari 2026',
-      'Uppföljningsmöte i mars för att utvärdera progress mot Q1-mål'
+      'Uppföljningsmöte inom 3 månader för att utvärdera progress',
+      'Stäm av mål och överenskommelser vid nästa 1:1'
     ]
   }
 
