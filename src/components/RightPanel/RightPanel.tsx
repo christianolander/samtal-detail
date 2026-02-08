@@ -458,7 +458,7 @@ export default function RightPanel() {
 
   // Expanded state - tabs above panel with minimize button to right
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" data-tour="detail-right-panel">
       {/* Tab navigation row - above panel */}
       <div className="flex items-center justify-between mb-2 flex-shrink-0">
         <div className="flex gap-1 bg-muted rounded-lg p-1">

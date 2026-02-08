@@ -14,7 +14,7 @@ export default function SamtalHeader({ onBack }: SamtalHeaderProps) {
   return (
     <PageTitle>
       <PageHeading>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4" data-tour="detail-header">
           {onBack && (
             <button
               onClick={onBack}

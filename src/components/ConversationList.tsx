@@ -63,7 +63,7 @@ export default function ConversationList({ onSelectConversation }: ConversationL
   const [hoveredParticipants, setHoveredParticipants] = useState<{ id: string, rect: DOMRect } | null>(null)
 
   return (
-    <div className="bg-card rounded-lg border border-border/40 overflow-hidden">
+    <div className="bg-card rounded-lg border border-border/40 overflow-hidden" data-tour="list-table">
       <Table>
         <TableHeader>
           <TableRow>
