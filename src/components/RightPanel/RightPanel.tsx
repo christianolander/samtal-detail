@@ -377,7 +377,7 @@ export default function RightPanel() {
                 </span>
               </div>
               <p className="text-sm text-foreground">
-                Sammanfattning har skickats ut till alla deltagare.
+                Anteckningarna från mötet har skickats till alla deltagare.
               </p>
             </div>
 

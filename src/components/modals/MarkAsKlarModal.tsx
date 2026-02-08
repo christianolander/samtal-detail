@@ -90,7 +90,7 @@ export default function MarkAsKlarModal({ isOpen, onClose }: MarkAsKlarModalProp
             </h2>
 
             <p className="text-sm text-muted-foreground mb-6 leading-relaxed max-w-sm mx-auto">
-              Vi skickar nu anteckningar och sammanfattning till alla deltagare via e-post.
+              Vi skickar nu anteckningarna från mötet till alla deltagare.
             </p>
 
             <button
@@ -126,7 +126,7 @@ export default function MarkAsKlarModal({ isOpen, onClose }: MarkAsKlarModalProp
 
           {/* Main explanation */}
           <p className="text-sm text-foreground mb-5 leading-relaxed">
-            När du markerar samtalet som klart kommer en automatisk sammanfattning att skapas och skickas till alla deltagare.
+            När du markerar samtalet som klart skickas anteckningarna från mötet till alla deltagare.
           </p>
 
           <div className="flex gap-4">
