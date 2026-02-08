@@ -36,6 +36,7 @@ import TimerTab from './TimerTab'
 import FilesTab from './FilesTab'
 import { BookingModal } from './BookingSection'
 import AutomaticNotesModal from '../modals/AutomaticNotesModal'
+import MarkAsKlarModal from '../modals/MarkAsKlarModal'
 
 type TabId = 'översikt' | 'detaljer' | 'timer' | 'tidigare' | 'privata' | 'filer'
 
@@ -65,6 +66,7 @@ export default function RightPanel() {
   const activeTabId = activeRightPanelTab
   const setActiveTabId = setActiveRightPanelTab
   const [showBookingModal, setShowBookingModal] = useState(false)
+  const [showMarkAsKlarModal, setShowMarkAsKlarModal] = useState(false)
 
   const tabs: Tab[] = [
     { id: 'översikt', label: 'Översikt', icon: LayoutGrid },
@@ -313,7 +315,7 @@ export default function RightPanel() {
                     Är samtalet genomfört och dokumenterat? Markera den då som klar.
                   </p>
                   <button
-                    onClick={() => useStore.getState().setStatus('klar')}
+                    onClick={() => setShowMarkAsKlarModal(true)}
                     className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
                   >
                     Markera som klar
@@ -523,6 +525,12 @@ export default function RightPanel() {
           />,
           document.body
         )}
+
+      {/* Mark as Klar Modal */}
+      <MarkAsKlarModal
+        isOpen={showMarkAsKlarModal}
+        onClose={() => setShowMarkAsKlarModal(false)}
+      />
     </div>
   )
 }
