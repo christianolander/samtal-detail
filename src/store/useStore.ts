@@ -454,11 +454,39 @@ export const useStore = create<AppStore>((set, get) => ({
       }
     }),
 
-  removeTask: (id) =>
+  removeTask: (id) => {
+    // Remove from store
     set((state) => ({
       allTasks: state.allTasks.filter((task) => task.id !== id),
       tasks: state.tasks.filter((task) => task.id !== id),
-    })),
+    }))
+
+    // Also remove the corresponding chip from the editor
+    const editor = (window as any).__tiptapEditor
+    if (editor && !editor.isDestroyed) {
+      try {
+        const { doc } = editor.state
+        const nodesToDelete: { from: number; to: number }[] = []
+
+        doc.descendants((node: any, pos: number) => {
+          if (node.type.name === 'taskChip' && node.attrs.taskId === id) {
+            nodesToDelete.push({ from: pos, to: pos + node.nodeSize })
+          }
+        })
+
+        // Delete in reverse order so positions stay valid
+        if (nodesToDelete.length > 0) {
+          const tr = editor.state.tr
+          for (let i = nodesToDelete.length - 1; i >= 0; i--) {
+            tr.delete(nodesToDelete[i].from, nodesToDelete[i].to)
+          }
+          editor.view.dispatch(tr)
+        }
+      } catch (err) {
+        console.error('[removeTask] Failed to remove chip from editor:', err)
+      }
+    }
+  },
 
   addGoalStatusUpdate: (taskId, status, comment) =>
     set((state) => {

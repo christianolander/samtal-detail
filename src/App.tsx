@@ -27,7 +27,6 @@ import {
   Moon,
   PanelLeft,
   PanelLeftClose,
-  HelpCircle,
 } from 'lucide-react'
 import ConversationList from './components/ConversationList'
 import SamtalHeader from './components/Header/SamtalHeader'
@@ -37,7 +36,7 @@ import UppgifterMalTab from './components/UppgifterMal/UppgifterMalTab'
 import RightPanel from './components/RightPanel/RightPanel'
 import CommentsSection from './components/Comments/CommentsSection'
 import TaskModal from './components/modals/TaskModal'
-import ProductTour from './components/ProductTour/ProductTour'
+// import ProductTour from './components/ProductTour/ProductTour'
 import { mockConversationList } from './lib/mockData'
 
 // Helper to get conversation ID from URL
@@ -58,7 +57,7 @@ function updateUrlWithConversationId(id: string | null) {
 }
 
 function App() {
-  const { activeTab, rightPanelCollapsed, loadSamtal, tourCompleted, startTour } = useStore()
+  const { activeTab, rightPanelCollapsed, loadSamtal } = useStore()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(() => {
@@ -144,21 +143,19 @@ function App() {
   // Show list view or detail view
   const showingListView = !selectedConversationId
 
-  // Auto-start tour for first-time visitors
-  useEffect(() => {
-    if (showingListView && !tourCompleted.list) {
-      const timeout = setTimeout(() => startTour('list'), 600)
-      return () => clearTimeout(timeout)
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Auto-start detail tour when entering detail view for the first time
-  useEffect(() => {
-    if (!showingListView && !tourCompleted.detail) {
-      const timeout = setTimeout(() => startTour('detail'), 800)
-      return () => clearTimeout(timeout)
-    }
-  }, [showingListView]) // eslint-disable-line react-hooks/exhaustive-deps
+  // Tour disabled - kept in codebase for future use
+  // useEffect(() => {
+  //   if (showingListView && !tourCompleted.list) {
+  //     const timeout = setTimeout(() => startTour('list'), 600)
+  //     return () => clearTimeout(timeout)
+  //   }
+  // }, [])
+  // useEffect(() => {
+  //   if (!showingListView && !tourCompleted.detail) {
+  //     const timeout = setTimeout(() => startTour('detail'), 800)
+  //     return () => clearTimeout(timeout)
+  //   }
+  // }, [showingListView])
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -213,17 +210,6 @@ function App() {
         </MainNavigationContent>
 
         <MainNavigationFooter>
-          {/* Tour Guide Button */}
-          <button
-            onClick={() => startTour(showingListView ? 'list' : 'detail')}
-            className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors mb-2 ${
-              sidebarCollapsed ? 'justify-center' : ''
-            }`}
-          >
-            <HelpCircle className="w-4 h-4" />
-            {!sidebarCollapsed && <span className="text-xs">Visa guide</span>}
-          </button>
-
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
@@ -357,8 +343,8 @@ function App() {
       {/* Task/Goal Modal */}
       <TaskModal />
 
-      {/* Product Tour */}
-      <ProductTour />
+      {/* Product Tour - disabled for now */}
+      {/* <ProductTour /> */}
     </div>
   )
 }

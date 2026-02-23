@@ -13,9 +13,10 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { useStore } from '@/store/useStore'
-import { X, Target, CheckSquare, User, Calendar, Info } from 'lucide-react'
+import { X, Target, CheckSquare, User, Calendar, Info, Trash2 } from 'lucide-react'
 import type { Task, GoalStatus, FollowUpFrequency } from '@/types'
 import GoalEditModal from './GoalEditModal'
+import ConfirmModal from '../shared/ConfirmModal'
 
 export default function TaskModal() {
   const {
@@ -25,6 +26,7 @@ export default function TaskModal() {
     closeTaskModal,
     addTaskWithChip,
     updateTask,
+    removeTask,
     currentSamtal,
   } = useStore()
 
@@ -45,6 +47,7 @@ export default function TaskModal() {
   const [assigneeId, setAssigneeId] = useState<string>('') // Will be set from participant
   const [goalStatus, setGoalStatus] = useState<GoalStatus>(null)
   const [followUpFrequency, setFollowUpFrequency] = useState<FollowUpFrequency>(null)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   const isEditing = !!taskModalTask?.id
 
@@ -259,28 +262,59 @@ export default function TaskModal() {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
-            <button
-              type="button"
-              onClick={closeTaskModal}
-              className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Avbryt
-            </button>
-            <button
-              type="submit"
-              disabled={!title.trim()}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                taskModalType === 'goal'
-                  ? 'bg-teal-600 hover:bg-teal-700 text-white'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white'
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
-            >
-              {isEditing ? 'Uppdatera' : 'Skapa'} {taskModalType === 'goal' ? 'mål' : 'uppgift'}
-            </button>
+          <div className="flex items-center justify-between pt-4 border-t border-border">
+            {isEditing && taskModalTask ? (
+              <button
+                type="button"
+                onClick={() => setConfirmingDelete(true)}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+                Ta bort
+              </button>
+            ) : (
+              <div />
+            )}
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={closeTaskModal}
+                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Avbryt
+              </button>
+              <button
+                type="submit"
+                disabled={!title.trim()}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  taskModalType === 'goal'
+                    ? 'bg-teal-600 hover:bg-teal-700 text-white'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                } disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                {isEditing ? 'Uppdatera' : 'Skapa'} {taskModalType === 'goal' ? 'mål' : 'uppgift'}
+              </button>
+            </div>
           </div>
         </form>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {isEditing && taskModalTask && (
+        <ConfirmModal
+          isOpen={confirmingDelete}
+          title="Ta bort uppgift"
+          message={`Är du säker på att du vill ta bort "${taskModalTask.title}"? Detta kan inte ångras.`}
+          confirmText="Ta bort"
+          cancelText="Avbryt"
+          variant="destructive"
+          onConfirm={() => {
+            removeTask(taskModalTask.id)
+            closeTaskModal()
+          }}
+          onCancel={() => setConfirmingDelete(false)}
+        />
+      )}
     </div>
   )
 }
