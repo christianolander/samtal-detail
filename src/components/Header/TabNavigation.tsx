@@ -5,7 +5,7 @@ export default function TabNavigation() {
 
   return (
     <div className="border-b border-border">
-      <nav className="flex gap-6" role="tablist">
+      <nav className="flex gap-6" role="tablist" data-tour="detail-tabs">
         <button
           onClick={() => setActiveTab('anteckningar')}
           className={`pb-3 px-1 border-b-2 font-medium transition-all duration-200 ${

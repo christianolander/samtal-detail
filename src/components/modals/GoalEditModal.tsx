@@ -25,8 +25,10 @@ import {
   User as UserIcon,
   ArrowLeft,
   Info,
+  Trash2,
 } from 'lucide-react'
 import type { Task, GoalStatus, FollowUpFrequency } from '@/types'
+import ConfirmModal from '../shared/ConfirmModal'
 
 interface GoalEditModalProps {
   goal: Task
@@ -36,7 +38,7 @@ interface GoalEditModalProps {
 type ViewMode = 'details' | 'status'
 
 export default function GoalEditModal({ goal: initialGoal, onClose }: GoalEditModalProps) {
-  const { updateTask, addGoalStatusUpdate, currentSamtal, tasks } = useStore()
+  const { updateTask, addGoalStatusUpdate, removeTask, currentSamtal, tasks } = useStore()
 
   // Get the latest goal data from the store (for updated status/history)
   const goal = useMemo(() => {
@@ -55,6 +57,9 @@ export default function GoalEditModal({ goal: initialGoal, onClose }: GoalEditMo
 
   // History visibility
   const [historyExpanded, setHistoryExpanded] = useState(false)
+
+  // Delete confirmation
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   // Status update view state
   const [newStatus, setNewStatus] = useState<GoalStatus>(goal.goalStatus ?? null)
@@ -415,33 +420,62 @@ export default function GoalEditModal({ goal: initialGoal, onClose }: GoalEditMo
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 p-6 border-t border-border flex-shrink-0">
-          <button
-            type="button"
-            onClick={currentView === 'details' ? onClose : handleCancelStatus}
-            className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Avbryt
-          </button>
+        <div className="flex items-center justify-between p-6 border-t border-border flex-shrink-0">
           {currentView === 'details' ? (
             <button
-              onClick={handleSaveDetails}
-              disabled={!title.trim()}
-              className="px-4 py-2 text-sm font-medium bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              type="button"
+              onClick={() => setConfirmingDelete(true)}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
             >
-              Spara ändringar
+              <Trash2 className="w-4 h-4" />
+              Ta bort
             </button>
           ) : (
-            <button
-              onClick={handleSaveStatus}
-              disabled={!canSaveStatus}
-              className="px-4 py-2 text-sm font-medium bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Spara status
-            </button>
+            <div />
           )}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={currentView === 'details' ? onClose : handleCancelStatus}
+              className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Avbryt
+            </button>
+            {currentView === 'details' ? (
+              <button
+                onClick={handleSaveDetails}
+                disabled={!title.trim()}
+                className="px-4 py-2 text-sm font-medium bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Spara ändringar
+              </button>
+            ) : (
+              <button
+                onClick={handleSaveStatus}
+                disabled={!canSaveStatus}
+                className="px-4 py-2 text-sm font-medium bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Spara status
+              </button>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={confirmingDelete}
+        title="Ta bort mål"
+        message={`Är du säker på att du vill ta bort "${goal.title}"? Detta kan inte ångras.`}
+        confirmText="Ta bort"
+        cancelText="Avbryt"
+        variant="destructive"
+        onConfirm={() => {
+          removeTask(goal.id)
+          onClose()
+        }}
+        onCancel={() => setConfirmingDelete(false)}
+      />
     </div>
   )
 }

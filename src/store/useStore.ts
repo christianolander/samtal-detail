@@ -174,6 +174,23 @@ export interface AppStore {
   updateAIBlockContent: (id: string, content: string) => void
   removeAIBlock: (id: string) => void
   clearAIBlocks: () => void
+
+  // ========================================
+  // Tour State
+  // ========================================
+  tourActive: boolean
+  tourPhase: 'list' | 'detail' | null
+  tourStep: number
+  tourCompleted: { list: boolean; detail: boolean }
+
+  // ========================================
+  // Actions - Tour
+  // ========================================
+  startTour: (phase: 'list' | 'detail') => void
+  nextTourStep: () => void
+  prevTourStep: () => void
+  skipTour: () => void
+  completeTour: () => void
 }
 
 export const useStore = create<AppStore>((set, get) => ({
@@ -228,6 +245,19 @@ export const useStore = create<AppStore>((set, get) => ({
   aiGeneratedBlocks: [],
   automaticNotesModalOpen: false,
   automaticNotesModalStep: 1,
+
+  // Tour state
+  tourActive: false,
+  tourPhase: null,
+  tourStep: 0,
+  tourCompleted: (() => {
+    try {
+      const stored = localStorage.getItem('samtal-tour-completed')
+      return stored ? JSON.parse(stored) : { list: false, detail: false }
+    } catch {
+      return { list: false, detail: false }
+    }
+  })(),
 
   // ========================================
   // UI Actions
@@ -424,11 +454,39 @@ export const useStore = create<AppStore>((set, get) => ({
       }
     }),
 
-  removeTask: (id) =>
+  removeTask: (id) => {
+    // Remove from store
     set((state) => ({
       allTasks: state.allTasks.filter((task) => task.id !== id),
       tasks: state.tasks.filter((task) => task.id !== id),
-    })),
+    }))
+
+    // Also remove the corresponding chip from the editor
+    const editor = (window as any).__tiptapEditor
+    if (editor && !editor.isDestroyed) {
+      try {
+        const { doc } = editor.state
+        const nodesToDelete: { from: number; to: number }[] = []
+
+        doc.descendants((node: any, pos: number) => {
+          if (node.type.name === 'taskChip' && node.attrs.taskId === id) {
+            nodesToDelete.push({ from: pos, to: pos + node.nodeSize })
+          }
+        })
+
+        // Delete in reverse order so positions stay valid
+        if (nodesToDelete.length > 0) {
+          const tr = editor.state.tr
+          for (let i = nodesToDelete.length - 1; i >= 0; i--) {
+            tr.delete(nodesToDelete[i].from, nodesToDelete[i].to)
+          }
+          editor.view.dispatch(tr)
+        }
+      } catch (err) {
+        console.error('[removeTask] Failed to remove chip from editor:', err)
+      }
+    }
+  },
 
   addGoalStatusUpdate: (taskId, status, comment) =>
     set((state) => {
@@ -773,4 +831,46 @@ export const useStore = create<AppStore>((set, get) => ({
 
   clearAIBlocks: () =>
     set({ aiGeneratedBlocks: [] }),
+
+  // ========================================
+  // Tour Actions
+  // ========================================
+  startTour: (phase) =>
+    set({
+      tourActive: true,
+      tourPhase: phase,
+      tourStep: 0,
+    }),
+
+  nextTourStep: () =>
+    set((state) => ({
+      tourStep: state.tourStep + 1,
+    })),
+
+  prevTourStep: () =>
+    set((state) => ({
+      tourStep: Math.max(0, state.tourStep - 1),
+    })),
+
+  skipTour: () => {
+    const state = get()
+    const phase = state.tourPhase
+    if (phase) {
+      const updated = { ...state.tourCompleted, [phase]: true }
+      localStorage.setItem('samtal-tour-completed', JSON.stringify(updated))
+      set({ tourActive: false, tourPhase: null, tourStep: 0, tourCompleted: updated })
+    } else {
+      set({ tourActive: false, tourPhase: null, tourStep: 0 })
+    }
+  },
+
+  completeTour: () => {
+    const state = get()
+    const phase = state.tourPhase
+    if (phase) {
+      const updated = { ...state.tourCompleted, [phase]: true }
+      localStorage.setItem('samtal-tour-completed', JSON.stringify(updated))
+      set({ tourActive: false, tourPhase: null, tourStep: 0, tourCompleted: updated })
+    }
+  },
 }))

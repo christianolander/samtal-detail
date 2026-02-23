@@ -36,6 +36,7 @@ import UppgifterMalTab from './components/UppgifterMal/UppgifterMalTab'
 import RightPanel from './components/RightPanel/RightPanel'
 import CommentsSection from './components/Comments/CommentsSection'
 import TaskModal from './components/modals/TaskModal'
+// import ProductTour from './components/ProductTour/ProductTour'
 import { mockConversationList } from './lib/mockData'
 
 // Helper to get conversation ID from URL
@@ -142,6 +143,20 @@ function App() {
   // Show list view or detail view
   const showingListView = !selectedConversationId
 
+  // Tour disabled - kept in codebase for future use
+  // useEffect(() => {
+  //   if (showingListView && !tourCompleted.list) {
+  //     const timeout = setTimeout(() => startTour('list'), 600)
+  //     return () => clearTimeout(timeout)
+  //   }
+  // }, [])
+  // useEffect(() => {
+  //   if (!showingListView && !tourCompleted.detail) {
+  //     const timeout = setTimeout(() => startTour('detail'), 800)
+  //     return () => clearTimeout(timeout)
+  //   }
+  // }, [showingListView])
+
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Sidebar Navigation */}
@@ -177,9 +192,11 @@ function App() {
           <MainNavigationItem icon={<Users className="w-full h-full" />}>
             Medarbetare
           </MainNavigationItem>
-          <MainNavigationItem active={true} icon={<Calendar className="w-full h-full" />}>
-            Samtal
-          </MainNavigationItem>
+          <div data-tour="sidebar-samtal">
+            <MainNavigationItem active={true} icon={<Calendar className="w-full h-full" />}>
+              Samtal
+            </MainNavigationItem>
+          </div>
           <MainNavigationItem icon={<FileText className="w-full h-full" />}>
             Dokument
           </MainNavigationItem>
@@ -246,12 +263,12 @@ function App() {
             {/* List View */}
             <PageHeader>
               <PageTitle>
-                <div>
+                <div data-tour="list-heading">
                   <PageHeading>Mina samtal</PageHeading>
                   <PageDescription>Hantera dina medarbetarsamtal</PageDescription>
                 </div>
                 <PageActions>
-                  <Button>+ Nytt samtal</Button>
+                  <Button data-tour="list-new-button">+ Nytt samtal</Button>
                 </PageActions>
               </PageTitle>
             </PageHeader>
@@ -269,6 +286,7 @@ function App() {
                   <button
                     onClick={handleBackToList}
                     className="text-foreground hover:text-primary transition-colors"
+                    data-tour="breadcrumb-back"
                   >
                     Samtal
                   </button>
@@ -324,6 +342,9 @@ function App() {
 
       {/* Task/Goal Modal */}
       <TaskModal />
+
+      {/* Product Tour - disabled for now */}
+      {/* <ProductTour /> */}
     </div>
   )
 }

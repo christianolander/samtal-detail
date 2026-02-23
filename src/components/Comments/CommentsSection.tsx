@@ -15,7 +15,7 @@ export default function CommentsSection() {
   const comments = currentSamtal.comments || []
 
   return (
-    <div className="bg-card border border-border rounded-lg p-6">
+    <div className="bg-card border border-border rounded-lg p-6" data-tour="detail-comments">
       {/* Header with counter and toggle */}
       <button
         onClick={toggleComments}

@@ -55,7 +55,7 @@ export default function AnteckningarTab() {
   return (
     <div>
       {/* Main Card */}
-      <div className="min-h-[600px]">
+      <div className="min-h-[600px]" data-tour="detail-editor">
         <MeetingContent
           participants={currentSamtal.participants}
           status={currentStatus}

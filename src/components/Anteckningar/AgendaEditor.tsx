@@ -580,6 +580,26 @@ export default function AgendaEditor({ initialContent, readOnly = false, convers
           // Save to conversation-specific localStorage key
           const storageKey = getLocalStorageKey(conversationId)
           localStorage.setItem(storageKey, html)
+
+          // Sync: detect chips removed from editor and remove corresponding tasks
+          const chipTaskIds = new Set<string>()
+          editor.state.doc.descendants((node: any) => {
+            if (node.type.name === 'taskChip' && node.attrs.taskId) {
+              chipTaskIds.add(node.attrs.taskId)
+            }
+          })
+
+          const store = useStore.getState()
+          const currentSamtalId = store.currentSamtal.id
+          // Only check tasks that originated from this conversation (those have chips)
+          const tasksToRemove = store.allTasks.filter(
+            t => t.origin?.conversationId === currentSamtalId && !chipTaskIds.has(t.id)
+          )
+          // Remove orphaned tasks (chip already gone from editor, removeTask
+          // will just clean up the store without re-triggering editor changes)
+          for (const task of tasksToRemove) {
+            store.removeTask(task.id)
+          }
         }
       }
     },

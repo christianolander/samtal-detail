@@ -161,7 +161,7 @@ export default function TaskItem({ task, showOrigin = false }: TaskItemProps) {
               )}
             </div>
 
-            {/* Right side - compact info */}
+            {/* Right side - compact info + delete */}
             <div className="flex items-center gap-3 text-sm text-muted-foreground flex-shrink-0">
               {task.assignee && (
                 <div className="flex items-center gap-1">
@@ -175,6 +175,7 @@ export default function TaskItem({ task, showOrigin = false }: TaskItemProps) {
                   <span>{formatDate(task.due)}</span>
                 </div>
               )}
+
             </div>
           </div>
           {/* Description row */}
@@ -242,6 +243,7 @@ export default function TaskItem({ task, showOrigin = false }: TaskItemProps) {
                   <span>{formatDate(task.due)}</span>
                 </div>
               )}
+
             </div>
           </div>
         </div>
