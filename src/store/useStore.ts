@@ -714,7 +714,7 @@ export const useStore = create<AppStore>((set, get) => ({
   // ========================================
   setEditorContent: (content) => {
     set({ editorContent: content, hasUnsavedChanges: true })
-    // Note: localStorage saving is handled per-conversation in AgendaEditor
+    // Note: sessionStorage saving is handled per-conversation in AgendaEditor
   },
 
   setHasUnsavedChanges: (hasChanges) => set({ hasUnsavedChanges: hasChanges }),

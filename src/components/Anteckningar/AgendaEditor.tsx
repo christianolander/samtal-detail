@@ -461,8 +461,8 @@ export default function AgendaEditor({ initialContent, readOnly = false, convers
   const isInitialMount = useRef(true)
   const lastConversationId = useRef(conversationId)
 
-  // Get conversation-specific localStorage key
-  const getLocalStorageKey = (id?: string) => {
+  // Get conversation-specific sessionStorage key
+  const getStorageKey = (id?: string) => {
     return id ? `samtal-editor-content-${id}` : "samtal-editor-content"
   }
 
@@ -478,22 +478,12 @@ export default function AgendaEditor({ initialContent, readOnly = false, convers
       return initialContent || "<p>Inga anteckningar tillgängliga.</p>"
     }
 
-    // Allow ?v=new to force fresh content from mock data (clears stale localStorage)
-    const params = new URLSearchParams(window.location.search)
-    const forceRefresh = params.get('v') === 'new'
+    const storageKey = getStorageKey(conversationId)
 
-    const storageKey = getLocalStorageKey(conversationId)
-
-    if (forceRefresh) {
-      localStorage.removeItem(storageKey)
-    }
-
-    // Check for conversation-specific localStorage content first
-    if (!forceRefresh) {
-      const storedContent = localStorage.getItem(storageKey)
-      if (storedContent && storedContent.trim()) {
-        return storedContent
-      }
+    // Check for conversation-specific sessionStorage content first
+    const storedContent = sessionStorage.getItem(storageKey)
+    if (storedContent && storedContent.trim()) {
+      return storedContent
     }
 
     // Fall back to the provided initialContent (from mock data)
@@ -577,9 +567,9 @@ export default function AgendaEditor({ initialContent, readOnly = false, convers
         } else {
           const html = editor.getHTML()
           setEditorContent(html)
-          // Save to conversation-specific localStorage key
-          const storageKey = getLocalStorageKey(conversationId)
-          localStorage.setItem(storageKey, html)
+          // Save to conversation-specific sessionStorage key
+          const storageKey = getStorageKey(conversationId)
+          sessionStorage.setItem(storageKey, html)
 
           // Sync: detect chips removed from editor and remove corresponding tasks
           const chipTaskIds = new Set<string>()
