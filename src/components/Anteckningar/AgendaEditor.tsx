@@ -102,7 +102,7 @@ import "@/components/tiptap-templates/simple/simple-editor.scss"
 interface AgendaEditorProps {
   initialContent?: string
   readOnly?: boolean
-  conversationId?: string // Used for localStorage keying
+  conversationId?: string // Used to scope editor content per conversation
 }
 
 // Table dropdown component
@@ -461,11 +461,6 @@ export default function AgendaEditor({ initialContent, readOnly = false, convers
   const isInitialMount = useRef(true)
   const lastConversationId = useRef(conversationId)
 
-  // Get conversation-specific sessionStorage key
-  const getStorageKey = (id?: string) => {
-    return id ? `samtal-editor-content-${id}` : "samtal-editor-content"
-  }
-
   // Expose store globally for slash menu
   useEffect(() => {
     ;(window as any).__zustandStore = useStore
@@ -478,15 +473,7 @@ export default function AgendaEditor({ initialContent, readOnly = false, convers
       return initialContent || "<p>Inga anteckningar tillgängliga.</p>"
     }
 
-    const storageKey = getStorageKey(conversationId)
-
-    // Check for conversation-specific sessionStorage content first
-    const storedContent = sessionStorage.getItem(storageKey)
-    if (storedContent && storedContent.trim()) {
-      return storedContent
-    }
-
-    // Fall back to the provided initialContent (from mock data)
+    // Use the provided initialContent (from mock data)
     if (initialContent && initialContent.trim()) {
       return initialContent
     }
@@ -567,10 +554,6 @@ export default function AgendaEditor({ initialContent, readOnly = false, convers
         } else {
           const html = editor.getHTML()
           setEditorContent(html)
-          // Save to conversation-specific sessionStorage key
-          const storageKey = getStorageKey(conversationId)
-          sessionStorage.setItem(storageKey, html)
-
           // Sync: detect chips removed from editor and remove corresponding tasks
           const chipTaskIds = new Set<string>()
           editor.state.doc.descendants((node: any) => {
