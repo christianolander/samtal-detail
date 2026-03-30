@@ -27,6 +27,7 @@ import {
   Moon,
   PanelLeft,
   PanelLeftClose,
+  Check,
 } from 'lucide-react'
 import ConversationList from './components/ConversationList'
 import SamtalHeader from './components/Header/SamtalHeader'
@@ -36,8 +37,22 @@ import UppgifterMalTab from './components/UppgifterMal/UppgifterMalTab'
 import RightPanel from './components/RightPanel/RightPanel'
 import CommentsSection from './components/Comments/CommentsSection'
 import TaskModal from './components/modals/TaskModal'
+import Microsoft365ConnectModal from './components/modals/Microsoft365ConnectModal'
+import Microsoft365SettingsPage from './components/Microsoft365SettingsPage'
 // import ProductTour from './components/ProductTour/ProductTour'
 import { mockConversationList } from './lib/mockData'
+
+// Microsoft logo for user menu
+function MicrosoftLogoSmall() {
+  return (
+    <svg className="w-4 h-4" viewBox="0 0 21 21" fill="none">
+      <rect x="1" y="1" width="9" height="9" fill="#F25022" />
+      <rect x="11" y="1" width="9" height="9" fill="#7FBA00" />
+      <rect x="1" y="11" width="9" height="9" fill="#00A4EF" />
+      <rect x="11" y="11" width="9" height="9" fill="#FFB900" />
+    </svg>
+  )
+}
 
 // Helper to get conversation ID from URL
 function getConversationIdFromUrl(): string | null {
@@ -57,7 +72,7 @@ function updateUrlWithConversationId(id: string | null) {
 }
 
 function App() {
-  const { activeTab, rightPanelCollapsed, loadSamtal } = useStore()
+  const { activeTab, rightPanelCollapsed, loadSamtal, currentPage, setCurrentPage, microsoft365, openMicrosoft365Modal } = useStore()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(() => {
@@ -126,6 +141,7 @@ function App() {
   const handleSelectConversation = (id: string) => {
     loadSamtal(id)
     setSelectedConversationId(id)
+    setCurrentPage('samtal')
     updateUrlWithConversationId(id)
   }
 
@@ -193,7 +209,11 @@ function App() {
             Medarbetare
           </MainNavigationItem>
           <div data-tour="sidebar-samtal">
-            <MainNavigationItem active={true} icon={<Calendar className="w-full h-full" />}>
+            <MainNavigationItem
+              active={currentPage === 'samtal'}
+              icon={<Calendar className="w-full h-full" />}
+              onClick={() => { setCurrentPage('samtal'); setSelectedConversationId(null); updateUrlWithConversationId(null) }}
+            >
               Samtal
             </MainNavigationItem>
           </div>
@@ -204,12 +224,49 @@ function App() {
           {/* Divider */}
           <div className="h-px bg-black/10 dark:bg-white/10 my-2" />
 
-          <MainNavigationItem icon={<Settings className="w-full h-full" />}>
+          <MainNavigationItem
+            active={currentPage === 'settings'}
+            icon={<Settings className="w-full h-full" />}
+            onClick={() => { setCurrentPage('settings'); setSelectedConversationId(null); updateUrlWithConversationId(null) }}
+          >
             Inställningar
           </MainNavigationItem>
         </MainNavigationContent>
 
         <MainNavigationFooter>
+          {/* Microsoft 365 Integration Button */}
+          <button
+            onClick={() => {
+              if (microsoft365.connected) {
+                setCurrentPage('settings')
+                setSelectedConversationId(null)
+                updateUrlWithConversationId(null)
+              } else {
+                openMicrosoft365Modal()
+              }
+            }}
+            className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors mb-1 ${
+              sidebarCollapsed ? 'justify-center' : ''
+            } ${
+              microsoft365.connected
+                ? 'text-[#0078D4] hover:bg-[#0078D4]/10'
+                : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+            }`}
+            title={microsoft365.connected ? 'Microsoft 365 ansluten' : 'Koppla Microsoft 365'}
+          >
+            <MicrosoftLogoSmall />
+            {!sidebarCollapsed && (
+              <span className="text-xs flex items-center gap-1.5">
+                Microsoft 365
+                {microsoft365.connected && (
+                  <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#7FBA00]">
+                    <Check className="w-2.5 h-2.5 text-white" />
+                  </span>
+                )}
+              </span>
+            )}
+          </button>
+
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
@@ -258,7 +315,19 @@ function App() {
 
       {/* Main Content Area */}
       <Page className="flex-1 flex flex-col min-h-0 overflow-hidden">
-        {showingListView ? (
+        {currentPage === 'settings' ? (
+          <div key="settings-view" className="view-enter flex-1 overflow-y-auto">
+            <PageHeader>
+              <PageTitle>
+                <PageHeading>Inställningar</PageHeading>
+                <PageDescription>Hantera integrationer och kontoinställningar</PageDescription>
+              </PageTitle>
+            </PageHeader>
+            <PageContent>
+              <Microsoft365SettingsPage />
+            </PageContent>
+          </div>
+        ) : showingListView ? (
           <div key="list-view" className="view-enter">
             {/* List View */}
             <PageHeader>
@@ -342,6 +411,9 @@ function App() {
 
       {/* Task/Goal Modal */}
       <TaskModal />
+
+      {/* Microsoft 365 Connect Modal */}
+      <Microsoft365ConnectModal />
 
       {/* Product Tour - disabled for now */}
       {/* <ProductTour /> */}

@@ -164,6 +164,20 @@ export interface PrivateNote {
   timestamp: Date
 }
 
+// Microsoft 365 Integration types
+export interface Microsoft365Integration {
+  connected: boolean
+  connectedAt?: Date
+  userEmail?: string
+  userName?: string
+  features: {
+    samtal: boolean      // Auto-sync conversations to Outlook calendar
+    birthdays: boolean   // Birthdays calendar in Outlook
+    surveys: boolean     // Survey reminder events
+    workflows: boolean   // Workflow task deadlines in calendar
+  }
+}
+
 // File types for automatic documentation feature
 export type FileUploadStatus = 'uploading' | 'uploaded' | 'processing' | 'error'
 

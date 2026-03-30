@@ -12,7 +12,7 @@
  */
 
 import { create } from 'zustand'
-import type { Samtal, Task, HistoricalMeeting, SurveyData, HistoricalSurveyData, Comment, PrivateNote, Participant, UploadedFile, AIGeneratedBlock } from '../types'
+import type { Samtal, Task, HistoricalMeeting, SurveyData, HistoricalSurveyData, Comment, PrivateNote, Participant, UploadedFile, AIGeneratedBlock, Microsoft365Integration } from '../types'
 import {
   mockSamtals,
   mockTasks,
@@ -74,6 +74,11 @@ export interface AppStore {
   historicalSurveyData: HistoricalSurveyData[]
   privateNotes: PrivateNote[]
   editorContent: string
+
+  // Microsoft 365 Integration
+  microsoft365: Microsoft365Integration
+  microsoft365ModalOpen: boolean
+  microsoft365ReturnToBooking: boolean // Reopen booking modal after connect
 
   // Files for automatic documentation
   uploadedFiles: UploadedFile[]
@@ -176,6 +181,21 @@ export interface AppStore {
   clearAIBlocks: () => void
 
   // ========================================
+  // Actions - Microsoft 365 Integration
+  // ========================================
+  openMicrosoft365Modal: (returnToBooking?: boolean) => void
+  closeMicrosoft365Modal: () => void
+  connectMicrosoft365: (email: string, name: string, features: Microsoft365Integration['features']) => void
+  disconnectMicrosoft365: () => void
+  updateMicrosoft365Features: (features: Partial<Microsoft365Integration['features']>) => void
+
+  // ========================================
+  // Actions - Navigation
+  // ========================================
+  currentPage: 'samtal' | 'settings'
+  setCurrentPage: (page: 'samtal' | 'settings') => void
+
+  // ========================================
   // Tour State
   // ========================================
   tourActive: boolean
@@ -239,6 +259,22 @@ export const useStore = create<AppStore>((set, get) => ({
   historicalSurveyData: mockHistoricalSurveyData,
   privateNotes: mockPrivateNotes,
   editorContent: mockSamtals[0].notes || defaultAgendaTemplate,
+
+  // Microsoft 365 Integration
+  microsoft365: {
+    connected: false,
+    features: {
+      samtal: true,
+      birthdays: true,
+      surveys: false,
+      workflows: false,
+    },
+  },
+  microsoft365ModalOpen: false,
+  microsoft365ReturnToBooking: false,
+
+  // Navigation
+  currentPage: 'samtal',
 
   // Files for automatic documentation
   uploadedFiles: [],
@@ -831,6 +867,62 @@ export const useStore = create<AppStore>((set, get) => ({
 
   clearAIBlocks: () =>
     set({ aiGeneratedBlocks: [] }),
+
+  // ========================================
+  // Microsoft 365 Integration Actions
+  // ========================================
+  openMicrosoft365Modal: (returnToBooking) => set({ microsoft365ModalOpen: true, microsoft365ReturnToBooking: !!returnToBooking }),
+  closeMicrosoft365Modal: () => set({ microsoft365ModalOpen: false, microsoft365ReturnToBooking: false }),
+
+  connectMicrosoft365: (email, name, features) => {
+    const returnToBooking = get().microsoft365ReturnToBooking
+    set({
+      microsoft365: {
+        connected: true,
+        connectedAt: new Date(),
+        userEmail: email,
+        userName: name,
+        features,
+      },
+      microsoft365ModalOpen: false,
+      microsoft365ReturnToBooking: false,
+    })
+    // Signal to reopen booking modal if triggered from booking flow
+    if (returnToBooking) {
+      setTimeout(() => {
+        set({ microsoft365ReturnToBooking: true })
+      }, 300)
+    }
+  },
+
+  disconnectMicrosoft365: () =>
+    set({
+      microsoft365: {
+        connected: false,
+        features: {
+          samtal: true,
+          birthdays: true,
+          surveys: false,
+          workflows: false,
+        },
+      },
+    }),
+
+  updateMicrosoft365Features: (features) =>
+    set((state) => ({
+      microsoft365: {
+        ...state.microsoft365,
+        features: {
+          ...state.microsoft365.features,
+          ...features,
+        },
+      },
+    })),
+
+  // ========================================
+  // Navigation Actions
+  // ========================================
+  setCurrentPage: (page) => set({ currentPage: page }),
 
   // ========================================
   // Tour Actions

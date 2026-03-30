@@ -5,7 +5,7 @@
  * Features: Verktyg, Detaljer, Tidigare samtal, Privata anteckningar
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useStore } from '../../store/useStore'
 import {
@@ -63,10 +63,20 @@ export default function RightPanel() {
     openAutomaticNotesModal,
     closeAutomaticNotesModal,
   } = useStore()
+  const microsoft365ReturnToBooking = useStore(s => s.microsoft365ReturnToBooking)
+  const isMs365Connected = useStore(s => s.microsoft365.connected)
   const activeTabId = activeRightPanelTab
   const setActiveTabId = setActiveRightPanelTab
   const [showBookingModal, setShowBookingModal] = useState(false)
   const [showMarkAsKlarModal, setShowMarkAsKlarModal] = useState(false)
+
+  // Reopen booking modal after 365 connect flow if triggered from booking
+  useEffect(() => {
+    if (isMs365Connected && microsoft365ReturnToBooking) {
+      setShowBookingModal(true)
+      useStore.setState({ microsoft365ReturnToBooking: false })
+    }
+  }, [isMs365Connected, microsoft365ReturnToBooking])
 
   const tabs: Tab[] = [
     { id: 'översikt', label: 'Översikt', icon: LayoutGrid },

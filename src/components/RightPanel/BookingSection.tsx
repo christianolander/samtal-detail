@@ -21,6 +21,7 @@ import {
   Plus,
   Video,
   ExternalLink,
+  ChevronRight,
 } from 'lucide-react'
 
 // Helper to detect meeting provider from URL
@@ -343,6 +344,18 @@ const DURATION_OPTIONS = [
   { value: 240, label: '4 timmar' },
 ]
 
+// Microsoft logo for contextual banner
+function MicrosoftLogoSmall() {
+  return (
+    <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 21 21" fill="none">
+      <rect x="1" y="1" width="9" height="9" fill="#F25022" />
+      <rect x="11" y="1" width="9" height="9" fill="#7FBA00" />
+      <rect x="1" y="11" width="9" height="9" fill="#00A4EF" />
+      <rect x="11" y="11" width="9" height="9" fill="#FFB900" />
+    </svg>
+  )
+}
+
 export function BookingModal({
   isOpen,
   onClose,
@@ -350,6 +363,7 @@ export function BookingModal({
   onSave,
   onRemove,
 }: BookingModalProps) {
+  const { microsoft365, openMicrosoft365Modal } = useStore()
   // Initialize form state
   const [date, setDate] = useState(() => {
     if (existingBooking?.date) {
@@ -510,6 +524,28 @@ export function BookingModal({
             >
               <Video className="w-4 h-4" />
               <span>Lägg till möteslänk</span>
+            </button>
+          )}
+          {/* Microsoft 365 contextual banner - only when NOT connected */}
+          {!microsoft365.connected && (
+            <button
+              type="button"
+              onClick={() => {
+                onClose()
+                openMicrosoft365Modal(true)
+              }}
+              className="w-full flex items-center gap-3 p-3 bg-[#0078D4]/5 dark:bg-[#0078D4]/10 border border-[#0078D4]/15 rounded-lg text-left group hover:bg-[#0078D4]/8 dark:hover:bg-[#0078D4]/15 transition-colors cursor-pointer"
+            >
+              <MicrosoftLogoSmall />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground">
+                  Synka till Outlook?
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Koppla Microsoft 365 så visas bokningen automatiskt i kalendern.
+                </p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-[#0078D4] transition-colors flex-shrink-0" />
             </button>
           )}
         </div>
