@@ -4,6 +4,17 @@
 @import "tailwindcss";
 @import "@c.olander/proto-ui/theme.css";
 
+/* Force Tailwind v4 dark: variant to use .dark class, not media query */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Explicit color-scheme control — prevent browser from auto-switching native UI */
+:root {
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
+}
+
 @source "../src";
 @source "../node_modules/@c.olander/proto-ui/dist";
 @source "../.yalc/@c.olander/proto-ui/dist";

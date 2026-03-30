@@ -74,7 +74,12 @@ function updateUrlWithConversationId(id: string | null) {
 function App() {
   const { activeTab, rightPanelCollapsed, loadSamtal, currentPage, setCurrentPage, microsoft365, openMicrosoft365Modal } = useStore()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Check localStorage first, then browser preference
+    const stored = localStorage.getItem('workly-theme')
+    if (stored) return stored === 'dark'
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+  })
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(() => {
     // Initialize from URL on first render
     return getConversationIdFromUrl()
@@ -120,16 +125,22 @@ function App() {
 
   // Toggle dark mode
   const toggleDarkMode = () => {
+    const next = !isDarkMode
     const html = document.documentElement
-    if (!isDarkMode) {
-      html.classList.add('dark')
-      html.classList.remove('light')
-    } else {
-      html.classList.remove('dark')
-      html.classList.add('light')
-    }
-    setIsDarkMode(!isDarkMode)
+    html.classList.toggle('dark', next)
+    html.classList.toggle('light', !next)
+    html.style.colorScheme = next ? 'dark' : 'light'
+    localStorage.setItem('workly-theme', next ? 'dark' : 'light')
+    setIsDarkMode(next)
   }
+
+  // Apply initial theme class on mount
+  useEffect(() => {
+    const html = document.documentElement
+    html.classList.toggle('dark', isDarkMode)
+    html.classList.toggle('light', !isDarkMode)
+    html.style.colorScheme = isDarkMode ? 'dark' : 'light'
+  }, [])
 
   const currentUser = {
     name: 'Erik Axelsson',

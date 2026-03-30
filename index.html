@@ -1,6 +1,15 @@
 <!doctype html>
-<html lang="sv" class="light">
+<html lang="sv">
   <head>
+    <script>
+      // Blocking: apply theme before first paint to prevent FOUC
+      (function() {
+        var stored = localStorage.getItem('workly-theme');
+        var dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.add(dark ? 'dark' : 'light');
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+      })();
+    </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
