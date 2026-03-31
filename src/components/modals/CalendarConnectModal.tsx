@@ -499,7 +499,7 @@ interface CalendarConnectModalProps {
 }
 
 export default function CalendarConnectModal({ showAllFeatures = false }: CalendarConnectModalProps) {
-  const { calendarModalOpen, closeCalendarModal, connectCalendar } = useStore()
+  const { calendarModalOpen, closeCalendarModal, connectCalendar, calendarModalPreselectedProvider } = useStore()
   const [step, setStep] = useState<WizardStep>('welcome')
   const [selectedProvider, setSelectedProvider] = useState<CalendarProvider>('microsoft')
   const [features, setFeatures] = useState<CalendarIntegration['features']>({
@@ -510,19 +510,27 @@ export default function CalendarConnectModal({ showAllFeatures = false }: Calend
   })
   const [isExiting, setIsExiting] = useState(false)
 
-  // Build STEPS array dynamically based on showAllFeatures prop
+  // Build STEPS array dynamically
+  const hasPreselected = !!calendarModalPreselectedProvider
   const steps = useMemo<WizardStep[]>(() => {
-    if (showAllFeatures) {
-      return ['welcome', 'features', 'auth', 'success']
-    }
-    return ['welcome', 'auth', 'success']
-  }, [showAllFeatures])
+    const base: WizardStep[] = hasPreselected
+      ? ['auth', 'success'] // Skip welcome when provider is known
+      : showAllFeatures
+        ? ['welcome', 'features', 'auth', 'success']
+        : ['welcome', 'auth', 'success']
+    return base
+  }, [showAllFeatures, hasPreselected])
 
   // Reset state when modal opens
   useEffect(() => {
     if (calendarModalOpen) {
-      setStep('welcome')
-      setSelectedProvider('microsoft')
+      if (calendarModalPreselectedProvider) {
+        setSelectedProvider(calendarModalPreselectedProvider)
+        setStep('auth')
+      } else {
+        setStep('welcome')
+        setSelectedProvider('microsoft')
+      }
       setFeatures({
         samtal: true,
         birthdays: false,
@@ -531,7 +539,7 @@ export default function CalendarConnectModal({ showAllFeatures = false }: Calend
       })
       setIsExiting(false)
     }
-  }, [calendarModalOpen])
+  }, [calendarModalOpen, calendarModalPreselectedProvider])
 
   const handleClose = useCallback(() => {
     setIsExiting(true)

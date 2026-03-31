@@ -22,6 +22,8 @@ import {
   Video,
   ExternalLink,
   ChevronRight,
+  Check,
+  Unplug,
 } from 'lucide-react'
 
 // Helper to detect meeting provider from URL
@@ -73,7 +75,7 @@ function getMeetingProvider(url: string): {
 }
 
 export default function BookingSection() {
-  const { currentSamtal, setBooking, removeBooking, currentStatus } = useStore()
+  const { currentSamtal, setBooking, removeBooking, currentStatus, calendarIntegration, openCalendarModal } = useStore()
   const [showModal, setShowModal] = useState(false)
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false)
 
@@ -234,6 +236,27 @@ export default function BookingSection() {
                 </a>
               )
             })()}
+
+            {/* Calendar sync status indicator */}
+            {calendarIntegration.connected && calendarIntegration.features.samtal && calendarIntegration.syncStatus !== 'error' && (
+              <div className="flex items-center gap-2 pt-2 border-t border-border/50">
+                <Check className="w-3.5 h-3.5 text-primary" />
+                <span className="text-xs text-primary font-medium">
+                  Synkad till {calendarIntegration.provider === 'microsoft' ? 'Outlook' : 'Google Calendar'}
+                </span>
+              </div>
+            )}
+            {calendarIntegration.connected && calendarIntegration.syncStatus === 'error' && (
+              <button
+                onClick={() => openCalendarModal({ provider: calendarIntegration.provider })}
+                className="w-full flex items-center gap-2 pt-2 border-t border-border/50 group"
+              >
+                <Unplug className="w-3.5 h-3.5 text-destructive" />
+                <span className="text-xs text-destructive font-medium group-hover:underline">
+                  {calendarIntegration.provider === 'microsoft' ? 'Outlook' : 'Google Calendar'} ej anslutet
+                </span>
+              </button>
+            )}
           </div>
         ) : (
           /* No booking - show create button */
@@ -521,7 +544,7 @@ export function BookingModal({
               type="button"
               onClick={() => {
                 onClose()
-                openCalendarModal(true)
+                openCalendarModal({ returnToBooking: true })
               }}
               className="w-full flex items-center gap-3 p-3 bg-primary/5 dark:bg-primary/10 border border-primary/15 rounded-lg text-left group hover:bg-primary/8 dark:hover:bg-primary/15 transition-colors cursor-pointer"
             >

@@ -21,6 +21,7 @@ import {
   Clock,
   RefreshCw,
   AlertTriangle,
+  Puzzle,
 } from 'lucide-react'
 
 // Microsoft logo SVG
@@ -95,10 +96,15 @@ function FeatureToggle({
   )
 }
 
-export default function CalendarSettingsPage() {
+interface CalendarSettingsPageProps {
+  showAllFeatures?: boolean
+}
+
+export default function CalendarSettingsPage({ showAllFeatures = false }: CalendarSettingsPageProps) {
   const {
     calendarIntegration,
     openCalendarModal,
+    connectCalendar,
     disconnectCalendar,
     updateCalendarFeatures,
     setCalendarSyncStatus,
@@ -111,9 +117,15 @@ export default function CalendarSettingsPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     if (params.get('sync-error') === 'true') {
+      // Simulate a connected-but-broken state for demo purposes
+      if (!calendarIntegration.connected) {
+        // Auto-connect with MS so the error state has something to show
+        connectCalendar('microsoft', 'erik.axelsson@workly.se', 'Erik Axelsson', { samtal: true, birthdays: false, surveys: false, workflows: false })
+      }
       setCalendarSyncStatus('error')
+      setMsExpanded(true)
     }
-  }, [setCalendarSyncStatus])
+  }, [])
 
   const handleDisconnect = () => {
     disconnectCalendar()
@@ -123,7 +135,7 @@ export default function CalendarSettingsPage() {
   const handleReconnect = () => {
     // Clear error, disconnect, then open modal to reconnect
     disconnectCalendar()
-    openCalendarModal()
+    openCalendarModal({ provider: 'microsoft' })
   }
 
   const formatDate = (date: Date) => {
@@ -146,7 +158,7 @@ export default function CalendarSettingsPage() {
     <div className="max-w-2xl mx-auto py-2 px-6">
       {/* Section Header */}
       <div className="flex items-center gap-3 mb-6">
-        <Calendar className="w-7 h-7 text-primary" />
+        <Puzzle className="w-7 h-7 text-primary" />
         <div>
           <h2 className="text-lg font-semibold text-foreground">Integrationer</h2>
           <p className="text-sm text-muted-foreground">
@@ -174,7 +186,7 @@ export default function CalendarSettingsPage() {
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-semibold text-foreground">Microsoft 365</h3>
               <p className="text-sm text-muted-foreground mt-0.5">
-                Outlook-kalender, Teams och mer
+                Samtal synkas till din Outlook-kalender
               </p>
             </div>
             {isMsConnected ? (
@@ -182,7 +194,7 @@ export default function CalendarSettingsPage() {
                 {hasError ? (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-destructive/10 text-destructive text-[10px] font-semibold uppercase tracking-wider">
                     <AlertTriangle className="w-3 h-3" />
-                    Synkfel
+                    Frånkopplad
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold uppercase tracking-wider">
@@ -192,8 +204,8 @@ export default function CalendarSettingsPage() {
                 )}
               </div>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-muted text-muted-foreground text-[10px] font-semibold uppercase tracking-wider">
-                Ej ansluten
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cornflower-blue/10 text-cornflower-blue text-[10px] font-semibold uppercase tracking-wider">
+                Ny
               </span>
             )}
             {msExpanded ? (
@@ -206,30 +218,52 @@ export default function CalendarSettingsPage() {
           {/* Expanded content */}
           {msExpanded && (
             <div className="px-5 pb-5 border-t border-border">
-              {isMsConnected ? (
-                <>
-                  {/* Error banner */}
-                  {hasError && (
-                    <div className="mt-4 flex items-start gap-3 p-4 bg-destructive/5 border border-destructive/20 rounded-xl">
-                      <AlertTriangle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-semibold text-foreground">
-                          Synkfel &mdash; åtgärd krävs
-                        </h4>
-                        <p className="text-sm text-muted-foreground mt-0.5">
-                          Vi kunde inte synka med din kalender. Du kan behöva ansluta igen.
-                        </p>
-                        <button
-                          onClick={handleReconnect}
-                          className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-destructive text-destructive-foreground rounded-lg text-sm font-medium hover:bg-destructive/90 transition-colors"
-                        >
-                          <RefreshCw className="w-4 h-4" />
-                          Anslut igen
-                        </button>
-                      </div>
+              {isMsConnected && hasError ? (
+                /* ===== ERROR STATE ===== */
+                <div className="py-6">
+                  <div className="flex flex-col items-center text-center mb-6">
+                    <div className="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
+                      <AlertTriangle className="w-7 h-7 text-destructive" />
                     </div>
-                  )}
+                    <h3 className="text-base font-semibold text-foreground mb-1">
+                      Synkfel, åtgärd krävs
+                    </h3>
+                    <p className="text-sm text-muted-foreground max-w-sm">
+                      Vi kunde inte synka med din Outlook-kalender. Anslutningen kan ha löpt ut eller behörigheterna återkallats.
+                    </p>
+                  </div>
 
+                  {/* Account info — compact */}
+                  <div className="flex items-center gap-3 p-3 bg-muted/30 border border-border rounded-lg mb-5">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                      <span className="text-muted-foreground text-xs font-medium">EA</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground">{calendarIntegration.userName}</p>
+                      <p className="text-xs text-muted-foreground">{calendarIntegration.userEmail}</p>
+                    </div>
+                    <span className="text-xs text-destructive font-medium">Frånkopplad</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={handleReconnect}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                      Anslut igen
+                    </button>
+                    <button
+                      onClick={handleDisconnect}
+                      className="px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-destructive transition-colors"
+                    >
+                      Koppla från
+                    </button>
+                  </div>
+                </div>
+              ) : isMsConnected ? (
+                /* ===== CONNECTED STATE ===== */
+                <>
                   {/* Connection status card */}
                   <div className="mt-4 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-5">
                     <div className="flex items-start justify-between">
@@ -242,10 +276,6 @@ export default function CalendarSettingsPage() {
                             <p className="text-sm font-semibold text-foreground">
                               {calendarIntegration.userName}
                             </p>
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold uppercase tracking-wider">
-                              <Check className="w-3 h-3" />
-                              Ansluten
-                            </span>
                           </div>
                           <p className="text-sm text-muted-foreground">
                             {calendarIntegration.userEmail}
@@ -257,54 +287,52 @@ export default function CalendarSettingsPage() {
                     {/* Sync status */}
                     <div className="flex items-center gap-4 mt-4 pt-4 border-t border-primary/10">
                       <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                        <Clock className="w-3.5 h-3.5" />
-                        Ansluten sedan {calendarIntegration.connectedAt ? formatDate(calendarIntegration.connectedAt) : '\u2014'}
-                      </div>
-                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                         <RefreshCw className="w-3.5 h-3.5" />
                         Senaste synk: {formatDate(lastSynced)}
                       </div>
                     </div>
                   </div>
 
-                  {/* Feature toggles */}
-                  <div className="space-y-3 mt-5 mb-5">
-                    <h3 className="text-sm font-medium text-foreground mb-3">
-                      Aktiverade funktioner
-                    </h3>
+                  {/* Feature toggles — only show when showAllFeatures is true */}
+                  {showAllFeatures && (
+                    <div className="space-y-3 mt-5 mb-5">
+                      <h3 className="text-sm font-medium text-foreground mb-3">
+                        Aktiverade funktioner
+                      </h3>
 
-                    <FeatureToggle
-                      icon={<Calendar className="w-5 h-5" />}
-                      title={`Samtal i ${calendarName}`}
-                      description={`Bokade samtal synkas automatiskt till ${calendarName}`}
-                      enabled={calendarIntegration.features.samtal}
-                      onChange={(enabled) => updateCalendarFeatures({ samtal: enabled })}
-                    />
+                      <FeatureToggle
+                        icon={<Calendar className="w-5 h-5" />}
+                        title={`Samtal i ${calendarName}`}
+                        description={`Bokade samtal synkas automatiskt till ${calendarName}`}
+                        enabled={calendarIntegration.features.samtal}
+                        onChange={(enabled) => updateCalendarFeatures({ samtal: enabled })}
+                      />
 
-                    <FeatureToggle
-                      icon={<Cake className="w-5 h-5" />}
-                      title="Födelsedagar"
-                      description={`Medarbetarnas födelsedagar i en delad kalender i ${calendarName}`}
-                      enabled={calendarIntegration.features.birthdays}
-                      onChange={(enabled) => updateCalendarFeatures({ birthdays: enabled })}
-                    />
+                      <FeatureToggle
+                        icon={<Cake className="w-5 h-5" />}
+                        title="Födelsedagar"
+                        description={`Medarbetarnas födelsedagar i en delad kalender i ${calendarName}`}
+                        enabled={calendarIntegration.features.birthdays}
+                        onChange={(enabled) => updateCalendarFeatures({ birthdays: enabled })}
+                      />
 
-                    <FeatureToggle
-                      icon={<BarChart3 className="w-5 h-5" />}
-                      title="Undersökningspåminnelser"
-                      description={`Påminnelser för pulsundersökningar i ${calendarName}`}
-                      enabled={calendarIntegration.features.surveys}
-                      onChange={(enabled) => updateCalendarFeatures({ surveys: enabled })}
-                    />
+                      <FeatureToggle
+                        icon={<BarChart3 className="w-5 h-5" />}
+                        title="Undersökningspåminnelser"
+                        description={`Påminnelser för pulsundersökningar i ${calendarName}`}
+                        enabled={calendarIntegration.features.surveys}
+                        onChange={(enabled) => updateCalendarFeatures({ surveys: enabled })}
+                      />
 
-                    <FeatureToggle
-                      icon={<ListChecks className="w-5 h-5" />}
-                      title="Arbetsflöden"
-                      description={`Deadlines för onboarding/offboarding i ${calendarName}`}
-                      enabled={calendarIntegration.features.workflows}
-                      onChange={(enabled) => updateCalendarFeatures({ workflows: enabled })}
-                    />
-                  </div>
+                      <FeatureToggle
+                        icon={<ListChecks className="w-5 h-5" />}
+                        title="Arbetsflöden"
+                        description={`Deadlines för onboarding/offboarding i ${calendarName}`}
+                        enabled={calendarIntegration.features.workflows}
+                        onChange={(enabled) => updateCalendarFeatures({ workflows: enabled })}
+                      />
+                    </div>
+                  )}
 
                   {/* Security info */}
                   <div className="flex items-start gap-3 p-4 bg-muted/30 border border-border rounded-xl mb-5">
@@ -360,19 +388,17 @@ export default function CalendarSettingsPage() {
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 flex items-center justify-center mx-auto mb-4">
                     <MicrosoftLogo className="w-7 h-7" />
                   </div>
-                  <h3 className="text-base font-semibold text-foreground mb-2">
-                    Ej ansluten
+                  <h3 className="text-base font-semibold text-foreground mb-1">
+                    Slipp dubbelarbetet
                   </h3>
                   <p className="text-sm text-muted-foreground mb-5 max-w-sm mx-auto">
-                    Koppla din Microsoft 365-kalender för att synka samtal, födelsedagar och
-                    påminnelser automatiskt.
+                    Koppla Outlook så hamnar bokade samtal direkt i kalendern. Automatiskt, varje gång.
                   </p>
                   <button
-                    onClick={() => openCalendarModal()}
+                    onClick={() => openCalendarModal({ provider: 'microsoft' })}
                     className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
                   >
-                    <Calendar className="w-4 h-4" />
-                    Anslut kalender
+                    Synka nu
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -384,17 +410,19 @@ export default function CalendarSettingsPage() {
 
       {/* Google Workspace — Coming Soon Card */}
       <section className="mb-8">
-        <div className="border border-border rounded-xl opacity-50">
-          <div className="flex items-center gap-4 p-5 cursor-not-allowed">
-            <GoogleLogo className="w-7 h-7 flex-shrink-0" />
+        <div className="border border-border rounded-xl">
+          <div className="flex items-center gap-4 p-5 cursor-default">
+            <div className="opacity-75">
+              <GoogleLogo className="w-7 h-7 flex-shrink-0" />
+            </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold text-foreground">Google Workspace</h3>
+                <h3 className="text-sm font-semibold text-muted-foreground">Google Workspace</h3>
                 <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
                   Kommer snart
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground mt-0.5">
+              <p className="text-sm text-muted-foreground/60 mt-0.5">
                 Google Calendar, Meet och mer
               </p>
             </div>

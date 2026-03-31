@@ -79,6 +79,7 @@ export interface AppStore {
   calendarIntegration: CalendarIntegration
   calendarModalOpen: boolean
   calendarReturnToBooking: boolean // Reopen booking modal after connect
+  calendarModalPreselectedProvider: CalendarProvider | null
 
   // Files for automatic documentation
   uploadedFiles: UploadedFile[]
@@ -183,7 +184,7 @@ export interface AppStore {
   // ========================================
   // Actions - Calendar Integration
   // ========================================
-  openCalendarModal: (returnToBooking?: boolean) => void
+  openCalendarModal: (options?: { returnToBooking?: boolean; provider?: CalendarProvider }) => void
   closeCalendarModal: () => void
   connectCalendar: (provider: CalendarProvider, email: string, name: string, features: CalendarIntegration['features']) => void
   disconnectCalendar: () => void
@@ -273,6 +274,7 @@ export const useStore = create<AppStore>((set, get) => ({
   },
   calendarModalOpen: false,
   calendarReturnToBooking: false,
+  calendarModalPreselectedProvider: null,
 
   // Navigation
   currentPage: 'samtal',
@@ -872,8 +874,12 @@ export const useStore = create<AppStore>((set, get) => ({
   // ========================================
   // Calendar Integration Actions
   // ========================================
-  openCalendarModal: (returnToBooking) => set({ calendarModalOpen: true, calendarReturnToBooking: !!returnToBooking }),
-  closeCalendarModal: () => set({ calendarModalOpen: false, calendarReturnToBooking: false }),
+  openCalendarModal: (options) => set({
+    calendarModalOpen: true,
+    calendarReturnToBooking: !!options?.returnToBooking,
+    calendarModalPreselectedProvider: options?.provider || null,
+  }),
+  closeCalendarModal: () => set({ calendarModalOpen: false, calendarReturnToBooking: false, calendarModalPreselectedProvider: null }),
 
   connectCalendar: (provider, email, name, features) => {
     const returnToBooking = get().calendarReturnToBooking

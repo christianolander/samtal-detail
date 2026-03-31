@@ -116,7 +116,7 @@ function IntegrationBanner({ onConnect, onDismiss }: { onConnect: () => void, on
             </span>
           </h3>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Synka samtal automatiskt till din kalender — Microsoft eller Google.
+            Synka samtal automatiskt till din kalender. Stöd för Microsoft och Google.
           </p>
         </div>
 
@@ -126,7 +126,7 @@ function IntegrationBanner({ onConnect, onDismiss }: { onConnect: () => void, on
             onClick={onConnect}
             className="flex items-center gap-2 px-4 py-2 border border-foreground/20 text-foreground rounded-lg text-sm font-medium hover:bg-foreground/5 transition-colors"
           >
-            Synka
+            Kom igång
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
           <button
