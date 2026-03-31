@@ -12,7 +12,7 @@
  */
 
 import { create } from 'zustand'
-import type { Samtal, Task, HistoricalMeeting, SurveyData, HistoricalSurveyData, Comment, PrivateNote, Participant, UploadedFile, AIGeneratedBlock, Microsoft365Integration } from '../types'
+import type { Samtal, Task, HistoricalMeeting, SurveyData, HistoricalSurveyData, Comment, PrivateNote, Participant, UploadedFile, AIGeneratedBlock, CalendarIntegration, CalendarProvider } from '../types'
 import {
   mockSamtals,
   mockTasks,
@@ -75,10 +75,10 @@ export interface AppStore {
   privateNotes: PrivateNote[]
   editorContent: string
 
-  // Microsoft 365 Integration
-  microsoft365: Microsoft365Integration
-  microsoft365ModalOpen: boolean
-  microsoft365ReturnToBooking: boolean // Reopen booking modal after connect
+  // Calendar Integration
+  calendarIntegration: CalendarIntegration
+  calendarModalOpen: boolean
+  calendarReturnToBooking: boolean // Reopen booking modal after connect
 
   // Files for automatic documentation
   uploadedFiles: UploadedFile[]
@@ -181,13 +181,14 @@ export interface AppStore {
   clearAIBlocks: () => void
 
   // ========================================
-  // Actions - Microsoft 365 Integration
+  // Actions - Calendar Integration
   // ========================================
-  openMicrosoft365Modal: (returnToBooking?: boolean) => void
-  closeMicrosoft365Modal: () => void
-  connectMicrosoft365: (email: string, name: string, features: Microsoft365Integration['features']) => void
-  disconnectMicrosoft365: () => void
-  updateMicrosoft365Features: (features: Partial<Microsoft365Integration['features']>) => void
+  openCalendarModal: (returnToBooking?: boolean) => void
+  closeCalendarModal: () => void
+  connectCalendar: (provider: CalendarProvider, email: string, name: string, features: CalendarIntegration['features']) => void
+  disconnectCalendar: () => void
+  updateCalendarFeatures: (features: Partial<CalendarIntegration['features']>) => void
+  setCalendarSyncStatus: (status: 'ok' | 'error') => void
 
   // ========================================
   // Actions - Navigation
@@ -260,18 +261,18 @@ export const useStore = create<AppStore>((set, get) => ({
   privateNotes: mockPrivateNotes,
   editorContent: mockSamtals[0].notes || defaultAgendaTemplate,
 
-  // Microsoft 365 Integration
-  microsoft365: {
+  // Calendar Integration
+  calendarIntegration: {
     connected: false,
     features: {
       samtal: true,
-      birthdays: true,
+      birthdays: false,
       surveys: false,
       workflows: false,
     },
   },
-  microsoft365ModalOpen: false,
-  microsoft365ReturnToBooking: false,
+  calendarModalOpen: false,
+  calendarReturnToBooking: false,
 
   // Navigation
   currentPage: 'samtal',
@@ -869,53 +870,62 @@ export const useStore = create<AppStore>((set, get) => ({
     set({ aiGeneratedBlocks: [] }),
 
   // ========================================
-  // Microsoft 365 Integration Actions
+  // Calendar Integration Actions
   // ========================================
-  openMicrosoft365Modal: (returnToBooking) => set({ microsoft365ModalOpen: true, microsoft365ReturnToBooking: !!returnToBooking }),
-  closeMicrosoft365Modal: () => set({ microsoft365ModalOpen: false, microsoft365ReturnToBooking: false }),
+  openCalendarModal: (returnToBooking) => set({ calendarModalOpen: true, calendarReturnToBooking: !!returnToBooking }),
+  closeCalendarModal: () => set({ calendarModalOpen: false, calendarReturnToBooking: false }),
 
-  connectMicrosoft365: (email, name, features) => {
-    const returnToBooking = get().microsoft365ReturnToBooking
+  connectCalendar: (provider, email, name, features) => {
+    const returnToBooking = get().calendarReturnToBooking
     set({
-      microsoft365: {
+      calendarIntegration: {
         connected: true,
+        provider,
         connectedAt: new Date(),
         userEmail: email,
         userName: name,
+        syncStatus: 'ok',
         features,
       },
-      microsoft365ModalOpen: false,
-      microsoft365ReturnToBooking: false,
+      calendarModalOpen: false,
+      calendarReturnToBooking: false,
     })
-    // Signal to reopen booking modal if triggered from booking flow
     if (returnToBooking) {
       setTimeout(() => {
-        set({ microsoft365ReturnToBooking: true })
+        set({ calendarReturnToBooking: true })
       }, 300)
     }
   },
 
-  disconnectMicrosoft365: () =>
+  disconnectCalendar: () =>
     set({
-      microsoft365: {
+      calendarIntegration: {
         connected: false,
         features: {
           samtal: true,
-          birthdays: true,
+          birthdays: false,
           surveys: false,
           workflows: false,
         },
       },
     }),
 
-  updateMicrosoft365Features: (features) =>
+  updateCalendarFeatures: (features) =>
     set((state) => ({
-      microsoft365: {
-        ...state.microsoft365,
+      calendarIntegration: {
+        ...state.calendarIntegration,
         features: {
-          ...state.microsoft365.features,
+          ...state.calendarIntegration.features,
           ...features,
         },
+      },
+    })),
+
+  setCalendarSyncStatus: (status) =>
+    set((state) => ({
+      calendarIntegration: {
+        ...state.calendarIntegration,
+        syncStatus: status,
       },
     })),
 

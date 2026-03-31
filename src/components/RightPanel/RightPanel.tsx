@@ -63,20 +63,20 @@ export default function RightPanel() {
     openAutomaticNotesModal,
     closeAutomaticNotesModal,
   } = useStore()
-  const microsoft365ReturnToBooking = useStore(s => s.microsoft365ReturnToBooking)
-  const isMs365Connected = useStore(s => s.microsoft365.connected)
+  const calendarReturnToBooking = useStore(s => s.calendarReturnToBooking)
+  const isCalendarConnected = useStore(s => s.calendarIntegration.connected)
   const activeTabId = activeRightPanelTab
   const setActiveTabId = setActiveRightPanelTab
   const [showBookingModal, setShowBookingModal] = useState(false)
   const [showMarkAsKlarModal, setShowMarkAsKlarModal] = useState(false)
 
-  // Reopen booking modal after 365 connect flow if triggered from booking
+  // Reopen booking modal after calendar connect flow if triggered from booking
   useEffect(() => {
-    if (isMs365Connected && microsoft365ReturnToBooking) {
+    if (isCalendarConnected && calendarReturnToBooking) {
       setShowBookingModal(true)
-      useStore.setState({ microsoft365ReturnToBooking: false })
+      useStore.setState({ calendarReturnToBooking: false })
     }
-  }, [isMs365Connected, microsoft365ReturnToBooking])
+  }, [isCalendarConnected, calendarReturnToBooking])
 
   const tabs: Tab[] = [
     { id: 'översikt', label: 'Översikt', icon: LayoutGrid },

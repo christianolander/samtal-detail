@@ -1,14 +1,14 @@
 /**
- * Microsoft365ConnectModal
+ * CalendarConnectModal
  *
- * Multi-step wizard for connecting Microsoft 365:
- * Step 1: Welcome - overview with illustration
- * Step 2: Feature selection - checkboxes for which integrations to enable
- * Step 3: Simulated MS auth popup
+ * Multi-step wizard for connecting a calendar provider (Microsoft 365 or Google):
+ * Step 1: Welcome - choose provider
+ * Step 2: Feature selection - checkboxes for which integrations to enable (optional, controlled by showAllFeatures prop)
+ * Step 3: Simulated auth popup
  * Step 4: Success confirmation with animation
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useStore } from '@/store/useStore'
 import {
@@ -26,11 +26,9 @@ import {
   ExternalLink,
   Lock,
 } from 'lucide-react'
-import type { Microsoft365Integration } from '@/types'
+import type { CalendarIntegration, CalendarProvider } from '@/types'
 
 type WizardStep = 'welcome' | 'features' | 'auth' | 'success'
-
-const STEPS: WizardStep[] = ['welcome', 'features', 'auth', 'success']
 
 // Microsoft logo SVG component
 function MicrosoftLogo({ className = 'w-5 h-5' }: { className?: string }) {
@@ -44,14 +42,14 @@ function MicrosoftLogo({ className = 'w-5 h-5' }: { className?: string }) {
   )
 }
 
-// Outlook icon SVG
-function OutlookIcon({ className = 'w-5 h-5' }: { className?: string }) {
+// Google logo SVG component
+function GoogleLogo({ className = 'w-5 h-5' }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none">
-      <rect x="2" y="4" width="20" height="16" rx="2" fill="#0078D4" />
-      <path d="M12 4L2 10V20h20V10L12 4z" fill="#0078D4" />
-      <path d="M2 10l10 6 10-6" stroke="white" strokeWidth="1.5" fill="none" />
-      <ellipse cx="9" cy="13" rx="3.5" ry="2.5" fill="white" opacity="0.9" />
+    <svg className={className} viewBox="0 0 24 24">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
     </svg>
   )
 }
@@ -68,13 +66,73 @@ function WorklyDroid({ className = 'w-8 h-8' }: { className?: string }) {
   )
 }
 
+// Provider selection card
+function ProviderCard({
+  provider,
+  selected,
+  onClick,
+  comingSoon,
+}: {
+  provider: CalendarProvider
+  selected: boolean
+  onClick: () => void
+  comingSoon?: boolean
+}) {
+  const isMs = provider === 'microsoft'
+  return (
+    <button
+      type="button"
+      onClick={comingSoon ? undefined : onClick}
+      disabled={comingSoon}
+      className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 group ${
+        comingSoon
+          ? 'border-border bg-card opacity-50 cursor-not-allowed'
+          : selected
+          ? 'border-primary bg-primary/5 dark:bg-primary/10 cursor-pointer'
+          : 'border-border hover:border-primary/30 bg-card cursor-pointer'
+      }`}
+    >
+      <div className="flex items-center gap-4">
+        <div className={`p-2.5 rounded-lg flex-shrink-0 transition-colors ${
+          selected && !comingSoon ? 'bg-primary/10' : 'bg-muted'
+        }`}>
+          {isMs ? <MicrosoftLogo className="w-7 h-7" /> : <GoogleLogo className="w-7 h-7" />}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-foreground">
+              {isMs ? 'Microsoft 365' : 'Google Workspace'}
+            </h4>
+            {comingSoon && (
+              <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                Kommer snart
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            {isMs ? 'Outlook-kalender, Teams och mer' : 'Google Calendar, Meet och mer'}
+          </p>
+        </div>
+        {!comingSoon && (
+          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
+            selected ? 'bg-primary border-primary' : 'border-muted-foreground/30'
+          }`}>
+            {selected && <Check className="w-3.5 h-3.5 text-primary-foreground" />}
+          </div>
+        )}
+      </div>
+    </button>
+  )
+}
+
 // Illustration for the welcome step
-function WelcomeIllustration() {
+function WelcomeIllustration({ provider }: { provider: CalendarProvider }) {
+  const isMs = provider === 'microsoft'
   return (
     <div className="relative w-full h-48 flex items-center justify-center overflow-hidden">
       {/* Background gradient circle */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-40 h-40 rounded-full bg-gradient-to-br from-[#0078D4]/10 to-[#0078D4]/5 dark:from-[#0078D4]/20 dark:to-[#0078D4]/5 animate-pulse" style={{ animationDuration: '3s' }} />
+        <div className="w-40 h-40 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/5 animate-pulse" style={{ animationDuration: '3s' }} />
       </div>
 
       {/* Floating cards */}
@@ -94,33 +152,35 @@ function WelcomeIllustration() {
         {/* Connection arrow */}
         <div className="flex flex-col items-center gap-1 wizard-pulse">
           <div className="flex items-center gap-0.5">
-            <div className="w-3 h-0.5 bg-[#0078D4] rounded-full" />
-            <div className="w-3 h-0.5 bg-[#0078D4] rounded-full" />
-            <div className="w-3 h-0.5 bg-[#0078D4] rounded-full" />
-            <ChevronRight className="w-4 h-4 text-[#0078D4]" />
+            <div className="w-3 h-0.5 bg-primary rounded-full" />
+            <div className="w-3 h-0.5 bg-primary rounded-full" />
+            <div className="w-3 h-0.5 bg-primary rounded-full" />
+            <ChevronRight className="w-4 h-4 text-primary" />
           </div>
           <span className="text-[10px] text-muted-foreground font-medium">SYNKAR</span>
           <div className="flex items-center gap-0.5">
-            <ChevronLeft className="w-4 h-4 text-[#0078D4]" />
-            <div className="w-3 h-0.5 bg-[#0078D4] rounded-full" />
-            <div className="w-3 h-0.5 bg-[#0078D4] rounded-full" />
-            <div className="w-3 h-0.5 bg-[#0078D4] rounded-full" />
+            <ChevronLeft className="w-4 h-4 text-primary" />
+            <div className="w-3 h-0.5 bg-primary rounded-full" />
+            <div className="w-3 h-0.5 bg-primary rounded-full" />
+            <div className="w-3 h-0.5 bg-primary rounded-full" />
           </div>
         </div>
 
-        {/* Microsoft card */}
+        {/* Provider card */}
         <div className="relative z-10 bg-card border border-border rounded-xl p-4 shadow-lg wizard-float" style={{ animationDelay: '0.3s' }}>
           <div className="flex items-center gap-2 mb-2">
-            <MicrosoftLogo className="w-7 h-7" />
-            <span className="text-sm font-semibold text-foreground">Microsoft 365</span>
+            {isMs ? <MicrosoftLogo className="w-7 h-7" /> : <GoogleLogo className="w-7 h-7" />}
+            <span className="text-sm font-semibold text-foreground">
+              {isMs ? 'Microsoft 365' : 'Google'}
+            </span>
           </div>
           <div className="space-y-1.5">
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded bg-[#0078D4]" />
+              <div className={`w-3 h-3 rounded ${isMs ? 'bg-[#0078D4]' : 'bg-[#4285F4]'}`} />
               <div className="h-2 w-16 bg-muted rounded-full" />
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded bg-[#7FBA00]" />
+              <div className={`w-3 h-3 rounded ${isMs ? 'bg-[#7FBA00]' : 'bg-[#34A853]'}`} />
               <div className="h-2 w-12 bg-muted rounded-full" />
             </div>
           </div>
@@ -152,8 +212,8 @@ function FeatureCard({
       onClick={() => onChange(!checked)}
       className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer group ${
         checked
-          ? 'border-[#0078D4] bg-[#0078D4]/5 dark:bg-[#0078D4]/10'
-          : 'border-border hover:border-[#0078D4]/30 bg-card'
+          ? 'border-primary bg-primary/5 dark:bg-primary/10'
+          : 'border-border hover:border-primary/30 bg-card'
       }`}
     >
       <div className="flex items-start gap-3">
@@ -161,18 +221,18 @@ function FeatureCard({
         <div
           className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
             checked
-              ? 'bg-[#0078D4] border-[#0078D4]'
-              : 'border-muted-foreground/30 group-hover:border-[#0078D4]/50'
+              ? 'bg-primary border-primary'
+              : 'border-muted-foreground/30 group-hover:border-primary/50'
           }`}
         >
-          {checked && <Check className="w-3.5 h-3.5 text-white" />}
+          {checked && <Check className="w-3.5 h-3.5 text-primary-foreground" />}
         </div>
 
         {/* Icon */}
         <div
           className={`p-2 rounded-lg flex-shrink-0 transition-colors ${
             checked
-              ? 'bg-[#0078D4]/10 text-[#0078D4]'
+              ? 'bg-primary/10 text-primary'
               : 'bg-muted text-muted-foreground'
           }`}
         >
@@ -184,7 +244,7 @@ function FeatureCard({
           <div className="flex items-center gap-2">
             <h4 className="text-sm font-semibold text-foreground">{title}</h4>
             {recommended && (
-              <span className="text-xs font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-[#0078D4]/10 text-[#0078D4]">
+              <span className="text-xs font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primary/10 text-primary">
                 Rekommenderas
               </span>
             )}
@@ -200,12 +260,15 @@ function FeatureCard({
 
 // Simulated auth popup
 function AuthSimulation({
+  provider,
   onComplete,
   onCancel,
 }: {
+  provider: CalendarProvider
   onComplete: () => void
   onCancel: () => void
 }) {
+  const isMs = provider === 'microsoft'
   const [authStep, setAuthStep] = useState<'loading' | 'consent' | 'signing-in'>('loading')
 
   useEffect(() => {
@@ -218,6 +281,8 @@ function AuthSimulation({
     setAuthStep('signing-in')
     setTimeout(onComplete, 1800)
   }
+
+  const accentColor = isMs ? '#0078D4' : '#4285F4'
 
   return (
     <div className="flex flex-col items-center">
@@ -236,7 +301,9 @@ function AuthSimulation({
           <div className="flex-1 flex items-center justify-center">
             <div className="flex items-center gap-1.5 bg-white dark:bg-zinc-700 rounded-md px-3 py-1 text-[11px] text-muted-foreground max-w-[240px]">
               <Lock className="w-3 h-3 text-green-600 flex-shrink-0" />
-              <span className="truncate">login.microsoftonline.com</span>
+              <span className="truncate">
+                {isMs ? 'login.microsoftonline.com' : 'accounts.google.com'}
+              </span>
             </div>
           </div>
         </div>
@@ -245,8 +312,8 @@ function AuthSimulation({
         <div className="bg-white dark:bg-zinc-900 rounded-b-xl border border-border p-6">
           {authStep === 'loading' && (
             <div className="flex flex-col items-center justify-center py-8 wizard-fade-in">
-              <MicrosoftLogo className="w-10 h-10 mb-4" />
-              <Loader2 className="w-6 h-6 text-[#0078D4] animate-spin" />
+              {isMs ? <MicrosoftLogo className="w-10 h-10 mb-4" /> : <GoogleLogo className="w-10 h-10 mb-4" />}
+              <Loader2 className="w-6 h-6 animate-spin" style={{ color: accentColor }} />
               <p className="text-sm text-muted-foreground mt-3">Laddar...</p>
             </div>
           )}
@@ -254,33 +321,33 @@ function AuthSimulation({
           {authStep === 'consent' && (
             <div className="wizard-fade-in">
               <div className="flex items-center justify-center mb-4">
-                <MicrosoftLogo className="w-8 h-8" />
+                {isMs ? <MicrosoftLogo className="w-8 h-8" /> : <GoogleLogo className="w-8 h-8" />}
               </div>
               <h3 className="text-center text-sm font-semibold text-foreground mb-1">
                 Logga in
               </h3>
               <p className="text-center text-sm text-muted-foreground mb-5">
-                Workly vill komma åt ditt Microsoft 365-konto
+                Workly vill komma åt ditt {isMs ? 'Microsoft 365' : 'Google'}-konto
               </p>
 
               {/* Mock email input */}
               <div className="space-y-3 mb-5">
                 <div className="flex items-center gap-2 p-2.5 bg-muted/50 rounded-lg border border-border">
-                  <div className="w-7 h-7 rounded-full bg-[#0078D4] flex items-center justify-center flex-shrink-0">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: accentColor }}>
                     <span className="text-white text-xs font-medium">EA</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-foreground">Erik Axelsson</p>
                     <p className="text-xs text-muted-foreground">erik.axelsson@workly.se</p>
                   </div>
-                  <Check className="w-4 h-4 text-[#0078D4]" />
+                  <Check className="w-4 h-4" style={{ color: accentColor }} />
                 </div>
               </div>
 
               {/* Permissions */}
               <div className="bg-muted/30 rounded-lg p-3 mb-5 border border-border/50">
                 <p className="text-xs font-medium text-foreground mb-2 flex items-center gap-1.5">
-                  <Shield className="w-3.5 h-3.5 text-[#0078D4]" />
+                  <Shield className="w-3.5 h-3.5" style={{ color: accentColor }} />
                   Workly begär behörigheter:
                 </p>
                 <ul className="space-y-1.5 text-xs text-muted-foreground">
@@ -308,7 +375,8 @@ function AuthSimulation({
                 </button>
                 <button
                   onClick={handleAccept}
-                  className="flex-1 px-4 py-2.5 text-sm font-medium bg-[#0078D4] text-white rounded-lg hover:bg-[#106EBE] transition-colors"
+                  className="flex-1 px-4 py-2.5 text-sm font-medium text-white rounded-lg transition-colors"
+                  style={{ backgroundColor: accentColor }}
                 >
                   Godkänn
                 </button>
@@ -318,13 +386,13 @@ function AuthSimulation({
 
           {authStep === 'signing-in' && (
             <div className="flex flex-col items-center justify-center py-8 wizard-fade-in">
-              <MicrosoftLogo className="w-10 h-10 mb-4" />
+              {isMs ? <MicrosoftLogo className="w-10 h-10 mb-4" /> : <GoogleLogo className="w-10 h-10 mb-4" />}
               <div className="flex items-center gap-2 mb-2">
-                <Loader2 className="w-5 h-5 text-[#0078D4] animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" style={{ color: accentColor }} />
                 <span className="text-sm font-medium text-foreground">Ansluter...</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Kopplar Workly till ditt Microsoft 365-konto
+                Kopplar Workly till ditt {isMs ? 'Microsoft 365' : 'Google'}-konto
               </p>
             </div>
           )}
@@ -335,13 +403,16 @@ function AuthSimulation({
 }
 
 // Success celebration with confetti
-function SuccessView({ features }: { features: Microsoft365Integration['features'] }) {
+function SuccessView({ features, provider }: { features: CalendarIntegration['features'], provider: CalendarProvider }) {
+  const isMs = provider === 'microsoft'
+  const calendarName = isMs ? 'Outlook' : 'Google Calendar'
+
   const enabledFeatures = Object.entries(features)
     .filter(([, enabled]) => enabled)
     .map(([key]) => {
       const labels: Record<string, { label: string; icon: React.ReactNode }> = {
-        samtal: { label: 'Samtal i Outlook-kalender', icon: <Calendar className="w-4 h-4" /> },
-        birthdays: { label: 'Födelsedagar i Outlook', icon: <Cake className="w-4 h-4" /> },
+        samtal: { label: `Samtal i ${calendarName}`, icon: <Calendar className="w-4 h-4" /> },
+        birthdays: { label: `Födelsedagar i ${calendarName}`, icon: <Cake className="w-4 h-4" /> },
         surveys: { label: 'Undersökningspåminnelser', icon: <BarChart3 className="w-4 h-4" /> },
         workflows: { label: 'Arbetsflödesuppgifter', icon: <ListChecks className="w-4 h-4" /> },
       }
@@ -385,7 +456,7 @@ function SuccessView({ features }: { features: Microsoft365Integration['features
         {/* Glow ring */}
         <div className="absolute inset-0 -m-3 rounded-full bg-primary/20 wizard-success-glow" />
 
-        {/* Success icon — primary green */}
+        {/* Success icon -- primary green */}
         <div className="relative w-20 h-20 rounded-full bg-primary flex items-center justify-center wizard-success-pop">
           <Check className="w-10 h-10 text-primary-foreground" strokeWidth={3} />
         </div>
@@ -395,7 +466,7 @@ function SuccessView({ features }: { features: Microsoft365Integration['features
         Kopplat!
       </h2>
       <p className="text-sm text-muted-foreground mb-6 max-w-xs">
-        Ditt Microsoft 365-konto är nu anslutet. Följande funktioner är aktiverade:
+        Ditt {isMs ? 'Microsoft 365' : 'Google'}-konto är nu anslutet. Följande funktioner är aktiverade:
       </p>
 
       {/* Enabled features list */}
@@ -423,50 +494,64 @@ function SuccessView({ features }: { features: Microsoft365Integration['features
   )
 }
 
-export default function Microsoft365ConnectModal() {
-  const { microsoft365ModalOpen, closeMicrosoft365Modal, connectMicrosoft365 } = useStore()
+interface CalendarConnectModalProps {
+  showAllFeatures?: boolean
+}
+
+export default function CalendarConnectModal({ showAllFeatures = false }: CalendarConnectModalProps) {
+  const { calendarModalOpen, closeCalendarModal, connectCalendar } = useStore()
   const [step, setStep] = useState<WizardStep>('welcome')
-  const [features, setFeatures] = useState<Microsoft365Integration['features']>({
+  const [selectedProvider, setSelectedProvider] = useState<CalendarProvider>('microsoft')
+  const [features, setFeatures] = useState<CalendarIntegration['features']>({
     samtal: true,
-    birthdays: true,
+    birthdays: false,
     surveys: false,
     workflows: false,
   })
   const [isExiting, setIsExiting] = useState(false)
 
+  // Build STEPS array dynamically based on showAllFeatures prop
+  const steps = useMemo<WizardStep[]>(() => {
+    if (showAllFeatures) {
+      return ['welcome', 'features', 'auth', 'success']
+    }
+    return ['welcome', 'auth', 'success']
+  }, [showAllFeatures])
+
   // Reset state when modal opens
   useEffect(() => {
-    if (microsoft365ModalOpen) {
+    if (calendarModalOpen) {
       setStep('welcome')
+      setSelectedProvider('microsoft')
       setFeatures({
         samtal: true,
-        birthdays: true,
+        birthdays: false,
         surveys: false,
         workflows: false,
       })
       setIsExiting(false)
     }
-  }, [microsoft365ModalOpen])
+  }, [calendarModalOpen])
 
   const handleClose = useCallback(() => {
     setIsExiting(true)
     setTimeout(() => {
-      closeMicrosoft365Modal()
+      closeCalendarModal()
       setIsExiting(false)
     }, 200)
-  }, [closeMicrosoft365Modal])
+  }, [closeCalendarModal])
 
   const handleNext = () => {
-    const currentIndex = STEPS.indexOf(step)
-    if (currentIndex < STEPS.length - 1) {
-      setStep(STEPS[currentIndex + 1])
+    const currentIndex = steps.indexOf(step)
+    if (currentIndex < steps.length - 1) {
+      setStep(steps[currentIndex + 1])
     }
   }
 
   const handleBack = () => {
-    const currentIndex = STEPS.indexOf(step)
+    const currentIndex = steps.indexOf(step)
     if (currentIndex > 0) {
-      setStep(STEPS[currentIndex - 1])
+      setStep(steps[currentIndex - 1])
     }
   }
 
@@ -475,13 +560,17 @@ export default function Microsoft365ConnectModal() {
   }
 
   const handleFinish = () => {
-    connectMicrosoft365('erik.axelsson@workly.se', 'Erik Axelsson', features)
+    connectCalendar(selectedProvider, 'erik.axelsson@workly.se', 'Erik Axelsson', features)
   }
 
   const atLeastOneFeatureEnabled = Object.values(features).some(Boolean)
-  const stepIndex = STEPS.indexOf(step)
+  const stepIndex = steps.indexOf(step)
 
-  if (!microsoft365ModalOpen) return null
+  const isMs = selectedProvider === 'microsoft'
+  const providerName = isMs ? 'Microsoft 365' : 'Google'
+  const calendarName = isMs ? 'Outlook' : 'Google Calendar'
+
+  if (!calendarModalOpen) return null
 
   return createPortal(
     <div
@@ -502,7 +591,7 @@ export default function Microsoft365ConnectModal() {
         }`}
       >
         {/* Header accent bar */}
-        <div className="h-1 bg-gradient-to-r from-[#F25022] via-[#0078D4] to-[#7FBA00]" />
+        <div className="h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60" />
 
         {/* Close button */}
         {step !== 'auth' && (
@@ -517,12 +606,12 @@ export default function Microsoft365ConnectModal() {
         {/* Step indicator */}
         {step !== 'success' && (
           <div className="flex items-center justify-center gap-2 pt-5 pb-2">
-            {STEPS.slice(0, -1).map((s, i) => (
+            {steps.slice(0, -1).map((s, i) => (
               <div
                 key={s}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   i <= stepIndex
-                    ? 'w-8 bg-[#0078D4]'
+                    ? 'w-8 bg-primary'
                     : 'w-4 bg-muted'
                 }`}
               />
@@ -532,47 +621,61 @@ export default function Microsoft365ConnectModal() {
 
         {/* Content */}
         <div className="px-6 pb-6">
-          {/* Welcome Step */}
+          {/* Welcome Step - Provider Selection */}
           {step === 'welcome' && (
             <div className="wizard-step-enter">
-              <WelcomeIllustration />
-
-              <div className="text-center -mt-2">
+              <div className="text-center pt-3 mb-4">
                 <h2 className="text-xl font-bold text-foreground mb-2">
-                  Koppla Microsoft 365
+                  Koppla din kalender
                 </h2>
                 <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto">
-                  Synka dina samtal direkt till Outlook-kalendern. Slipp dubbelarbetet —
-                  allt uppdateras automatiskt.
+                  Välj vilken kalender du vill synka med Workly. Samtal, bokningar och påminnelser hamnar direkt i din kalender.
                 </p>
               </div>
 
-              <div className="mt-6 space-y-2">
+              {/* Illustration moved here from features step */}
+              <WelcomeIllustration provider={selectedProvider} />
+
+              <div className="space-y-3 mb-6">
+                <ProviderCard
+                  provider="microsoft"
+                  selected={selectedProvider === 'microsoft'}
+                  onClick={() => setSelectedProvider('microsoft')}
+                />
+                <ProviderCard
+                  provider="google"
+                  selected={selectedProvider === 'google'}
+                  onClick={() => setSelectedProvider('google')}
+                  comingSoon
+                />
+              </div>
+
+              <div className="space-y-2 mb-6">
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <div className="w-6 h-6 rounded-full bg-[#0078D4]/10 flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-3.5 h-3.5 text-[#0078D4]" />
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-3.5 h-3.5 text-primary" />
                   </div>
-                  Bokade samtal visas i din Outlook-kalender
+                  Bokade samtal visas i din kalender
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <div className="w-6 h-6 rounded-full bg-[#7FBA00]/10 flex items-center justify-center flex-shrink-0">
-                    <Sparkles className="w-3.5 h-3.5 text-[#7FBA00]" />
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-3.5 h-3.5 text-primary" />
                   </div>
                   Ändringar i Workly synkas automatiskt
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <div className="w-6 h-6 rounded-full bg-[#FFB900]/10 flex items-center justify-center flex-shrink-0">
-                    <Shield className="w-3.5 h-3.5 text-[#FFB900]" />
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-3.5 h-3.5 text-primary" />
                   </div>
-                  Säker OAuth 2.0-anslutning via Microsoft
+                  Säker OAuth 2.0-anslutning
                 </div>
               </div>
 
               {/* CTA */}
-              <div className="mt-8 flex justify-end">
+              <div className="flex justify-end">
                 <button
                   onClick={handleNext}
-                  className="flex items-center gap-2 px-6 py-3 bg-[#0078D4] text-white rounded-xl font-medium text-sm hover:bg-[#106EBE] transition-colors shadow-lg shadow-[#0078D4]/20"
+                  className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
                 >
                   Kom igång
                   <ChevronRight className="w-4 h-4" />
@@ -581,7 +684,7 @@ export default function Microsoft365ConnectModal() {
             </div>
           )}
 
-          {/* Features Step */}
+          {/* Features Step (only shown when showAllFeatures is true) */}
           {step === 'features' && (
             <div className="wizard-step-enter">
               <div className="text-center pt-3 mb-6">
@@ -589,15 +692,15 @@ export default function Microsoft365ConnectModal() {
                   Välj funktioner
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Välj vad du vill synka. Du kan ändra detta i inställningarna senare.
+                  Välj vad du vill synka till {calendarName}. Du kan ändra detta i inställningarna senare.
                 </p>
               </div>
 
               <div className="space-y-3">
                 <FeatureCard
                   icon={<Calendar className="w-5 h-5" />}
-                  title="Samtal i Outlook"
-                  description="Bokade samtal visas automatiskt som kalenderhändelser i Outlook. Deltagare får en inbjudan."
+                  title={`Samtal i ${calendarName}`}
+                  description={`Bokade samtal visas automatiskt som kalenderhändelser i ${calendarName}. Deltagare får en inbjudan.`}
                   checked={features.samtal}
                   onChange={(checked) => setFeatures({ ...features, samtal: checked })}
                   recommended
@@ -606,16 +709,15 @@ export default function Microsoft365ConnectModal() {
                 <FeatureCard
                   icon={<Cake className="w-5 h-5" />}
                   title="Födelsedagar"
-                  description="Medarbetarnas födelsedagar visas i en delad Outlook-kalender."
+                  description={`Medarbetarnas födelsedagar visas i en delad kalender i ${calendarName}.`}
                   checked={features.birthdays}
                   onChange={(checked) => setFeatures({ ...features, birthdays: checked })}
-                  recommended
                 />
 
                 <FeatureCard
                   icon={<BarChart3 className="w-5 h-5" />}
                   title="Undersökningspåminnelser"
-                  description="Påminnelser för pulsundersökningar läggs in i din Outlook-kalender."
+                  description={`Påminnelser för pulsundersökningar läggs in i ${calendarName}.`}
                   checked={features.surveys}
                   onChange={(checked) => setFeatures({ ...features, surveys: checked })}
                 />
@@ -623,7 +725,7 @@ export default function Microsoft365ConnectModal() {
                 <FeatureCard
                   icon={<ListChecks className="w-5 h-5" />}
                   title="Arbetsflöden"
-                  description="Deadlines för onboarding- och offboarding-uppgifter synkas till Outlook."
+                  description={`Deadlines för onboarding- och offboarding-uppgifter synkas till ${calendarName}.`}
                   checked={features.workflows}
                   onChange={(checked) => setFeatures({ ...features, workflows: checked })}
                 />
@@ -641,10 +743,10 @@ export default function Microsoft365ConnectModal() {
                 <button
                   onClick={handleNext}
                   disabled={!atLeastOneFeatureEnabled}
-                  className="flex items-center gap-2 px-6 py-3 bg-[#0078D4] text-white rounded-xl font-medium text-sm hover:bg-[#106EBE] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-[#0078D4]/20"
+                  className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium text-sm hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-primary/20"
                 >
-                  <MicrosoftLogo className="w-4 h-4" />
-                  Anslut med Microsoft
+                  {isMs ? <MicrosoftLogo className="w-4 h-4" /> : <GoogleLogo className="w-4 h-4" />}
+                  Anslut med {providerName}
                   <ExternalLink className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -656,7 +758,7 @@ export default function Microsoft365ConnectModal() {
             <div className="wizard-step-enter py-4">
               <div className="text-center mb-6">
                 <h2 className="text-lg font-bold text-foreground mb-1">
-                  Logga in med Microsoft
+                  Logga in med {providerName}
                 </h2>
                 <p className="text-sm text-muted-foreground">
                   Ett inloggningsfönster har öppnats. Godkänn åtkomsten för att fortsätta.
@@ -664,8 +766,15 @@ export default function Microsoft365ConnectModal() {
               </div>
 
               <AuthSimulation
+                provider={selectedProvider}
                 onComplete={handleAuthComplete}
-                onCancel={() => setStep('features')}
+                onCancel={() => {
+                  // Go back to the previous step in the steps array
+                  const authIndex = steps.indexOf('auth')
+                  if (authIndex > 0) {
+                    setStep(steps[authIndex - 1])
+                  }
+                }}
               />
             </div>
           )}
@@ -673,7 +782,7 @@ export default function Microsoft365ConnectModal() {
           {/* Success Step */}
           {step === 'success' && (
             <div className="py-6">
-              <SuccessView features={features} />
+              <SuccessView features={features} provider={selectedProvider} />
 
               <div className="mt-6 flex justify-center">
                 <button

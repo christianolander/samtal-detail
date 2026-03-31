@@ -85,13 +85,14 @@ function WorklyDroid({ className = 'w-8 h-8' }: { className?: string }) {
   )
 }
 
-// Outlook sync badge for booked conversations
-function OutlookSyncBadge({ connected }: { connected: boolean }) {
+// Calendar sync badge for booked conversations
+function CalendarSyncBadge({ connected, provider }: { connected: boolean, provider?: 'microsoft' | 'google' }) {
   if (!connected) return null
+  const label = provider === 'google' ? 'Google' : 'Outlook'
   return (
-    <span className="inline-flex items-center gap-1 ml-2 px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#0078D4]/10 text-[#0078D4]">
+    <span className="inline-flex items-center gap-1 ml-2 px-1.5 py-0.5 rounded text-[10px] font-medium bg-primary/10 text-primary">
       <Check className="w-2.5 h-2.5" />
-      Outlook
+      {label}
     </span>
   )
 }
@@ -99,23 +100,23 @@ function OutlookSyncBadge({ connected }: { connected: boolean }) {
 // Integration banner component
 function IntegrationBanner({ onConnect, onDismiss }: { onConnect: () => void, onDismiss: () => void }) {
   return (
-    <div className="mb-4 relative overflow-hidden bg-gradient-to-r from-[#0078D4]/5 via-[#0078D4]/8 to-[#7FBA00]/5 dark:from-[#0078D4]/10 dark:via-[#0078D4]/15 dark:to-[#7FBA00]/10 border border-[#0078D4]/15 rounded-xl p-4 wizard-fade-in">
+    <div className="mb-4 relative overflow-hidden bg-gradient-to-r from-primary/5 via-primary/8 to-primary/5 dark:from-primary/10 dark:via-primary/15 dark:to-primary/10 border border-primary/15 rounded-xl p-4 wizard-fade-in">
       <div className="flex items-center gap-4">
         {/* Icon */}
-        <div className="hidden sm:flex items-center justify-center w-12 h-12 rounded-xl bg-white dark:bg-zinc-800 border border-[#0078D4]/10 shadow-sm flex-shrink-0">
-          <MicrosoftLogo className="w-7 h-7" />
+        <div className="hidden sm:flex items-center justify-center w-12 h-12 rounded-xl bg-white dark:bg-zinc-800 border border-primary/10 shadow-sm flex-shrink-0">
+          <Calendar className="w-7 h-7 text-primary" />
         </div>
 
         {/* Content */}
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-            Koppla Microsoft 365
-            <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-[#0078D4]/10 text-[#0078D4]">
+            Kalenderintegration
+            <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primary/10 text-primary">
               Nytt
             </span>
           </h3>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Synka dina samtal direkt till Outlook-kalendern — slipp dubbelarbete.
+            Synka samtal automatiskt till din kalender — Microsoft eller Google.
           </p>
         </div>
 
@@ -141,16 +142,16 @@ function IntegrationBanner({ onConnect, onDismiss }: { onConnect: () => void, on
 }
 
 export default function ConversationList({ onSelectConversation }: ConversationListProps) {
-  const { microsoft365, openMicrosoft365Modal } = useStore()
+  const { calendarIntegration, openCalendarModal } = useStore()
   const [hoveredParticipants, setHoveredParticipants] = useState<{ id: string, rect: DOMRect } | null>(null)
   const [bannerDismissed, setBannerDismissed] = useState(false)
 
   return (
     <div>
       {/* Integration banner - show when not connected and not dismissed */}
-      {!microsoft365.connected && !bannerDismissed && (
+      {!calendarIntegration.connected && !bannerDismissed && (
         <IntegrationBanner
-          onConnect={openMicrosoft365Modal}
+          onConnect={openCalendarModal}
           onDismiss={() => setBannerDismissed(true)}
         />
       )}
@@ -230,8 +231,8 @@ export default function ConversationList({ onSelectConversation }: ConversationL
                 ) : (
                   <span className="inline-flex items-center">
                     {conversation.bookedTime || '—'}
-                    {conversation.status === 'Bokad' && microsoft365.connected && microsoft365.features.samtal && (
-                      <OutlookSyncBadge connected={true} />
+                    {conversation.status === 'Bokad' && calendarIntegration.connected && calendarIntegration.features.samtal && (
+                      <CalendarSyncBadge connected={true} provider={calendarIntegration.provider} />
                     )}
                   </span>
                 )}

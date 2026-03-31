@@ -164,17 +164,21 @@ export interface PrivateNote {
   timestamp: Date
 }
 
-// Microsoft 365 Integration types
-export interface Microsoft365Integration {
+// Calendar Integration types
+export type CalendarProvider = 'microsoft' | 'google'
+
+export interface CalendarIntegration {
   connected: boolean
+  provider?: CalendarProvider
   connectedAt?: Date
   userEmail?: string
   userName?: string
+  syncStatus?: 'ok' | 'error' // error = needs reconnection
   features: {
-    samtal: boolean      // Auto-sync conversations to Outlook calendar
-    birthdays: boolean   // Birthdays calendar in Outlook
+    samtal: boolean      // Auto-sync conversations to calendar
+    birthdays: boolean   // Birthdays calendar
     surveys: boolean     // Survey reminder events
-    workflows: boolean   // Workflow task deadlines in calendar
+    workflows: boolean   // Workflow task deadlines
   }
 }
 
