@@ -412,7 +412,7 @@ function App() {
       <TaskModal />
 
       {/* Calendar Connect Modal */}
-      <CalendarConnectModal />
+      <CalendarConnectModal showAllFeatures={showAllFeatures} />
 
       {/* Product Tour - disabled for now */}
       {/* <ProductTour /> */}
